@@ -10,9 +10,9 @@ export default {
     dark: "#121212",
   },
   accent: {
-    main: "#ff9100",
-    light: "#ffab40",
-    dark: "#c67c00",
+    main: "#f8bd2a",
+    light: "#f8c642",
+    dark: "#f8b32a",
   },
   info: {
     main: "#00b0ff",
