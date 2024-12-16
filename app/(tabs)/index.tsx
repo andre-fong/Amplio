@@ -21,6 +21,7 @@ import {
 import Colors from "@/constants/colors";
 import { useState } from "react";
 
+// TODO: Replace with real data
 const mockData = {
   mesoName: "Chest Emphasis 2024",
   microNum: 1,
@@ -29,8 +30,52 @@ const mockData = {
   sessionNotes: "This was a great session, I felt strong and energized!",
   deload: false,
   current: true,
-  muscleGroups: ["Chest", "Triceps", "Shoulders", "Quads", "Calves", "Biceps"],
+  muscles: ["Chest", "Triceps", "Shoulders", "Quads", "Calves", "Biceps"],
   sessionDate: "2021-09-01",
+  plannedExercises: [
+    {
+      target: "Chest",
+      notes: "Focus on the stretch at the bottom",
+      name: "Bench Press",
+      order: 1,
+      equipment: "Barbell",
+      plannedSets: [
+        {
+          id: 1,
+          type: null,
+          parentId: null,
+          weight: 135,
+          prevWeight: 135,
+          reps: 10,
+          prevReps: 9,
+          logged: false,
+          order: 1,
+        },
+        {
+          id: 2,
+          type: null,
+          parentId: null,
+          weight: 185,
+          prevWeight: 185,
+          reps: 3,
+          prevReps: 3,
+          logged: false,
+          order: 2,
+        },
+        {
+          id: 3,
+          type: null,
+          parentId: null,
+          weight: 225,
+          prevWeight: 215,
+          reps: 1,
+          prevReps: 1,
+          logged: false,
+          order: 3,
+        },
+      ],
+    },
+  ],
 };
 
 export default function Logs() {
@@ -258,7 +303,7 @@ export default function Logs() {
           )}
 
           <View style={styles.sessionInfoMuscleGroups}>
-            {mockData.muscleGroups.map((muscleGroup) => (
+            {mockData.muscles.map((muscleGroup) => (
               <Chip
                 compact
                 style={{
@@ -281,6 +326,10 @@ export default function Logs() {
             {/* TODO: Datepicker */}
             <Text>Date: 12/14/2024</Text>
           </View>
+        </View>
+
+        <View>
+          <Text>exercises here</Text>
         </View>
       </ScrollView>
 
@@ -305,6 +354,7 @@ export default function Logs() {
             onChangeText={(text) => setSessionNotesEditValue(text)}
             multiline
             numberOfLines={4}
+            contentStyle={{ marginVertical: 5 }}
             theme={{ colors: { primary: Colors.accent.main } }}
           />
 
