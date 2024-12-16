@@ -14,14 +14,14 @@ const mockData = {
   sessionDate: "2021-09-01",
 };
 
-const CurrentLog = () => {
+const Logs = () => {
   return (
     <>
       <Appbar.Header
         style={{ height: 80, backgroundColor: Colors.secondary.dark }}
       >
         {/* <Appbar.BackAction onPress={() => {}} /> */}
-        <Appbar.Content title="Current Log" style={{ display: "none" }} />
+        <Appbar.Content title="Logs" style={{ display: "none" }} />
         <View style={styles.headerTitleSubtitle}>
           <Pressable onPress={() => {}}>
             <Text style={styles.headerTitle}>{mockData.mesoName}</Text>
@@ -42,7 +42,7 @@ const CurrentLog = () => {
   );
 };
 
-export default CurrentLog;
+export default Logs;
 
 const styles = StyleSheet.create({
   headerTitleSubtitle: {

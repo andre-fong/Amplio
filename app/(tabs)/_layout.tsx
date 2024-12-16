@@ -46,12 +46,12 @@ const TabsLayout = () => {
         <Tabs.Screen
           name="index"
           options={{
-            title: "Current Log",
+            title: "Logs",
             headerShown: false,
             tabBarIcon: ({ focused, color, size }) => (
               <TabIcon
                 focused={focused}
-                title="Current Log"
+                title="Logs"
                 source={focused ? "notebook-edit" : "notebook-edit-outline"}
                 color={color}
                 size={size}
