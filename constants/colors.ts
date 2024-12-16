@@ -6,12 +6,17 @@ export default {
   },
   secondary: {
     main: "#212121",
-    light: "#484848",
+    light: "#313131",
     dark: "#121212",
   },
   accent: {
     main: "#ff9100",
     light: "#ffab40",
     dark: "#c67c00",
+  },
+  info: {
+    main: "#00b0ff",
+    light: "#33b5ff",
+    dark: "#007bb2",
   },
 };
