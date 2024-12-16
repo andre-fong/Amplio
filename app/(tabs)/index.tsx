@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
-import { Appbar } from "react-native-paper";
+import { View, StyleSheet, Pressable, ScrollView } from "react-native";
+import { Appbar, Text } from "react-native-paper";
 import Colors from "@/constants/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -33,11 +33,9 @@ const Logs = () => {
         <Appbar.Action icon="dots-vertical" onPress={() => {}} />
       </Appbar.Header>
 
-      <SafeAreaView style={styles.main}>
-        <ScrollView>
-          <Text>Hello</Text>
-        </ScrollView>
-      </SafeAreaView>
+      <ScrollView style={styles.main}>
+        <Text>Hello</Text>
+      </ScrollView>
     </>
   );
 };

@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Tabs } from "expo-router";
-import { Icon } from "react-native-paper";
+import { Icon, Text } from "react-native-paper";
 import Colors from "@/constants/colors";
 
 function TabIcon({
