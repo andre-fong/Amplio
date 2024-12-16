@@ -15,3 +15,5 @@ export default function RootLayout() {
     </>
   );
 }
+
+// TODO: Add index.tsx to /app as a one-time welcome screen
