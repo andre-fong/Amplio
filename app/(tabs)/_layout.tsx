@@ -139,14 +139,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   tabTitle: {
-    fontSize: 10,
+    fontSize: 11,
     marginTop: 7,
     color: "white",
   },
   tabTitleActive: {
-    fontSize: 10,
+    fontSize: 11,
     marginTop: 7,
     color: Colors.primary.light,
+    fontWeight: "600",
   },
   iconContainer: {
     position: "relative",
