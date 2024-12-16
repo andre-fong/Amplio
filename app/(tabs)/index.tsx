@@ -301,7 +301,7 @@ export default function Logs() {
 
           <TextInput
             label="Session notes"
-            value={sessionNotesEditValue}
+            defaultValue={sessionNotes}
             onChangeText={(text) => setSessionNotesEditValue(text)}
             multiline
             numberOfLines={4}
