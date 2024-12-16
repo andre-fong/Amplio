@@ -35,7 +35,7 @@ const TabsLayout = () => {
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,
-          tabBarActiveTintColor: Colors.primary.main,
+          tabBarActiveTintColor: Colors.primary.light,
           tabBarStyle: {
             backgroundColor: Colors.secondary.dark,
             height: 80,
@@ -144,16 +144,17 @@ const styles = StyleSheet.create({
     color: "white",
   },
   tabTitleActive: {
-    fontSize: 11,
+    fontSize: 12,
     marginTop: 7,
     color: Colors.primary.light,
-    fontWeight: "600",
+    fontWeight: "bold",
   },
   iconContainer: {
     position: "relative",
     display: "flex",
     justifyContent: "center",
   },
+  // TODO: Animate active indicator
   activeIndicator: {
     position: "absolute",
     height: 32,
