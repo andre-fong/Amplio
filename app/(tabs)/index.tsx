@@ -17,6 +17,7 @@ import {
   Portal,
   Modal,
   TextInput,
+  Checkbox,
 } from "react-native-paper";
 import Colors from "@/constants/colors";
 import { useState } from "react";
@@ -82,7 +83,8 @@ export default function Logs() {
   const [mesocycleOptionsOpen, setMesocycleOptionsOpen] = useState(false);
   const [sessionOptionsOpen, setSessionOptionsOpen] = useState(false);
   const [sessionNotesOpen, setSessionNotesOpen] = useState(false);
-  const [selectedExerciseOptions, setSelectedExerciseOptions] = useState(null);
+  // TODO: Replace with exercise id for which options are open
+  const [selectedExerciseOptions, setSelectedExerciseOptions] = useState(false);
 
   const [sessionNotes, setSessionNotes] = useState(mockData.sessionNotes);
   const [sessionNotesEditValue, setSessionNotesEditValue] = useState(
@@ -304,6 +306,7 @@ export default function Logs() {
 
           <View style={styles.sessionInfoMuscleGroups}>
             {mockData.muscles.map((muscleGroup) => (
+              // TODO: Add muscle group colors
               <Chip
                 compact
                 style={{
@@ -317,7 +320,7 @@ export default function Logs() {
                 }}
                 key={muscleGroup}
               >
-                {muscleGroup}
+                {muscleGroup.toUpperCase()}
               </Chip>
             ))}
           </View>
@@ -328,8 +331,191 @@ export default function Logs() {
           </View>
         </View>
 
-        <View>
-          <Text>exercises here</Text>
+        <View style={styles.exerciseContainer}>
+          <Chip
+            compact
+            style={{
+              backgroundColor: "rgba(222, 0, 0, 0.5)",
+              // backgroundColor: Colors.primary.dark,
+              filter: "brightness(1.1)",
+              position: "absolute",
+              left: 10,
+              top: -15,
+            }}
+            textStyle={{
+              color: "white",
+              opacity: 0.7,
+              fontSize: 13,
+            }}
+          >
+            {mockData.plannedExercises[0].target.toUpperCase()}
+          </Chip>
+          <View style={styles.exerciseHeader}>
+            <View style={{ marginTop: 12 }}>
+              <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
+                {mockData.plannedExercises[0].name}
+              </Text>
+              <Text
+                variant="bodySmall"
+                style={{ color: "darkgray", marginTop: 3 }}
+              >
+                {mockData.plannedExercises[0].equipment.toUpperCase()}
+              </Text>
+            </View>
+            <View style={styles.exerciseActions}>
+              <IconButton
+                icon="history"
+                size={30}
+                onPress={() => {}}
+                mode="contained-tonal"
+              />
+              <IconButton
+                icon="comment-processing"
+                size={24}
+                theme={{ colors: { primary: Colors.accent.light } }}
+                onPress={() => {}}
+              />
+
+              <Menu
+                visible={selectedExerciseOptions}
+                onDismiss={() => setSelectedExerciseOptions(false)}
+                anchor={
+                  <IconButton
+                    icon="dots-vertical"
+                    size={24}
+                    onPress={() => {
+                      setSelectedExerciseOptions(true);
+                    }}
+                  />
+                }
+                anchorPosition="bottom"
+                mode="elevated"
+                elevation={5}
+              >
+                <Menu.Item
+                  leadingIcon="file-search"
+                  onPress={() => {}}
+                  title="Replace exercise"
+                />
+                <Menu.Item
+                  leadingIcon="arrow-up"
+                  onPress={() => {}}
+                  title="Move exercise up"
+                />
+                <Menu.Item
+                  leadingIcon="arrow-down"
+                  onPress={() => {}}
+                  title="Move exercise down"
+                />
+                <Divider
+                  style={{
+                    marginTop: 10,
+                    marginBottom: 10,
+                  }}
+                  bold
+                />
+                <Menu.Item
+                  leadingIcon={({ size }) => (
+                    <Icon
+                      source="delete"
+                      color={Colors.primary.light}
+                      size={size}
+                    />
+                  )}
+                  onPress={() => {}}
+                  title="Delete exercise"
+                  titleStyle={{
+                    color: Colors.primary.light,
+                    filter: "brightness(2)",
+                  }}
+                />
+              </Menu>
+            </View>
+          </View>
+
+          {mockData.sessionNotes && (
+            <Pressable style={styles.exerciseNotes} onPress={() => {}}>
+              <Icon source="pencil" size={24} color={Colors.accent.main} />
+              <Text
+                variant="bodySmall"
+                style={{
+                  color: Colors.accent.light,
+                  flex: 1,
+                  flexWrap: "wrap",
+                }}
+              >
+                {mockData.plannedExercises[0].notes}
+              </Text>
+            </Pressable>
+          )}
+
+          <View style={styles.setsContainer}>
+            <View style={styles.setsLabelRow}>
+              <View style={{ flex: 0.5 }} />
+              <Text
+                style={{ flex: 3, textAlign: "center" }}
+                variant="bodyMedium"
+              >
+                WEIGHT
+              </Text>
+              <Text
+                style={{ flex: 3, textAlign: "center" }}
+                variant="bodyMedium"
+              >
+                REPS
+              </Text>
+              <Text
+                style={{ flex: 1.5, textAlign: "center" }}
+                variant="bodyMedium"
+              >
+                LOG
+              </Text>
+              <View style={{ flex: 1 }} />
+            </View>
+
+            <View style={styles.setsRow}>
+              <View style={{ flex: 0.5 }} />
+              <View style={{ flex: 3 }}>
+                <TextInput
+                  maxLength={4}
+                  keyboardType="numeric"
+                  placeholder="lbs"
+                  placeholderTextColor="gray"
+                  dense
+                  style={styles.setsInput}
+                  underlineColor="transparent"
+                  theme={{ colors: { surfaceVariant: Colors.secondary.main } }}
+                />
+              </View>
+
+              <View style={{ flex: 3 }}>
+                <TextInput
+                  maxLength={4}
+                  keyboardType="numeric"
+                  dense
+                  style={styles.setsInput}
+                  underlineColor="transparent"
+                  theme={{ colors: { surfaceVariant: Colors.secondary.main } }}
+                />
+              </View>
+              <View style={{ flex: 1.5 }}>
+                <View style={{ alignItems: "center" }}>
+                  <Checkbox status="unchecked" onPress={() => {}} />
+                </View>
+              </View>
+              <View style={{ flex: 1 }}>
+                <IconButton icon="dots-vertical" size={24} onPress={() => {}} />
+              </View>
+            </View>
+            <Button
+              icon="plus"
+              compact
+              style={{ width: "100%", margin: "auto" }}
+              onPress={() => {}}
+            >
+              Add set
+            </Button>
+          </View>
         </View>
       </ScrollView>
 
@@ -408,7 +594,6 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   sessionName: {
-    fontWeight: "bold",
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
@@ -456,5 +641,61 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     marginTop: 20,
     gap: 10,
+  },
+
+  exerciseContainer: {
+    position: "relative",
+    margin: 10,
+    marginTop: 25,
+    backgroundColor: Colors.secondary.light,
+    padding: 15,
+    paddingBottom: 3,
+    borderRadius: 3,
+  },
+  exerciseHeader: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 10,
+  },
+  exerciseActions: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  exerciseNotes: {
+    marginBottom: 12,
+    padding: 7,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    borderRadius: 3,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Colors.accent.dark,
+  },
+
+  setsContainer: {
+    marginTop: 10,
+    marginBottom: 10,
+    paddingRight: 5,
+  },
+  setsLabelRow: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  setsRow: {
+    marginVertical: 5,
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  setsInput: {
+    width: "80%",
+    margin: "auto",
+    textAlign: "center",
   },
 });
