@@ -520,6 +520,19 @@ export default function Logs() {
             </Button>
           </View>
         </View>
+
+        <View style={{ margin: 10, height: 50, marginBottom: 30 }}>
+          <Button
+            style={styles.addExerciseButton}
+            contentStyle={{ height: "100%" }}
+            icon={() => <Icon source="plus" size={24} color="gray" />}
+            labelStyle={{ color: "gray" }}
+            onPress={() => {}}
+            rippleColor="#424242"
+          >
+            ADD EXERCISE
+          </Button>
+        </View>
       </ScrollView>
 
       <Portal>
@@ -677,6 +690,12 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.accent.dark,
+  },
+  addExerciseButton: {
+    margin: "auto",
+    width: "100%",
+    backgroundColor: Colors.secondary.light,
+    borderRadius: 3,
   },
 
   setsContainer: {
