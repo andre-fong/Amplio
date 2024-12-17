@@ -18,6 +18,7 @@ import {
   Modal,
   TextInput,
   Checkbox,
+  Tooltip,
 } from "react-native-paper";
 import Colors from "@/constants/colors";
 import { useState } from "react";
@@ -85,6 +86,8 @@ export default function Logs() {
   const [sessionNotesOpen, setSessionNotesOpen] = useState(false);
   // TODO: Replace with exercise id for which options are open
   const [selectedExerciseOptions, setSelectedExerciseOptions] = useState(false);
+  // TODO: Replace with set id for which options are open
+  const [selectedSetOptions, setSelectedSetOptions] = useState(false);
 
   const [sessionNotes, setSessionNotes] = useState(mockData.sessionNotes);
   const [sessionNotesEditValue, setSessionNotesEditValue] = useState(
@@ -474,7 +477,21 @@ export default function Logs() {
             </View>
 
             <View style={styles.setsRow}>
-              <View style={{ flex: 0.5 }} />
+              <View style={{ flex: 0.5 }}>
+                <Tooltip
+                  title="Drop set"
+                  theme={{
+                    colors: {
+                      surface: "white",
+                      onSurface: Colors.secondary.dark,
+                    },
+                  }}
+                >
+                  <Text variant="bodySmall" style={styles.setType}>
+                    DS
+                  </Text>
+                </Tooltip>
+              </View>
               <View style={{ flex: 3 }}>
                 <TextInput
                   maxLength={4}
@@ -504,9 +521,173 @@ export default function Logs() {
                 </View>
               </View>
               <View style={{ flex: 1 }}>
-                <IconButton icon="dots-vertical" size={24} onPress={() => {}} />
+                <Menu
+                  visible={selectedSetOptions}
+                  onDismiss={() => setSelectedSetOptions(false)}
+                  anchor={
+                    <IconButton
+                      icon="dots-vertical"
+                      size={24}
+                      onPress={() => {
+                        setSelectedSetOptions(true);
+                      }}
+                    />
+                  }
+                  anchorPosition="bottom"
+                  mode="elevated"
+                  elevation={5}
+                >
+                  <Menu.Item
+                    leadingIcon="dumbbell"
+                    onPress={() => {}}
+                    title="Change set type"
+                  />
+                  <Menu.Item
+                    leadingIcon="plus"
+                    onPress={() => {}}
+                    title="Add drop set"
+                  />
+                  <Menu.Item
+                    leadingIcon="arrow-up"
+                    onPress={() => {}}
+                    title="Move set up"
+                  />
+                  <Menu.Item
+                    leadingIcon="arrow-down"
+                    onPress={() => {}}
+                    title="Move set down"
+                  />
+                  <Divider
+                    style={{
+                      marginTop: 10,
+                      marginBottom: 10,
+                    }}
+                    bold
+                  />
+                  <Menu.Item
+                    leadingIcon={({ size }) => (
+                      <Icon
+                        source="delete"
+                        color={Colors.primary.light}
+                        size={size}
+                      />
+                    )}
+                    onPress={() => {}}
+                    title="Delete set"
+                    titleStyle={{
+                      color: Colors.primary.light,
+                      filter: "brightness(2)",
+                    }}
+                  />
+                </Menu>
               </View>
             </View>
+
+            <View style={styles.setsRow}>
+              <View style={{ flex: 0.5 }}>
+                <Tooltip
+                  title="Drop set"
+                  theme={{
+                    colors: {
+                      surface: "white",
+                      onSurface: Colors.secondary.dark,
+                    },
+                  }}
+                >
+                  <Icon source="arrow-down" size={20} color="darkgray" />
+                </Tooltip>
+              </View>
+              <View style={{ flex: 3 }}>
+                <TextInput
+                  maxLength={4}
+                  keyboardType="numeric"
+                  placeholder="lbs"
+                  placeholderTextColor="gray"
+                  dense
+                  style={styles.setsInput}
+                  underlineColor="transparent"
+                  theme={{ colors: { surfaceVariant: Colors.secondary.main } }}
+                />
+              </View>
+
+              <View style={{ flex: 3 }}>
+                <TextInput
+                  maxLength={4}
+                  keyboardType="numeric"
+                  dense
+                  style={styles.setsInput}
+                  underlineColor="transparent"
+                  theme={{ colors: { surfaceVariant: Colors.secondary.main } }}
+                />
+              </View>
+              <View style={{ flex: 1.5 }}>
+                <View style={{ alignItems: "center" }}>
+                  <Checkbox status="unchecked" onPress={() => {}} />
+                </View>
+              </View>
+              <View style={{ flex: 1 }}>
+                <Menu
+                  visible={selectedSetOptions}
+                  onDismiss={() => setSelectedSetOptions(false)}
+                  anchor={
+                    <IconButton
+                      icon="dots-vertical"
+                      size={24}
+                      onPress={() => {
+                        // setSelectedSetOptions(true);
+                      }}
+                    />
+                  }
+                  anchorPosition="bottom"
+                  mode="elevated"
+                  elevation={5}
+                >
+                  <Menu.Item
+                    leadingIcon="dumbbell"
+                    onPress={() => {}}
+                    title="Change set type"
+                  />
+                  <Menu.Item
+                    leadingIcon="plus"
+                    onPress={() => {}}
+                    title="Add drop set"
+                  />
+                  <Menu.Item
+                    leadingIcon="arrow-up"
+                    onPress={() => {}}
+                    title="Move set up"
+                  />
+                  <Menu.Item
+                    leadingIcon="arrow-down"
+                    onPress={() => {}}
+                    title="Move set down"
+                  />
+                  <Divider
+                    style={{
+                      marginTop: 10,
+                      marginBottom: 10,
+                    }}
+                    bold
+                  />
+                  <Menu.Item
+                    leadingIcon={({ size }) => (
+                      <Icon
+                        source="delete"
+                        color={Colors.primary.light}
+                        size={size}
+                      />
+                    )}
+                    onPress={() => {}}
+                    title="Delete set"
+                    titleStyle={{
+                      color: Colors.primary.light,
+                      filter: "brightness(2)",
+                    }}
+                  />
+                </Menu>
+              </View>
+            </View>
+
             <Button
               icon={() => (
                 <Icon source="plus" size={24} color={Colors.primary.main} />
@@ -719,5 +900,9 @@ const styles = StyleSheet.create({
     width: "80%",
     margin: "auto",
     textAlign: "center",
+  },
+  setType: {
+    textAlign: "center",
+    color: "darkgray",
   },
 });
