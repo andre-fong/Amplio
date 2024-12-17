@@ -508,12 +508,15 @@ export default function Logs() {
               </View>
             </View>
             <Button
-              icon="plus"
+              icon={() => (
+                <Icon source="plus" size={24} color={Colors.primary.main} />
+              )}
               compact
               style={{ width: "100%", margin: "auto" }}
+              labelStyle={{ fontSize: 13, filter: "brightness(1.1)" }}
               onPress={() => {}}
             >
-              Add set
+              ADD SET
             </Button>
           </View>
         </View>
