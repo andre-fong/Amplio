@@ -21,7 +21,8 @@ import {
   Tooltip,
 } from "react-native-paper";
 import Colors from "@/constants/colors";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { spinUpDatabase, getAllMuscleGroups, clearDatabase } from "@/api";
 
 // TODO: Replace with real data
 const mockData = {
@@ -109,6 +110,21 @@ export default function Logs() {
     setSessionIsDeload((prev) => !prev);
     setSessionOptionsOpen(false);
   }
+
+  // TODO: Remove db testing
+  useEffect(() => {
+    spinUpDatabase()
+      .then(() => {
+        getAllMuscleGroups();
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    return () => {
+      clearDatabase();
+    };
+  }, []);
 
   return (
     <>
