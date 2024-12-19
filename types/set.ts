@@ -6,8 +6,8 @@ type PlannedSet = {
    * Type of set. (`undefined` if default straight set).
    */
   type?: SetType;
-  order: number;
-  parentOrder?: number;
+  setOrder: number;
+  parentSetOrder?: number;
 };
 
 /**

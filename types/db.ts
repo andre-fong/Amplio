@@ -33,12 +33,18 @@ type RecruitsDb = {
   relationship: "target" | "synergist";
 };
 
-type SetDb = {
+type SessionExerciseDb = {
+  id: string;
   date: string;
   mesoId: string;
   exerciseId: string;
-  order: number;
-  parentOrder?: number;
+  exerciseOrder: number;
+};
+
+type ExerciseSetDb = {
+  sessionExerciseId: string;
+  setOrder: number;
+  parentSetOrder?: number;
   weight?: number;
   reps?: number;
   logged: boolean;
