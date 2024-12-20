@@ -12,9 +12,9 @@ export async function spinUpDatabase() {
       name TEXT,
       notes TEXT,
       startDate TEXT,
-      endDate TEXT,
-      type TEXT,
-      numMicrocycles INTEGER
+      endDate TEXT CHECK(unixEpoch(startDate) < unixEpoch(endDate)),
+      type TEXT NOT NULL,
+      numMicrocycles INTEGER CHECK(numMicrocycles > 0)
     );
     CREATE TABLE IF NOT EXISTS Session (
       date TEXT,
@@ -25,13 +25,13 @@ export async function spinUpDatabase() {
       FOREIGN KEY (mesoId) REFERENCES Mesocycle(id)
     );
     CREATE TABLE IF NOT EXISTS MuscleGroup (
-      name TEXT PRIMARY KEY NOT NULL,
+      name TEXT PRIMARY KEY,
       color TEXT
     );
     CREATE TABLE IF NOT EXISTS Exercise (
       id TEXT PRIMARY KEY,
-      name TEXT,
-      equipment TEXT,
+      name TEXT NOT NULL,
+      equipment TEXT NOT NULL,
       notes TEXT
     );
     CREATE TABLE IF NOT EXISTS Recruits (
@@ -55,8 +55,8 @@ export async function spinUpDatabase() {
       sessionExerciseId TEXT,
       setOrder INTEGER NOT NULL,
       parentSetOrder INTEGER,
-      weight REAL,
-      reps INTEGER,
+      weight REAL CHECK(weight > 0),
+      reps INTEGER CHECK(reps > 0),
       logged INTEGER,
       type TEXT,
       PRIMARY KEY (sessionExerciseId, setOrder),
