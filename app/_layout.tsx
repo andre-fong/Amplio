@@ -2,6 +2,7 @@ import { Stack } from "expo-router";
 import { PaperProvider, MD3DarkTheme, MD3Theme } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import Colors from "@/constants/colors";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const theme: MD3Theme = {
   ...MD3DarkTheme,
@@ -55,9 +56,11 @@ export default function RootLayout() {
   return (
     <>
       <PaperProvider theme={theme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
+        <GestureHandlerRootView>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          </Stack>
+        </GestureHandlerRootView>
       </PaperProvider>
 
       <StatusBar style="auto" backgroundColor={Colors.secondary.dark} />

@@ -19,9 +19,14 @@ import {
   TextInput,
   Checkbox,
   Tooltip,
+  TouchableRipple,
 } from "react-native-paper";
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetScrollView,
+} from "@gorhom/bottom-sheet";
 import Colors from "@/constants/colors";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { spinUpDatabase, getAllMuscleGroups, clearDatabase } from "@/api";
 import { getFullSetType } from "@/utils/set";
 
@@ -179,22 +184,7 @@ const mockExerciseData: PlannedExercise[] = [
 ];
 
 export default function Logs() {
-  const [mesocycleOptionsOpen, setMesocycleOptionsOpen] = useState(false);
-  const [sessionOptionsOpen, setSessionOptionsOpen] = useState(false);
-  const [sessionNotesOpen, setSessionNotesOpen] = useState(false);
-  // TODO: Replace with exercise id for which options are open
-  const [selectedExerciseOptions, setSelectedExerciseOptions] = useState(false);
-  // TODO: Replace with set id for which options are open
-  const [selectedSetOptions, setSelectedSetOptions] = useState(false);
-
-  const [sessionNotes, setSessionNotes] = useState(mockSessionData.notes);
-  const [sessionNotesEditValue, setSessionNotesEditValue] = useState(
-    mockSessionData.notes
-  );
-  const [sessionIsDeload, setSessionIsDeload] = useState(
-    mockSessionData.deload
-  );
-
+  ///////////// DATA //////////////
   const sessionIsCurrent =
     new Date().getTime() === new Date(mockSessionData.date).getTime();
 
@@ -205,6 +195,49 @@ export default function Logs() {
     }
     return Array.from(muscleGroupMap.values());
   }, [mockExerciseData]);
+
+  const [sessionNotes, setSessionNotes] = useState(mockSessionData.notes);
+  const [sessionNotesEditValue, setSessionNotesEditValue] = useState(
+    mockSessionData.notes
+  );
+  const [sessionIsDeload, setSessionIsDeload] = useState(
+    mockSessionData.deload
+  );
+
+  ///////////// FORM STATE //////////////
+  const [mesocycleOptionsOpen, setMesocycleOptionsOpen] = useState(false);
+  const [sessionOptionsOpen, setSessionOptionsOpen] = useState(false);
+  const [sessionNotesOpen, setSessionNotesOpen] = useState(false);
+  // TODO: Replace with planned exercise id for which options are open
+  const [selectedExerciseOptions, setSelectedExerciseOptions] = useState(false);
+  const [selectedSetOptions, setSelectedSetOptions] = useState<{
+    exerciseId: string;
+    setOrder: number;
+  } | null>(null);
+
+  const setOptionsData = useMemo(() => {
+    if (!selectedSetOptions) return null;
+    const selectedExercise = mockExerciseData.find(
+      (exercise) => exercise.id === selectedSetOptions.exerciseId
+    );
+    if (!selectedExercise) return null;
+
+    const selectedSet = selectedExercise.plannedSets.find(
+      (set) => set.setOrder === selectedSetOptions.setOrder
+    );
+    if (!selectedSet) return null;
+
+    return {
+      exercise: selectedExercise,
+      set: selectedSet,
+    };
+  }, [selectedSetOptions]);
+
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+  // setInterval(() => {
+  //   bottomSheetRef.current?.expand();
+  // }, 3000);
 
   function handleSessionNotesCancel() {
     setSessionNotesEditValue(sessionNotes);
@@ -664,65 +697,17 @@ export default function Logs() {
                       </View>
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Menu
-                        visible={selectedSetOptions}
-                        onDismiss={() => setSelectedSetOptions(false)}
-                        anchor={
-                          <IconButton
-                            icon="dots-vertical"
-                            size={24}
-                            onPress={() => {
-                              setSelectedSetOptions(true);
-                            }}
-                          />
-                        }
-                        anchorPosition="bottom"
-                        mode="elevated"
-                        elevation={5}
-                      >
-                        <Menu.Item
-                          leadingIcon="dumbbell"
-                          onPress={() => {}}
-                          title="Change set type"
-                        />
-                        <Menu.Item
-                          leadingIcon="plus"
-                          onPress={() => {}}
-                          title="Add drop set"
-                        />
-                        <Menu.Item
-                          leadingIcon="arrow-up"
-                          onPress={() => {}}
-                          title="Move set up"
-                        />
-                        <Menu.Item
-                          leadingIcon="arrow-down"
-                          onPress={() => {}}
-                          title="Move set down"
-                        />
-                        <Divider
-                          style={{
-                            marginTop: 10,
-                            marginBottom: 10,
-                          }}
-                          bold
-                        />
-                        <Menu.Item
-                          leadingIcon={({ size }) => (
-                            <Icon
-                              source="delete"
-                              color={Colors.primary.light}
-                              size={size}
-                            />
-                          )}
-                          onPress={() => {}}
-                          title="Delete set"
-                          titleStyle={{
-                            color: Colors.primary.light,
-                            filter: "brightness(2)",
-                          }}
-                        />
-                      </Menu>
+                      <IconButton
+                        icon="dots-vertical"
+                        size={24}
+                        onPress={() => {
+                          setSelectedSetOptions({
+                            exerciseId: plannedExercise.id,
+                            setOrder: plannedSet.setOrder,
+                          });
+                          bottomSheetRef.current?.expand();
+                        }}
+                      />
                     </View>
                   </View>
                 ))}
@@ -756,6 +741,178 @@ export default function Logs() {
           </Button>
         </View>
       </ScrollView>
+
+      {selectedSetOptions && (
+        <BottomSheet
+          backgroundStyle={{ backgroundColor: Colors.secondary.main }}
+          handleStyle={{
+            height: 30,
+            justifyContent: "center",
+            backgroundColor: Colors.secondary.main,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+          }}
+          handleIndicatorStyle={{ backgroundColor: "white", width: 50 }}
+          ref={bottomSheetRef}
+          backdropComponent={(props) => (
+            <BottomSheetBackdrop
+              {...props}
+              enableTouchThrough={true}
+              pressBehavior="close"
+              appearsOnIndex={0}
+              disappearsOnIndex={-1}
+            />
+          )}
+          enablePanDownToClose
+          onClose={() => {
+            setSelectedSetOptions(null);
+          }}
+          index={0}
+        >
+          <BottomSheetScrollView
+            contentContainerStyle={styles.setOptionsContainer}
+          >
+            <View style={{ paddingHorizontal: 25, marginBottom: 25 }}>
+              <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
+                {setOptionsData?.exercise.name}
+              </Text>
+              <Text
+                variant="bodySmall"
+                style={{ color: "darkgray", marginTop: 5 }}
+              >
+                {setOptionsData?.exercise.equipment.toUpperCase()}
+              </Text>
+            </View>
+
+            <View style={[styles.setsLabelRow]}>
+              <View style={{ flex: 0.5 }} />
+              <Text
+                style={{ flex: 1, textAlign: "center" }}
+                variant="bodyMedium"
+              >
+                WEIGHT
+              </Text>
+              <Text
+                style={{ flex: 1, textAlign: "center" }}
+                variant="bodyMedium"
+              >
+                REPS
+              </Text>
+              <Text
+                style={{ flex: 1, textAlign: "center" }}
+                variant="bodyMedium"
+              >
+                LOG
+              </Text>
+              <View style={{ flex: 0.5 }} />
+            </View>
+            <View
+              style={[styles.setsRow, { marginVertical: 0, marginBottom: 10 }]}
+            >
+              <View style={{ flex: 0.5 }}>
+                {!!setOptionsData?.set.type && (
+                  <Tooltip
+                    title={getFullSetType(setOptionsData?.set.type)}
+                    theme={{
+                      colors: {
+                        surface: "white",
+                        onSurface: Colors.secondary.dark,
+                      },
+                    }}
+                  >
+                    <Text variant="bodySmall" style={styles.setType}>
+                      {setOptionsData?.set.type}
+                    </Text>
+                  </Tooltip>
+                )}
+              </View>
+              <Text
+                style={{ flex: 1, textAlign: "center", fontWeight: "bold" }}
+                variant="titleLarge"
+              >
+                {setOptionsData?.set.weight}
+              </Text>
+              <Text
+                style={{ flex: 1, textAlign: "center", fontWeight: "bold" }}
+                variant="titleLarge"
+              >
+                {setOptionsData?.set.reps}
+              </Text>
+              <Text
+                style={{
+                  flex: 1,
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  color: setOptionsData?.set.logged ? "white" : "darkgray",
+                }}
+                variant="titleLarge"
+              >
+                {setOptionsData?.set.logged ? "Y" : "N"}
+              </Text>
+              <View style={{ flex: 0.5 }} />
+            </View>
+
+            <Divider
+              bold
+              style={{
+                marginVertical: 10,
+              }}
+            />
+
+            <TouchableRipple onPress={() => {}}>
+              <View style={styles.setOption}>
+                <Icon source="dumbbell" size={24} color="white" />
+                <Text variant="bodyLarge">Change set type</Text>
+              </View>
+            </TouchableRipple>
+
+            <TouchableRipple onPress={() => {}}>
+              <View style={styles.setOption}>
+                <Icon source="plus" size={24} color="white" />
+                <Text variant="bodyLarge">Add drop set</Text>
+              </View>
+            </TouchableRipple>
+
+            {selectedSetOptions.setOrder > 1 && (
+              <TouchableRipple onPress={() => {}}>
+                <View style={styles.setOption}>
+                  <Icon source="arrow-up" size={24} color="white" />
+                  <Text variant="bodyLarge">Move set up</Text>
+                </View>
+              </TouchableRipple>
+            )}
+
+            {selectedSetOptions.setOrder <
+              (setOptionsData?.exercise.plannedSets.length || 0) && (
+              <TouchableRipple onPress={() => {}}>
+                <View style={styles.setOption}>
+                  <Icon source="arrow-down" size={24} color="white" />
+                  <Text variant="bodyLarge">Move set down</Text>
+                </View>
+              </TouchableRipple>
+            )}
+
+            <Divider
+              bold
+              style={{
+                marginVertical: 10,
+              }}
+            />
+
+            <TouchableRipple onPress={() => {}}>
+              <View style={styles.setOption}>
+                <Icon source="delete" size={24} color={Colors.primary.light} />
+                <Text
+                  variant="bodyLarge"
+                  style={{ color: Colors.primary.light }}
+                >
+                  Delete set
+                </Text>
+              </View>
+            </TouchableRipple>
+          </BottomSheetScrollView>
+        </BottomSheet>
+      )}
 
       <Portal>
         <Modal
@@ -945,5 +1102,19 @@ const styles = StyleSheet.create({
   setType: {
     textAlign: "center",
     color: "darkgray",
+  },
+  setOptionsContainer: {
+    flex: 1,
+    paddingTop: 15,
+    paddingBottom: 10,
+    backgroundColor: Colors.secondary.main,
+  },
+  setOption: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+    gap: 25,
   },
 });
