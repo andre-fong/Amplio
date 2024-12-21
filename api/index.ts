@@ -21,6 +21,7 @@ export async function spinUpDatabase() {
       mesoId TEXT,
       name TEXT,
       notes TEXT,
+      deload INTEGER,
       PRIMARY KEY (date, mesoId),
       FOREIGN KEY (mesoId) REFERENCES Mesocycle(id)
     );

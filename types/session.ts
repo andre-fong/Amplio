@@ -3,6 +3,7 @@ type Session = {
   meso: MesocycleCondensed;
   name: string;
   notes?: string;
+  deload: boolean;
   microcycleNum: number;
   dayNum: number;
 };

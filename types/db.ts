@@ -13,6 +13,7 @@ type SessionDb = {
   mesoId: string;
   name: string;
   notes?: string;
+  deload: boolean;
 };
 
 type MuscleGroupDb = {
