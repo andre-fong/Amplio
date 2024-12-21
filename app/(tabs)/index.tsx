@@ -209,7 +209,9 @@ export default function Logs() {
   const [sessionOptionsOpen, setSessionOptionsOpen] = useState(false);
   const [sessionNotesOpen, setSessionNotesOpen] = useState(false);
   // TODO: Replace with planned exercise id for which options are open
-  const [selectedExerciseOptions, setSelectedExerciseOptions] = useState(false);
+  const [selectedExerciseOptions, setSelectedExerciseOptions] = useState<
+    string | null
+  >(null);
   const [selectedSetOptions, setSelectedSetOptions] = useState<{
     exerciseId: string;
     setOrder: number;
@@ -408,7 +410,7 @@ export default function Logs() {
                   }
                 />
                 <Menu.Item
-                  leadingIcon="pencil"
+                  leadingIcon="tag"
                   onPress={() => {}}
                   title="Change session name"
                 />
@@ -544,14 +546,14 @@ export default function Logs() {
                   />
 
                   <Menu
-                    visible={selectedExerciseOptions}
-                    onDismiss={() => setSelectedExerciseOptions(false)}
+                    visible={selectedExerciseOptions === plannedExercise.id}
+                    onDismiss={() => setSelectedExerciseOptions(null)}
                     anchor={
                       <IconButton
                         icon="dots-vertical"
                         size={24}
                         onPress={() => {
-                          setSelectedExerciseOptions(true);
+                          setSelectedExerciseOptions(plannedExercise.id);
                         }}
                       />
                     }
@@ -564,16 +566,22 @@ export default function Logs() {
                       onPress={() => {}}
                       title="Replace exercise"
                     />
-                    <Menu.Item
-                      leadingIcon="arrow-up"
-                      onPress={() => {}}
-                      title="Move exercise up"
-                    />
-                    <Menu.Item
-                      leadingIcon="arrow-down"
-                      onPress={() => {}}
-                      title="Move exercise down"
-                    />
+                    {plannedExercise.exerciseOrder > 1 && (
+                      <Menu.Item
+                        leadingIcon="arrow-up"
+                        onPress={() => {}}
+                        title="Move exercise up"
+                      />
+                    )}
+
+                    {plannedExercise.exerciseOrder <
+                      mockExerciseData.length && (
+                      <Menu.Item
+                        leadingIcon="arrow-down"
+                        onPress={() => {}}
+                        title="Move exercise down"
+                      />
+                    )}
                     <Divider
                       style={{
                         marginTop: 10,
