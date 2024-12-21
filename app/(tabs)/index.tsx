@@ -4,6 +4,7 @@ import {
   Pressable,
   ScrollView,
   FlatList,
+  useWindowDimensions,
 } from "react-native";
 import {
   Appbar,
@@ -205,6 +206,7 @@ export default function Logs() {
   );
 
   ///////////// FORM STATE //////////////
+  const { width } = useWindowDimensions();
   const [mesocycleOptionsOpen, setMesocycleOptionsOpen] = useState(false);
   const [sessionOptionsOpen, setSessionOptionsOpen] = useState(false);
   const [sessionNotesOpen, setSessionNotesOpen] = useState(false);
@@ -348,406 +350,464 @@ export default function Logs() {
       {/* ///////////////////////// PAGE DESIGN BELOW /////////////////////////// */}
 
       <ScrollView style={styles.sessionContainer} nestedScrollEnabled>
-        <View style={styles.sessionMainInfo}>
-          <View style={styles.sessionInfoTopRow}>
-            <View>
-              <Text style={styles.sessionName} variant="headlineMedium">
-                {mockSessionData.name}
-                {sessionIsDeload && (
-                  <Text style={styles.sessionDeload}>
-                    {"  "}
-                    (DELOAD)
-                  </Text>
-                )}
+        <View style={styles.sessionDateInfo}>
+          <IconButton icon="arrow-left" size={24} onPress={() => {}} />
+          <View style={styles.sessionDateInfoText}>
+            <Text variant="bodyMedium">
+              Microcycle #
+              <Text style={styles.headerSubtitleBold}>
+                {mockSessionData.microcycleNum}
               </Text>
-            </View>
-
-            <View style={styles.sessionInfoTopButtons}>
-              <Button
-                mode={sessionIsCurrent ? "outlined" : "contained"}
-                dark
-                compact
-                labelStyle={{ fontSize: 12, marginTop: 6 }}
-                contentStyle={{
-                  height: 36,
-                }}
-                buttonColor={
-                  sessionIsCurrent ? "transparent" : Colors.info.dark
-                }
-                textColor="white"
-                disabled={sessionIsCurrent}
-              >
-                {sessionIsCurrent ? "Current" : "Go to current"}
-              </Button>
-
-              <Menu
-                visible={sessionOptionsOpen}
-                onDismiss={() => setSessionOptionsOpen(false)}
-                anchor={
-                  <IconButton
-                    icon="dots-vertical"
-                    size={28}
-                    onPress={() => {
-                      setSessionOptionsOpen(true);
-                    }}
-                    style={{ marginTop: -2, marginRight: -5 }}
-                  />
-                }
-                anchorPosition="bottom"
-                mode="elevated"
-                elevation={5}
-              >
-                <Menu.Item
-                  leadingIcon="comment-processing"
-                  onPress={() => {
-                    setSessionNotesOpen(true);
-                    setSessionOptionsOpen(false);
-                  }}
-                  title={
-                    !mockSessionData.notes
-                      ? "Add session note"
-                      : "Edit session note"
-                  }
-                />
-                <Menu.Item
-                  leadingIcon="tag"
-                  onPress={() => {}}
-                  title="Change session name"
-                />
-                <Menu.Item
-                  leadingIcon="heart-pulse"
-                  onPress={() => {
-                    handleDeloadToggle();
-                  }}
-                  title={
-                    sessionIsDeload
-                      ? "Unmark session as deload"
-                      : "Mark session as deload"
-                  }
-                />
-                <Divider
-                  style={{
-                    marginTop: 10,
-                    marginBottom: 10,
-                  }}
-                  bold
-                />
-                <Menu.Item
-                  leadingIcon={({ size }) => (
-                    <Icon
-                      source="delete"
-                      color={Colors.primary.light}
-                      size={size}
-                    />
-                  )}
-                  onPress={() => {}}
-                  title="Clear this session's data"
-                  titleStyle={{
-                    fontSize: 14,
-                    color: Colors.primary.light,
-                    filter: "brightness(2)",
-                  }}
-                />
-              </Menu>
-            </View>
-          </View>
-
-          {mockSessionData.notes && (
-            <Pressable
-              style={styles.sessionInfoNotes}
-              onPress={() => {
-                setSessionNotesOpen(true);
-              }}
-            >
-              <Icon source="pencil" size={24} color={Colors.accent.main} />
-              <Text
-                variant="bodySmall"
-                style={{
-                  color: Colors.accent.light,
-                  flex: 1,
-                  flexWrap: "wrap",
-                }}
-              >
-                {sessionNotes}
+              , Day{" "}
+              <Text style={styles.headerSubtitleBold}>
+                {mockSessionData.dayNum}
               </Text>
-            </Pressable>
-          )}
-
-          <View style={styles.sessionInfoMuscleGroups}>
-            {sessionMuscleGroups.map((muscleGroup) => (
-              // TODO: Add muscle group colors
-              <Chip
-                compact
-                style={{
-                  // TODO: Set muscle group colors once they're not ugly
-                  backgroundColor: "rgba(222, 0, 0, 0.5)",
-                  filter: "brightness(1.1)",
-                }}
-                textStyle={{
-                  color: "white",
-                  opacity: 0.7,
-                }}
-                key={muscleGroup.name}
-              >
-                {muscleGroup.name.toUpperCase()}
-              </Chip>
-            ))}
+            </Text>
           </View>
-
-          <View>
-            {/* TODO: Datepicker */}
-            <Text>Date: 12/14/2024</Text>
-          </View>
+          <IconButton icon="arrow-right" size={24} onPress={() => {}} />
         </View>
 
         <FlatList
-          scrollEnabled={false}
-          data={mockExerciseData}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item: plannedExercise }) => (
-            <View style={styles.exerciseContainer}>
-              <Chip
-                compact
-                style={{
-                  backgroundColor: "rgba(222, 0, 0, 0.5)",
-                  // backgroundColor: Colors.primary.dark,
-                  filter: "brightness(1.1)",
-                  position: "absolute",
-                  left: 10,
-                  top: -15,
-                }}
-                textStyle={{
-                  color: "white",
-                  opacity: 0.7,
-                  fontSize: 13,
-                }}
-              >
-                {plannedExercise.targetMuscle.name.toUpperCase()}
-              </Chip>
-              <View style={styles.exerciseHeader}>
-                {/* TODO: Link to exercise history */}
-                <Pressable style={{ marginTop: 12, flex: 1 }}>
-                  <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
-                    {plannedExercise.name}
-                  </Text>
-                  <Text
-                    variant="bodySmall"
-                    style={{ color: "darkgray", marginTop: 5 }}
-                  >
-                    {plannedExercise.equipment.toUpperCase()}
-                  </Text>
-                </Pressable>
-                <View style={styles.exerciseActions}>
-                  <IconButton
-                    icon="comment-processing"
-                    size={24}
-                    theme={{ colors: { primary: Colors.accent.light } }}
-                    onPress={() => {}}
-                  />
+          data={[1, 2, 3]}
+          keyExtractor={(item) => item.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled
+          bounces={false}
+          bouncesZoom={false}
+          scrollsToTop
+          renderItem={() => (
+            <ScrollView style={{ width, flex: 1 }}>
+              <View style={styles.sessionMainInfo}>
+                <View style={styles.sessionInfoTopRow}>
+                  <View>
+                    <Text style={styles.sessionName} variant="headlineMedium">
+                      {mockSessionData.name}
+                      {sessionIsDeload && (
+                        <Text style={styles.sessionDeload}>
+                          {"  "}
+                          (DELOAD)
+                        </Text>
+                      )}
+                    </Text>
+                  </View>
 
-                  <Menu
-                    visible={selectedExerciseOptions === plannedExercise.id}
-                    onDismiss={() => setSelectedExerciseOptions(null)}
-                    anchor={
-                      <IconButton
-                        icon="dots-vertical"
-                        size={24}
+                  <View style={styles.sessionInfoTopButtons}>
+                    <Button
+                      mode={sessionIsCurrent ? "outlined" : "contained"}
+                      dark
+                      compact
+                      labelStyle={{ fontSize: 12, marginTop: 6 }}
+                      contentStyle={{
+                        height: 36,
+                      }}
+                      buttonColor={
+                        sessionIsCurrent ? "transparent" : Colors.info.dark
+                      }
+                      textColor="white"
+                      disabled={sessionIsCurrent}
+                    >
+                      {sessionIsCurrent ? "Current" : "Go to current"}
+                    </Button>
+
+                    <Menu
+                      visible={sessionOptionsOpen}
+                      onDismiss={() => setSessionOptionsOpen(false)}
+                      anchor={
+                        <IconButton
+                          icon="dots-vertical"
+                          size={28}
+                          onPress={() => {
+                            setSessionOptionsOpen(true);
+                          }}
+                          style={{ marginTop: -2, marginRight: -5 }}
+                        />
+                      }
+                      anchorPosition="bottom"
+                      mode="elevated"
+                      elevation={5}
+                    >
+                      <Menu.Item
+                        leadingIcon="comment-processing"
                         onPress={() => {
-                          setSelectedExerciseOptions(plannedExercise.id);
+                          setSessionNotesOpen(true);
+                          setSessionOptionsOpen(false);
+                        }}
+                        title={
+                          !mockSessionData.notes
+                            ? "Add session note"
+                            : "Edit session note"
+                        }
+                      />
+                      <Menu.Item
+                        leadingIcon="tag"
+                        onPress={() => {}}
+                        title="Change session name"
+                      />
+                      <Menu.Item
+                        leadingIcon="heart-pulse"
+                        onPress={() => {
+                          handleDeloadToggle();
+                        }}
+                        title={
+                          sessionIsDeload
+                            ? "Unmark session as deload"
+                            : "Mark session as deload"
+                        }
+                      />
+                      <Divider
+                        style={{
+                          marginTop: 10,
+                          marginBottom: 10,
+                        }}
+                        bold
+                      />
+                      <Menu.Item
+                        leadingIcon={({ size }) => (
+                          <Icon
+                            source="delete"
+                            color={Colors.primary.light}
+                            size={size}
+                          />
+                        )}
+                        onPress={() => {}}
+                        title="Clear this session's data"
+                        titleStyle={{
+                          fontSize: 14,
+                          color: Colors.primary.light,
+                          filter: "brightness(2)",
                         }}
                       />
-                    }
-                    anchorPosition="bottom"
-                    mode="elevated"
-                    elevation={5}
-                  >
-                    <Menu.Item
-                      leadingIcon="file-search"
-                      onPress={() => {}}
-                      title="Replace exercise"
-                    />
-                    {plannedExercise.exerciseOrder > 1 && (
-                      <Menu.Item
-                        leadingIcon="arrow-up"
-                        onPress={() => {}}
-                        title="Move exercise up"
-                      />
-                    )}
-
-                    {plannedExercise.exerciseOrder <
-                      mockExerciseData.length && (
-                      <Menu.Item
-                        leadingIcon="arrow-down"
-                        onPress={() => {}}
-                        title="Move exercise down"
-                      />
-                    )}
-                    <Divider
-                      style={{
-                        marginTop: 10,
-                        marginBottom: 10,
-                      }}
-                      bold
-                    />
-                    <Menu.Item
-                      leadingIcon={({ size }) => (
-                        <Icon
-                          source="delete"
-                          color={Colors.primary.light}
-                          size={size}
-                        />
-                      )}
-                      onPress={() => {}}
-                      title="Delete exercise"
-                      titleStyle={{
-                        color: Colors.primary.light,
-                        filter: "brightness(2)",
-                      }}
-                    />
-                  </Menu>
+                    </Menu>
+                  </View>
                 </View>
-              </View>
 
-              {plannedExercise.notes && (
-                <Pressable style={styles.exerciseNotes} onPress={() => {}}>
-                  <Icon source="pencil" size={24} color={Colors.accent.main} />
-                  <Text
-                    variant="bodySmall"
-                    style={{
-                      color: Colors.accent.light,
-                      flex: 1,
-                      flexWrap: "wrap",
+                {mockSessionData.notes && (
+                  <Pressable
+                    style={styles.sessionInfoNotes}
+                    onPress={() => {
+                      setSessionNotesOpen(true);
                     }}
                   >
-                    {plannedExercise.notes}
-                  </Text>
-                </Pressable>
-              )}
+                    <Icon
+                      source="pencil"
+                      size={24}
+                      color={Colors.accent.main}
+                    />
+                    <Text
+                      variant="bodySmall"
+                      style={{
+                        color: Colors.accent.light,
+                        flex: 1,
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      {sessionNotes}
+                    </Text>
+                  </Pressable>
+                )}
 
-              <View style={styles.setsContainer}>
-                <View style={styles.setsLabelRow}>
-                  <View style={{ flex: 0.5 }} />
-                  <Text
-                    style={{ flex: 3, textAlign: "center" }}
-                    variant="bodyMedium"
-                  >
-                    WEIGHT
-                  </Text>
-                  <Text
-                    style={{ flex: 3, textAlign: "center" }}
-                    variant="bodyMedium"
-                  >
-                    REPS
-                  </Text>
-                  <Text
-                    style={{ flex: 1.5, textAlign: "center" }}
-                    variant="bodyMedium"
-                  >
-                    LOG
-                  </Text>
-                  <View style={{ flex: 1 }} />
+                <View style={styles.sessionInfoMuscleGroups}>
+                  {sessionMuscleGroups.map((muscleGroup) => (
+                    // TODO: Add muscle group colors
+                    <Chip
+                      compact
+                      style={{
+                        // TODO: Set muscle group colors once they're not ugly
+                        backgroundColor: "rgba(222, 0, 0, 0.5)",
+                        filter: "brightness(1.1)",
+                      }}
+                      textStyle={{
+                        color: "white",
+                        opacity: 0.7,
+                      }}
+                      key={muscleGroup.name}
+                    >
+                      {muscleGroup.name.toUpperCase()}
+                    </Chip>
+                  ))}
                 </View>
 
-                {plannedExercise.plannedSets.map((plannedSet) => (
-                  <View style={styles.setsRow} key={plannedSet.setOrder}>
-                    <View style={{ flex: 0.5 }}>
-                      {!!plannedSet.type && (
-                        <Tooltip
-                          title={getFullSetType(plannedSet.type)}
-                          theme={{
-                            colors: {
-                              surface: "white",
-                              onSurface: Colors.secondary.dark,
-                            },
-                          }}
-                        >
-                          <Text variant="bodySmall" style={styles.setType}>
-                            {plannedSet.type}
-                          </Text>
-                        </Tooltip>
-                      )}
-                    </View>
-                    {/* TODO: Maybe change font family */}
-                    <View style={{ flex: 3 }}>
-                      <TextInput
-                        multiline
-                        maxLength={4}
-                        defaultValue={plannedSet.weight?.toString()}
-                        keyboardType="numeric"
-                        placeholder="lbs"
-                        placeholderTextColor="gray"
-                        dense
-                        style={styles.setsInput}
-                        underlineColor="transparent"
-                        theme={{
-                          colors: { surfaceVariant: Colors.secondary.main },
-                        }}
-                      />
-                    </View>
+                <View>
+                  {/* TODO: Datepicker */}
+                  <Text>Date: 12/14/2024</Text>
+                </View>
+              </View>
 
-                    <View style={{ flex: 3 }}>
-                      <TextInput
-                        multiline
-                        maxLength={4}
-                        defaultValue={plannedSet.reps?.toString()}
-                        keyboardType="numeric"
-                        dense
-                        style={styles.setsInput}
-                        underlineColor="transparent"
-                        theme={{
-                          colors: { surfaceVariant: Colors.secondary.main },
-                        }}
-                      />
-                    </View>
-                    <View style={{ flex: 1.5 }}>
-                      <View style={{ alignItems: "center" }}>
-                        <Checkbox status="unchecked" onPress={() => {}} />
+              <FlatList
+                scrollEnabled={false}
+                data={mockExerciseData}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item: plannedExercise }) => (
+                  <View style={styles.exerciseContainer}>
+                    <Chip
+                      compact
+                      style={{
+                        backgroundColor: "rgba(222, 0, 0, 0.5)",
+                        // backgroundColor: Colors.primary.dark,
+                        filter: "brightness(1.1)",
+                        position: "absolute",
+                        left: 10,
+                        top: -15,
+                      }}
+                      textStyle={{
+                        color: "white",
+                        opacity: 0.7,
+                        fontSize: 13,
+                      }}
+                    >
+                      {plannedExercise.targetMuscle.name.toUpperCase()}
+                    </Chip>
+                    <View style={styles.exerciseHeader}>
+                      {/* TODO: Link to exercise history */}
+                      <Pressable style={{ marginTop: 12, flex: 1 }}>
+                        <Text
+                          variant="titleLarge"
+                          style={{ fontWeight: "bold" }}
+                        >
+                          {plannedExercise.name}
+                        </Text>
+                        <Text
+                          variant="bodySmall"
+                          style={{ color: "darkgray", marginTop: 5 }}
+                        >
+                          {plannedExercise.equipment.toUpperCase()}
+                        </Text>
+                      </Pressable>
+                      <View style={styles.exerciseActions}>
+                        <IconButton
+                          icon="comment-processing"
+                          size={24}
+                          theme={{ colors: { primary: Colors.accent.light } }}
+                          onPress={() => {}}
+                        />
+
+                        <Menu
+                          visible={
+                            selectedExerciseOptions === plannedExercise.id
+                          }
+                          onDismiss={() => setSelectedExerciseOptions(null)}
+                          anchor={
+                            <IconButton
+                              icon="dots-vertical"
+                              size={24}
+                              onPress={() => {
+                                setSelectedExerciseOptions(plannedExercise.id);
+                              }}
+                            />
+                          }
+                          anchorPosition="bottom"
+                          mode="elevated"
+                          elevation={5}
+                        >
+                          <Menu.Item
+                            leadingIcon="file-search"
+                            onPress={() => {}}
+                            title="Replace exercise"
+                          />
+                          {plannedExercise.exerciseOrder > 1 && (
+                            <Menu.Item
+                              leadingIcon="arrow-up"
+                              onPress={() => {}}
+                              title="Move exercise up"
+                            />
+                          )}
+
+                          {plannedExercise.exerciseOrder <
+                            mockExerciseData.length && (
+                            <Menu.Item
+                              leadingIcon="arrow-down"
+                              onPress={() => {}}
+                              title="Move exercise down"
+                            />
+                          )}
+                          <Divider
+                            style={{
+                              marginTop: 10,
+                              marginBottom: 10,
+                            }}
+                            bold
+                          />
+                          <Menu.Item
+                            leadingIcon={({ size }) => (
+                              <Icon
+                                source="delete"
+                                color={Colors.primary.light}
+                                size={size}
+                              />
+                            )}
+                            onPress={() => {}}
+                            title="Delete exercise"
+                            titleStyle={{
+                              color: Colors.primary.light,
+                              filter: "brightness(2)",
+                            }}
+                          />
+                        </Menu>
                       </View>
                     </View>
-                    <View style={{ flex: 1 }}>
-                      <IconButton
-                        icon="dots-vertical"
-                        size={24}
-                        onPress={() => {
-                          setSelectedSetOptions({
-                            exerciseId: plannedExercise.id,
-                            setOrder: plannedSet.setOrder,
-                          });
-                          bottomSheetRef.current?.expand();
-                        }}
-                      />
+
+                    {plannedExercise.notes && (
+                      <Pressable
+                        style={styles.exerciseNotes}
+                        onPress={() => {}}
+                      >
+                        <Icon
+                          source="pencil"
+                          size={24}
+                          color={Colors.accent.main}
+                        />
+                        <Text
+                          variant="bodySmall"
+                          style={{
+                            color: Colors.accent.light,
+                            flex: 1,
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          {plannedExercise.notes}
+                        </Text>
+                      </Pressable>
+                    )}
+
+                    <View style={styles.setsContainer}>
+                      <View style={styles.setsLabelRow}>
+                        <View style={{ flex: 0.5 }} />
+                        <Text
+                          style={{ flex: 3, textAlign: "center" }}
+                          variant="bodyMedium"
+                        >
+                          WEIGHT
+                        </Text>
+                        <Text
+                          style={{ flex: 3, textAlign: "center" }}
+                          variant="bodyMedium"
+                        >
+                          REPS
+                        </Text>
+                        <Text
+                          style={{ flex: 1.5, textAlign: "center" }}
+                          variant="bodyMedium"
+                        >
+                          LOG
+                        </Text>
+                        <View style={{ flex: 1 }} />
+                      </View>
+
+                      {plannedExercise.plannedSets.map((plannedSet) => (
+                        <View style={styles.setsRow} key={plannedSet.setOrder}>
+                          <View style={{ flex: 0.5 }}>
+                            {!!plannedSet.type && (
+                              <Tooltip
+                                title={getFullSetType(plannedSet.type)}
+                                theme={{
+                                  colors: {
+                                    surface: "white",
+                                    onSurface: Colors.secondary.dark,
+                                  },
+                                }}
+                              >
+                                <Text
+                                  variant="bodySmall"
+                                  style={styles.setType}
+                                >
+                                  {plannedSet.type}
+                                </Text>
+                              </Tooltip>
+                            )}
+                          </View>
+                          {/* TODO: Maybe change font family */}
+                          <View style={{ flex: 3 }}>
+                            <TextInput
+                              multiline
+                              maxLength={4}
+                              defaultValue={plannedSet.weight?.toString()}
+                              keyboardType="numeric"
+                              placeholder="lbs"
+                              placeholderTextColor="gray"
+                              dense
+                              style={styles.setsInput}
+                              underlineColor="transparent"
+                              theme={{
+                                colors: {
+                                  surfaceVariant: Colors.secondary.main,
+                                },
+                              }}
+                            />
+                          </View>
+
+                          <View style={{ flex: 3 }}>
+                            <TextInput
+                              multiline
+                              maxLength={4}
+                              defaultValue={plannedSet.reps?.toString()}
+                              keyboardType="numeric"
+                              dense
+                              style={styles.setsInput}
+                              underlineColor="transparent"
+                              theme={{
+                                colors: {
+                                  surfaceVariant: Colors.secondary.main,
+                                },
+                              }}
+                            />
+                          </View>
+                          <View style={{ flex: 1.5 }}>
+                            <View style={{ alignItems: "center" }}>
+                              <Checkbox status="unchecked" onPress={() => {}} />
+                            </View>
+                          </View>
+                          <View style={{ flex: 1 }}>
+                            <IconButton
+                              icon="dots-vertical"
+                              size={24}
+                              onPress={() => {
+                                setSelectedSetOptions({
+                                  exerciseId: plannedExercise.id,
+                                  setOrder: plannedSet.setOrder,
+                                });
+                                bottomSheetRef.current?.expand();
+                              }}
+                            />
+                          </View>
+                        </View>
+                      ))}
+
+                      <Button
+                        icon={() => (
+                          <Icon
+                            source="plus"
+                            size={24}
+                            color={Colors.primary.main}
+                          />
+                        )}
+                        compact
+                        style={{ width: "100%", margin: "auto" }}
+                        labelStyle={{ fontSize: 13, filter: "brightness(1.1)" }}
+                        onPress={() => {}}
+                      >
+                        ADD SET
+                      </Button>
                     </View>
                   </View>
-                ))}
+                )}
+              />
 
+              <View style={{ margin: 10, height: 50, marginBottom: 30 }}>
                 <Button
-                  icon={() => (
-                    <Icon source="plus" size={24} color={Colors.primary.main} />
-                  )}
-                  compact
-                  style={{ width: "100%", margin: "auto" }}
-                  labelStyle={{ fontSize: 13, filter: "brightness(1.1)" }}
+                  style={styles.addExerciseButton}
+                  contentStyle={{ height: "100%" }}
+                  icon={() => <Icon source="plus" size={24} color="gray" />}
+                  labelStyle={{ color: "gray" }}
                   onPress={() => {}}
+                  rippleColor="#424242"
                 >
-                  ADD SET
+                  ADD EXERCISE
                 </Button>
               </View>
-            </View>
+            </ScrollView>
           )}
         />
-
-        <View style={{ margin: 10, height: 50, marginBottom: 30 }}>
-          <Button
-            style={styles.addExerciseButton}
-            contentStyle={{ height: "100%" }}
-            icon={() => <Icon source="plus" size={24} color="gray" />}
-            labelStyle={{ color: "gray" }}
-            onPress={() => {}}
-            rippleColor="#424242"
-          >
-            ADD EXERCISE
-          </Button>
-        </View>
       </ScrollView>
 
       {selectedSetOptions && (
@@ -984,7 +1044,6 @@ const styles = StyleSheet.create({
   },
   sessionMainInfo: {
     margin: 10,
-    marginTop: 20,
     backgroundColor: Colors.secondary.light,
     padding: 15,
     borderRadius: 3,
@@ -1044,6 +1103,17 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     marginTop: 20,
     gap: 10,
+  },
+  sessionDateInfo: {
+    marginTop: 10,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  sessionDateInfoText: {
+    flex: 1,
+    alignItems: "center",
   },
 
   exerciseContainer: {
