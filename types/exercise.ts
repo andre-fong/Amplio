@@ -2,7 +2,7 @@ type Exercise = {
   id: string;
   name: string;
   targetMuscle: MuscleGroup;
-  synergistMuscles: MuscleGroup[];
+  synergistMuscles?: MuscleGroup[];
   equipment: Equipment;
 };
 
