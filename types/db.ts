@@ -39,6 +39,7 @@ type SessionExerciseDb = {
   date: string;
   mesoId: string;
   exerciseId: string;
+  notes?: string;
   exerciseOrder: number;
 };
 

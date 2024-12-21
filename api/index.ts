@@ -48,6 +48,7 @@ export async function spinUpDatabase() {
       date TEXT,
       mesoId TEXT,
       exerciseId TEXT,
+      notes TEXT,
       exerciseOrder INTEGER NOT NULL,
       FOREIGN KEY (date, mesoId) REFERENCES Session(date, mesoId),
       FOREIGN KEY (exerciseId) REFERENCES Exercise(id)

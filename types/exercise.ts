@@ -19,5 +19,6 @@ type Equipment =
 
 type PlannedExercise = Exercise & {
   exerciseOrder: number;
+  notes?: string;
   plannedSets: PlannedSet[];
 };
