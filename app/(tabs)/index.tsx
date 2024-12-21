@@ -44,145 +44,289 @@ const mockMesoData: Mesocycle = {
   percentFinished: 0,
 };
 
-const mockSessionData: Session = {
-  date: "2024-09-01",
-  meso: mockMesoData,
-  name: "Push",
-  notes: "This was a great session, I felt strong and energized!",
-  deload: false,
-  microcycleNum: 1,
-  dayNum: 3,
-};
-
-const mockExerciseData: PlannedExercise[] = [
+const mockSessionsData: Session[] = [
   {
-    id: "1",
-    name: "Bench Press",
-    targetMuscle: {
-      name: "Chest",
-      color: "#ff0000",
-    },
-    synergistMuscles: [
+    date: "2024-09-01",
+    meso: mockMesoData,
+    name: "Push",
+    notes: "This was a great session, I felt strong and energized!",
+    deload: false,
+    microcycleNum: 1,
+    dayNum: 3,
+    exercises: [
       {
-        name: "Triceps",
-        color: "#00ff00",
+        id: "1",
+        name: "Bench Press",
+        targetMuscle: {
+          name: "Chest",
+          color: "#ff0000",
+        },
+        synergistMuscles: [
+          {
+            name: "Triceps",
+            color: "#00ff00",
+          },
+          {
+            name: "Shoulders",
+            color: "#0000ff",
+          },
+        ],
+        equipment: "Barbell",
+        exerciseOrder: 1,
+        notes: "Remember to keep your elbows in tight",
+        plannedSets: [
+          {
+            weight: 135,
+            prevWeight: 135,
+            reps: 10,
+            prevReps: 9,
+            logged: false,
+            setOrder: 1,
+            type: "W",
+          },
+          {
+            weight: 185,
+            prevWeight: 185,
+            reps: 3,
+            prevReps: 3,
+            logged: false,
+            setOrder: 2,
+          },
+          {
+            weight: 225,
+            prevWeight: 215,
+            reps: 1,
+            prevReps: 1,
+            logged: false,
+            setOrder: 3,
+          },
+        ],
       },
       {
-        name: "Shoulders",
-        color: "#0000ff",
+        id: "2",
+        name: "Dumbbell Flyes",
+        targetMuscle: {
+          name: "Chest",
+          color: "#ff0000",
+        },
+        synergistMuscles: [
+          {
+            name: "Front Delts",
+            color: "#00ff00",
+          },
+        ],
+        equipment: "Dumbbell",
+        exerciseOrder: 2,
+        notes: "Focus on the stretch at the bottom",
+        plannedSets: [
+          {
+            weight: 30,
+            prevWeight: 30,
+            reps: 12,
+            prevReps: 12,
+            logged: false,
+            setOrder: 1,
+          },
+          {
+            weight: 30,
+            prevWeight: 30,
+            reps: 12,
+            prevReps: 12,
+            logged: false,
+            setOrder: 2,
+          },
+          {
+            weight: 30,
+            prevWeight: 30,
+            reps: 12,
+            prevReps: 12,
+            logged: false,
+            setOrder: 3,
+          },
+        ],
       },
-    ],
-    equipment: "Barbell",
-    exerciseOrder: 1,
-    notes: "Remember to keep your elbows in tight",
-    plannedSets: [
       {
-        weight: 135,
-        prevWeight: 135,
-        reps: 10,
-        prevReps: 9,
-        logged: false,
-        setOrder: 1,
-        type: "W",
-      },
-      {
-        weight: 185,
-        prevWeight: 185,
-        reps: 3,
-        prevReps: 3,
-        logged: false,
-        setOrder: 2,
-      },
-      {
-        weight: 225,
-        prevWeight: 215,
-        reps: 1,
-        prevReps: 1,
-        logged: false,
-        setOrder: 3,
+        id: "3",
+        name: "Tricep Pushdown (angled bar)",
+        targetMuscle: {
+          name: "Triceps",
+          color: "#00ff00",
+        },
+        equipment: "Cable",
+        exerciseOrder: 3,
+        plannedSets: [
+          {
+            weight: 50,
+            prevWeight: 50,
+            reps: 15,
+            prevReps: 15,
+            logged: false,
+            setOrder: 1,
+          },
+          {
+            weight: 60,
+            prevWeight: 60,
+            reps: 12,
+            prevReps: 12,
+            logged: false,
+            setOrder: 2,
+          },
+          {
+            weight: 70,
+            prevWeight: 70,
+            reps: 10,
+            prevReps: 10,
+            logged: false,
+            setOrder: 3,
+          },
+        ],
       },
     ],
   },
   {
-    id: "2",
-    name: "Dumbbell Flyes",
-    targetMuscle: {
-      name: "Chest",
-      color: "#ff0000",
-    },
-    synergistMuscles: [
+    date: "2024-09-02",
+    meso: mockMesoData,
+    name: "Pull",
+    notes: "This was a great session, I felt strong and energized!",
+    deload: false,
+    microcycleNum: 1,
+    dayNum: 4,
+    exercises: [
       {
-        name: "Front Delts",
-        color: "#00ff00",
-      },
-    ],
-    equipment: "Dumbbell",
-    exerciseOrder: 2,
-    notes: "Focus on the stretch at the bottom",
-    plannedSets: [
-      {
-        weight: 30,
-        prevWeight: 30,
-        reps: 12,
-        prevReps: 12,
-        logged: false,
-        setOrder: 1,
-      },
-      {
-        weight: 30,
-        prevWeight: 30,
-        reps: 12,
-        prevReps: 12,
-        logged: false,
-        setOrder: 2,
-      },
-      {
-        weight: 30,
-        prevWeight: 30,
-        reps: 12,
-        prevReps: 12,
-        logged: false,
-        setOrder: 3,
-      },
-    ],
-  },
-  {
-    id: "3",
-    name: "Tricep Pushdown (angled bar)",
-    targetMuscle: {
-      name: "Triceps",
-      color: "#00ff00",
-    },
-    equipment: "Cable",
-    exerciseOrder: 3,
-    plannedSets: [
-      {
-        weight: 50,
-        prevWeight: 50,
-        reps: 15,
-        prevReps: 15,
-        logged: false,
-        setOrder: 1,
+        id: "4",
+        name: "Pull-ups",
+        targetMuscle: {
+          name: "Back",
+          color: "#ff0000",
+        },
+        synergistMuscles: [
+          {
+            name: "Biceps",
+            color: "#00ff00",
+          },
+          {
+            name: "Forearms",
+            color: "#0000ff",
+          },
+        ],
+        equipment: "Bodyweight",
+        exerciseOrder: 1,
+        notes: "Remember to keep your core tight",
+        plannedSets: [
+          {
+            weight: 0,
+            prevWeight: 0,
+            reps: 10,
+            prevReps: 10,
+            logged: false,
+            setOrder: 1,
+            type: "W",
+          },
+          {
+            weight: 0,
+            prevWeight: 0,
+            reps: 8,
+            prevReps: 8,
+            logged: false,
+            setOrder: 2,
+          },
+          {
+            weight: 0,
+            prevWeight: 0,
+            reps: 6,
+            prevReps: 6,
+            logged: false,
+            setOrder: 3,
+          },
+        ],
       },
       {
-        weight: 60,
-        prevWeight: 60,
-        reps: 12,
-        prevReps: 12,
-        logged: false,
-        setOrder: 2,
+        id: "5",
+        name: "Barbell Rows",
+        targetMuscle: {
+          name: "Back",
+          color: "#ff0000",
+        },
+        synergistMuscles: [
+          {
+            name: "Biceps",
+            color: "#00ff00",
+          },
+          {
+            name: "Forearms",
+            color: "#0000ff",
+          },
+        ],
+        equipment: "Barbell",
+        exerciseOrder: 2,
+        notes: "Focus on the stretch at the bottom",
+        plannedSets: [
+          {
+            weight: 135,
+            prevWeight: 135,
+            reps: 12,
+            prevReps: 12,
+            logged: false,
+            setOrder: 1,
+          },
+          {
+            weight: 155,
+            prevWeight: 155,
+            reps: 10,
+            prevReps: 10,
+            logged: false,
+            setOrder: 2,
+          },
+          {
+            weight: 175,
+            prevWeight: 175,
+            reps: 8,
+            prevReps: 8,
+            logged: false,
+            setOrder: 3,
+          },
+        ],
       },
       {
-        weight: 70,
-        prevWeight: 70,
-        reps: 10,
-        prevReps: 10,
-        logged: false,
-        setOrder: 3,
+        id: "6",
+        name: "Hammer Curls",
+        targetMuscle: {
+          name: "Biceps",
+          color: "#00ff00",
+        },
+        equipment: "Dumbbell",
+        exerciseOrder: 3,
+        plannedSets: [
+          {
+            weight: 30,
+            prevWeight: 30,
+            reps: 15,
+            prevReps: 15,
+            logged: false,
+            setOrder: 1,
+          },
+          {
+            weight: 35,
+            prevWeight: 35,
+            reps: 12,
+            prevReps: 12,
+            logged: false,
+            setOrder: 2,
+          },
+          {
+            weight: 40,
+            prevWeight: 40,
+            reps: 10,
+            prevReps: 10,
+            logged: false,
+            setOrder: 3,
+          },
+        ],
       },
     ],
   },
 ];
+const mockSessionData = mockSessionsData[0];
 
 export default function Logs() {
   ///////////// DATA //////////////
@@ -191,11 +335,11 @@ export default function Logs() {
 
   const sessionMuscleGroups = useMemo(() => {
     const muscleGroupMap = new Map<string, MuscleGroup>();
-    for (const exercise of mockExerciseData) {
+    for (const exercise of mockSessionData.exercises) {
       muscleGroupMap.set(exercise.targetMuscle.name, exercise.targetMuscle);
     }
     return Array.from(muscleGroupMap.values());
-  }, [mockExerciseData]);
+  }, [mockSessionData.exercises]);
 
   const [sessionNotes, setSessionNotes] = useState(mockSessionData.notes);
   const [sessionNotesEditValue, setSessionNotesEditValue] = useState(
@@ -221,7 +365,7 @@ export default function Logs() {
 
   const setOptionsData = useMemo(() => {
     if (!selectedSetOptions) return null;
-    const selectedExercise = mockExerciseData.find(
+    const selectedExercise = mockSessionData.exercises.find(
       (exercise) => exercise.id === selectedSetOptions.exerciseId
     );
     if (!selectedExercise) return null;
@@ -238,10 +382,6 @@ export default function Logs() {
   }, [selectedSetOptions]);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
-
-  // setInterval(() => {
-  //   bottomSheetRef.current?.expand();
-  // }, 3000);
 
   function handleSessionNotesCancel() {
     setSessionNotesEditValue(sessionNotes);
@@ -368,21 +508,21 @@ export default function Logs() {
         </View>
 
         <FlatList
-          data={[1, 2, 3]}
-          keyExtractor={(item) => item.toString()}
+          data={mockSessionsData}
+          keyExtractor={(item) => item.date.toString()}
           horizontal
           showsHorizontalScrollIndicator={false}
           pagingEnabled
           bounces={false}
           bouncesZoom={false}
           scrollsToTop
-          renderItem={() => (
+          renderItem={({ item: session }) => (
             <ScrollView style={{ width, flex: 1, paddingBottom: 30 }}>
               <View style={styles.sessionMainInfo}>
                 <View style={styles.sessionInfoTopRow}>
                   <View>
                     <Text style={styles.sessionName} variant="headlineMedium">
-                      {mockSessionData.name}
+                      {session.name}
                       {sessionIsDeload && (
                         <Text style={styles.sessionDeload}>
                           {"  "}
@@ -434,7 +574,7 @@ export default function Logs() {
                           setSessionOptionsOpen(false);
                         }}
                         title={
-                          !mockSessionData.notes
+                          !session.notes
                             ? "Add session note"
                             : "Edit session note"
                         }
@@ -482,7 +622,7 @@ export default function Logs() {
                   </View>
                 </View>
 
-                {mockSessionData.notes && (
+                {session.notes && (
                   <Pressable
                     style={styles.sessionInfoNotes}
                     onPress={() => {
@@ -530,13 +670,13 @@ export default function Logs() {
 
                 <View>
                   {/* TODO: Datepicker */}
-                  <Text>Date: 12/14/2024</Text>
+                  <Text>Date: {session.date}</Text>
                 </View>
               </View>
 
               <FlatList
                 scrollEnabled={false}
-                data={mockExerciseData}
+                data={session.exercises}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item: plannedExercise }) => (
                   <View style={styles.exerciseContainer}>
@@ -614,7 +754,7 @@ export default function Logs() {
                           )}
 
                           {plannedExercise.exerciseOrder <
-                            mockExerciseData.length && (
+                            session.exercises.length && (
                             <Menu.Item
                               leadingIcon="arrow-down"
                               onPress={() => {}}

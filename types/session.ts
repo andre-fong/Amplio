@@ -6,4 +6,5 @@ type Session = {
   deload: boolean;
   microcycleNum: number;
   dayNum: number;
+  exercises: PlannedExercise[];
 };
