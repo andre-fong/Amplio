@@ -21,65 +21,162 @@ import {
   Tooltip,
 } from "react-native-paper";
 import Colors from "@/constants/colors";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { spinUpDatabase, getAllMuscleGroups, clearDatabase } from "@/api";
+import { getFullSetType } from "@/utils/set";
 
 // TODO: Replace with real data
-const mockData = {
-  mesoName: "Chest Emphasis 2024",
-  microNum: 1,
-  dayNum: 3,
-  sessionName: "Push",
-  sessionNotes: "This was a great session, I felt strong and energized!",
-  deload: false,
-  current: true,
-  muscles: ["Chest", "Triceps", "Shoulders", "Quads", "Calves", "Biceps"],
-  sessionDate: "2021-09-01",
-  plannedExercises: [
-    {
-      target: "Chest",
-      notes: "Focus on the stretch at the bottom",
-      name: "Bench Press",
-      order: 1,
-      equipment: "Barbell",
-      plannedSets: [
-        {
-          id: 1,
-          type: null,
-          parentId: null,
-          weight: 135,
-          prevWeight: 135,
-          reps: 10,
-          prevReps: 9,
-          logged: false,
-          order: 1,
-        },
-        {
-          id: 2,
-          type: null,
-          parentId: null,
-          weight: 185,
-          prevWeight: 185,
-          reps: 3,
-          prevReps: 3,
-          logged: false,
-          order: 2,
-        },
-        {
-          id: 3,
-          type: null,
-          parentId: null,
-          weight: 225,
-          prevWeight: 215,
-          reps: 1,
-          prevReps: 1,
-          logged: false,
-          order: 3,
-        },
-      ],
-    },
-  ],
+const mockMesoData: Mesocycle = {
+  id: "1",
+  name: "Chest Emphasis 2024",
+  notes: "This is a great mesocycle to focus on chest strength",
+  startDate: "2024-08-01",
+  endDate: "2024-09-01",
+  type: "planned",
+  numMicrocycles: 4,
+  numSessionsPerMicrocycle: 4,
+  percentFinished: 0,
 };
+
+const mockSessionData: Session = {
+  date: "2024-09-01",
+  meso: mockMesoData,
+  name: "Push",
+  notes: "This was a great session, I felt strong and energized!",
+  deload: false,
+  microcycleNum: 1,
+  dayNum: 3,
+};
+
+const mockExerciseData: PlannedExercise[] = [
+  {
+    id: "1",
+    name: "Bench Press",
+    targetMuscle: {
+      name: "Chest",
+      color: "#ff0000",
+    },
+    synergistMuscles: [
+      {
+        name: "Triceps",
+        color: "#00ff00",
+      },
+      {
+        name: "Shoulders",
+        color: "#0000ff",
+      },
+    ],
+    equipment: "Barbell",
+    exerciseOrder: 1,
+    notes: "Remember to keep your elbows in tight",
+    plannedSets: [
+      {
+        weight: 135,
+        prevWeight: 135,
+        reps: 10,
+        prevReps: 9,
+        logged: false,
+        setOrder: 1,
+        type: "W",
+      },
+      {
+        weight: 185,
+        prevWeight: 185,
+        reps: 3,
+        prevReps: 3,
+        logged: false,
+        setOrder: 2,
+      },
+      {
+        weight: 225,
+        prevWeight: 215,
+        reps: 1,
+        prevReps: 1,
+        logged: false,
+        setOrder: 3,
+      },
+    ],
+  },
+  {
+    id: "2",
+    name: "Dumbbell Flyes",
+    targetMuscle: {
+      name: "Chest",
+      color: "#ff0000",
+    },
+    synergistMuscles: [
+      {
+        name: "Front Delts",
+        color: "#00ff00",
+      },
+    ],
+    equipment: "Dumbbell",
+    exerciseOrder: 2,
+    notes: "Focus on the stretch at the bottom",
+    plannedSets: [
+      {
+        weight: 30,
+        prevWeight: 30,
+        reps: 12,
+        prevReps: 12,
+        logged: false,
+        setOrder: 1,
+      },
+      {
+        weight: 30,
+        prevWeight: 30,
+        reps: 12,
+        prevReps: 12,
+        logged: false,
+        setOrder: 2,
+      },
+      {
+        weight: 30,
+        prevWeight: 30,
+        reps: 12,
+        prevReps: 12,
+        logged: false,
+        setOrder: 3,
+      },
+    ],
+  },
+  {
+    id: "3",
+    name: "Tricep Pushdown (angled bar)",
+    targetMuscle: {
+      name: "Triceps",
+      color: "#00ff00",
+    },
+    equipment: "Cable",
+    exerciseOrder: 3,
+    plannedSets: [
+      {
+        weight: 50,
+        prevWeight: 50,
+        reps: 15,
+        prevReps: 15,
+        logged: false,
+        setOrder: 1,
+      },
+      {
+        weight: 60,
+        prevWeight: 60,
+        reps: 12,
+        prevReps: 12,
+        logged: false,
+        setOrder: 2,
+      },
+      {
+        weight: 70,
+        prevWeight: 70,
+        reps: 10,
+        prevReps: 10,
+        logged: false,
+        setOrder: 3,
+      },
+    ],
+  },
+];
 
 export default function Logs() {
   const [mesocycleOptionsOpen, setMesocycleOptionsOpen] = useState(false);
@@ -90,11 +187,24 @@ export default function Logs() {
   // TODO: Replace with set id for which options are open
   const [selectedSetOptions, setSelectedSetOptions] = useState(false);
 
-  const [sessionNotes, setSessionNotes] = useState(mockData.sessionNotes);
+  const [sessionNotes, setSessionNotes] = useState(mockSessionData.notes);
   const [sessionNotesEditValue, setSessionNotesEditValue] = useState(
-    mockData.sessionNotes
+    mockSessionData.notes
   );
-  const [sessionIsDeload, setSessionIsDeload] = useState(mockData.deload);
+  const [sessionIsDeload, setSessionIsDeload] = useState(
+    mockSessionData.deload
+  );
+
+  const sessionIsCurrent =
+    new Date().getTime() === new Date(mockSessionData.date).getTime();
+
+  const sessionMuscleGroups = useMemo(() => {
+    const muscleGroupMap = new Map<string, MuscleGroup>();
+    for (const exercise of mockExerciseData) {
+      muscleGroupMap.set(exercise.targetMuscle.name, exercise.targetMuscle);
+    }
+    return Array.from(muscleGroupMap.values());
+  }, [mockExerciseData]);
 
   function handleSessionNotesCancel() {
     setSessionNotesEditValue(sessionNotes);
@@ -140,13 +250,18 @@ export default function Logs() {
               ellipsizeMode="tail"
               numberOfLines={1}
             >
-              {mockData.mesoName}
+              {mockMesoData.name}
             </Text>
           </Pressable>
           <Text style={styles.headerSubtitle}>
             Microcycle #
-            <Text style={styles.headerSubtitleBold}>{mockData.microNum}</Text>,
-            Day <Text style={styles.headerSubtitleBold}>{mockData.dayNum}</Text>
+            <Text style={styles.headerSubtitleBold}>
+              {mockSessionData.microcycleNum}
+            </Text>
+            , Day{" "}
+            <Text style={styles.headerSubtitleBold}>
+              {mockSessionData.dayNum}
+            </Text>
           </Text>
         </View>
         <Menu
@@ -197,12 +312,12 @@ export default function Logs() {
 
       {/* ///////////////////////// PAGE DESIGN BELOW /////////////////////////// */}
 
-      <ScrollView style={styles.sessionContainer}>
+      <ScrollView style={styles.sessionContainer} nestedScrollEnabled>
         <View style={styles.sessionMainInfo}>
           <View style={styles.sessionInfoTopRow}>
             <View>
               <Text style={styles.sessionName} variant="headlineMedium">
-                {mockData.sessionName}
+                {mockSessionData.name}
                 {sessionIsDeload && (
                   <Text style={styles.sessionDeload}>
                     {"  "}
@@ -214,7 +329,7 @@ export default function Logs() {
 
             <View style={styles.sessionInfoTopButtons}>
               <Button
-                mode={mockData.current ? "outlined" : "contained"}
+                mode={sessionIsCurrent ? "outlined" : "contained"}
                 dark
                 compact
                 labelStyle={{ fontSize: 12, marginTop: 6 }}
@@ -222,12 +337,12 @@ export default function Logs() {
                   height: 36,
                 }}
                 buttonColor={
-                  mockData.current ? "transparent" : Colors.info.dark
+                  sessionIsCurrent ? "transparent" : Colors.info.dark
                 }
                 textColor="white"
-                disabled={mockData.current}
+                disabled={sessionIsCurrent}
               >
-                {mockData.current ? "Current" : "Go to current"}
+                {sessionIsCurrent ? "Current" : "Go to current"}
               </Button>
 
               <Menu
@@ -254,7 +369,7 @@ export default function Logs() {
                     setSessionOptionsOpen(false);
                   }}
                   title={
-                    !mockData.sessionNotes
+                    !mockSessionData.notes
                       ? "Add session note"
                       : "Edit session note"
                   }
@@ -302,7 +417,7 @@ export default function Logs() {
             </View>
           </View>
 
-          {mockData.sessionNotes && (
+          {mockSessionData.notes && (
             <Pressable
               style={styles.sessionInfoNotes}
               onPress={() => {
@@ -324,22 +439,22 @@ export default function Logs() {
           )}
 
           <View style={styles.sessionInfoMuscleGroups}>
-            {mockData.muscles.map((muscleGroup) => (
+            {sessionMuscleGroups.map((muscleGroup) => (
               // TODO: Add muscle group colors
               <Chip
                 compact
                 style={{
+                  // TODO: Set muscle group colors once they're not ugly
                   backgroundColor: "rgba(222, 0, 0, 0.5)",
-                  // backgroundColor: Colors.primary.dark,
                   filter: "brightness(1.1)",
                 }}
                 textStyle={{
                   color: "white",
                   opacity: 0.7,
                 }}
-                key={muscleGroup}
+                key={muscleGroup.name}
               >
-                {muscleGroup.toUpperCase()}
+                {muscleGroup.name.toUpperCase()}
               </Chip>
             ))}
           </View>
@@ -350,373 +465,283 @@ export default function Logs() {
           </View>
         </View>
 
-        <View style={styles.exerciseContainer}>
-          <Chip
-            compact
-            style={{
-              backgroundColor: "rgba(222, 0, 0, 0.5)",
-              // backgroundColor: Colors.primary.dark,
-              filter: "brightness(1.1)",
-              position: "absolute",
-              left: 10,
-              top: -15,
-            }}
-            textStyle={{
-              color: "white",
-              opacity: 0.7,
-              fontSize: 13,
-            }}
-          >
-            {mockData.plannedExercises[0].target.toUpperCase()}
-          </Chip>
-          <View style={styles.exerciseHeader}>
-            <View style={{ marginTop: 12 }}>
-              <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
-                {mockData.plannedExercises[0].name}
-              </Text>
-              <Text
-                variant="bodySmall"
-                style={{ color: "darkgray", marginTop: 3 }}
-              >
-                {mockData.plannedExercises[0].equipment.toUpperCase()}
-              </Text>
-            </View>
-            <View style={styles.exerciseActions}>
-              <IconButton
-                icon="history"
-                size={30}
-                onPress={() => {}}
-                mode="contained-tonal"
-              />
-              <IconButton
-                icon="comment-processing"
-                size={24}
-                theme={{ colors: { primary: Colors.accent.light } }}
-                onPress={() => {}}
-              />
-
-              <Menu
-                visible={selectedExerciseOptions}
-                onDismiss={() => setSelectedExerciseOptions(false)}
-                anchor={
-                  <IconButton
-                    icon="dots-vertical"
-                    size={24}
-                    onPress={() => {
-                      setSelectedExerciseOptions(true);
-                    }}
-                  />
-                }
-                anchorPosition="bottom"
-                mode="elevated"
-                elevation={5}
-              >
-                <Menu.Item
-                  leadingIcon="file-search"
-                  onPress={() => {}}
-                  title="Replace exercise"
-                />
-                <Menu.Item
-                  leadingIcon="arrow-up"
-                  onPress={() => {}}
-                  title="Move exercise up"
-                />
-                <Menu.Item
-                  leadingIcon="arrow-down"
-                  onPress={() => {}}
-                  title="Move exercise down"
-                />
-                <Divider
-                  style={{
-                    marginTop: 10,
-                    marginBottom: 10,
-                  }}
-                  bold
-                />
-                <Menu.Item
-                  leadingIcon={({ size }) => (
-                    <Icon
-                      source="delete"
-                      color={Colors.primary.light}
-                      size={size}
-                    />
-                  )}
-                  onPress={() => {}}
-                  title="Delete exercise"
-                  titleStyle={{
-                    color: Colors.primary.light,
-                    filter: "brightness(2)",
-                  }}
-                />
-              </Menu>
-            </View>
-          </View>
-
-          {mockData.sessionNotes && (
-            <Pressable style={styles.exerciseNotes} onPress={() => {}}>
-              <Icon source="pencil" size={24} color={Colors.accent.main} />
-              <Text
-                variant="bodySmall"
+        <FlatList
+          scrollEnabled={false}
+          data={mockExerciseData}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item: plannedExercise }) => (
+            <View style={styles.exerciseContainer}>
+              <Chip
+                compact
                 style={{
-                  color: Colors.accent.light,
-                  flex: 1,
-                  flexWrap: "wrap",
+                  backgroundColor: "rgba(222, 0, 0, 0.5)",
+                  // backgroundColor: Colors.primary.dark,
+                  filter: "brightness(1.1)",
+                  position: "absolute",
+                  left: 10,
+                  top: -15,
+                }}
+                textStyle={{
+                  color: "white",
+                  opacity: 0.7,
+                  fontSize: 13,
                 }}
               >
-                {mockData.plannedExercises[0].notes}
-              </Text>
-            </Pressable>
-          )}
-
-          <View style={styles.setsContainer}>
-            <View style={styles.setsLabelRow}>
-              <View style={{ flex: 0.5 }} />
-              <Text
-                style={{ flex: 3, textAlign: "center" }}
-                variant="bodyMedium"
-              >
-                WEIGHT
-              </Text>
-              <Text
-                style={{ flex: 3, textAlign: "center" }}
-                variant="bodyMedium"
-              >
-                REPS
-              </Text>
-              <Text
-                style={{ flex: 1.5, textAlign: "center" }}
-                variant="bodyMedium"
-              >
-                LOG
-              </Text>
-              <View style={{ flex: 1 }} />
-            </View>
-
-            <View style={styles.setsRow}>
-              <View style={{ flex: 0.5 }}>
-                <Tooltip
-                  title="Drop set"
-                  theme={{
-                    colors: {
-                      surface: "white",
-                      onSurface: Colors.secondary.dark,
-                    },
-                  }}
-                >
-                  <Text variant="bodySmall" style={styles.setType}>
-                    DS
+                {plannedExercise.targetMuscle.name.toUpperCase()}
+              </Chip>
+              <View style={styles.exerciseHeader}>
+                {/* TODO: Link to exercise history */}
+                <Pressable style={{ marginTop: 12, flex: 1 }}>
+                  <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
+                    {plannedExercise.name}
                   </Text>
-                </Tooltip>
-              </View>
-              <View style={{ flex: 3 }}>
-                <TextInput
-                  maxLength={4}
-                  keyboardType="numeric"
-                  placeholder="lbs"
-                  placeholderTextColor="gray"
-                  dense
-                  style={styles.setsInput}
-                  underlineColor="transparent"
-                  theme={{ colors: { surfaceVariant: Colors.secondary.main } }}
-                />
-              </View>
+                  <Text
+                    variant="bodySmall"
+                    style={{ color: "darkgray", marginTop: 5 }}
+                  >
+                    {plannedExercise.equipment.toUpperCase()}
+                  </Text>
+                </Pressable>
+                <View style={styles.exerciseActions}>
+                  <IconButton
+                    icon="comment-processing"
+                    size={24}
+                    theme={{ colors: { primary: Colors.accent.light } }}
+                    onPress={() => {}}
+                  />
 
-              <View style={{ flex: 3 }}>
-                <TextInput
-                  maxLength={4}
-                  keyboardType="numeric"
-                  dense
-                  style={styles.setsInput}
-                  underlineColor="transparent"
-                  theme={{ colors: { surfaceVariant: Colors.secondary.main } }}
-                />
-              </View>
-              <View style={{ flex: 1.5 }}>
-                <View style={{ alignItems: "center" }}>
-                  <Checkbox status="unchecked" onPress={() => {}} />
-                </View>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Menu
-                  visible={selectedSetOptions}
-                  onDismiss={() => setSelectedSetOptions(false)}
-                  anchor={
-                    <IconButton
-                      icon="dots-vertical"
-                      size={24}
-                      onPress={() => {
-                        setSelectedSetOptions(true);
+                  <Menu
+                    visible={selectedExerciseOptions}
+                    onDismiss={() => setSelectedExerciseOptions(false)}
+                    anchor={
+                      <IconButton
+                        icon="dots-vertical"
+                        size={24}
+                        onPress={() => {
+                          setSelectedExerciseOptions(true);
+                        }}
+                      />
+                    }
+                    anchorPosition="bottom"
+                    mode="elevated"
+                    elevation={5}
+                  >
+                    <Menu.Item
+                      leadingIcon="file-search"
+                      onPress={() => {}}
+                      title="Replace exercise"
+                    />
+                    <Menu.Item
+                      leadingIcon="arrow-up"
+                      onPress={() => {}}
+                      title="Move exercise up"
+                    />
+                    <Menu.Item
+                      leadingIcon="arrow-down"
+                      onPress={() => {}}
+                      title="Move exercise down"
+                    />
+                    <Divider
+                      style={{
+                        marginTop: 10,
+                        marginBottom: 10,
+                      }}
+                      bold
+                    />
+                    <Menu.Item
+                      leadingIcon={({ size }) => (
+                        <Icon
+                          source="delete"
+                          color={Colors.primary.light}
+                          size={size}
+                        />
+                      )}
+                      onPress={() => {}}
+                      title="Delete exercise"
+                      titleStyle={{
+                        color: Colors.primary.light,
+                        filter: "brightness(2)",
                       }}
                     />
-                  }
-                  anchorPosition="bottom"
-                  mode="elevated"
-                  elevation={5}
-                >
-                  <Menu.Item
-                    leadingIcon="dumbbell"
-                    onPress={() => {}}
-                    title="Change set type"
-                  />
-                  <Menu.Item
-                    leadingIcon="plus"
-                    onPress={() => {}}
-                    title="Add drop set"
-                  />
-                  <Menu.Item
-                    leadingIcon="arrow-up"
-                    onPress={() => {}}
-                    title="Move set up"
-                  />
-                  <Menu.Item
-                    leadingIcon="arrow-down"
-                    onPress={() => {}}
-                    title="Move set down"
-                  />
-                  <Divider
-                    style={{
-                      marginTop: 10,
-                      marginBottom: 10,
-                    }}
-                    bold
-                  />
-                  <Menu.Item
-                    leadingIcon={({ size }) => (
-                      <Icon
-                        source="delete"
-                        color={Colors.primary.light}
-                        size={size}
-                      />
-                    )}
-                    onPress={() => {}}
-                    title="Delete set"
-                    titleStyle={{
-                      color: Colors.primary.light,
-                      filter: "brightness(2)",
-                    }}
-                  />
-                </Menu>
-              </View>
-            </View>
-
-            <View style={styles.setsRow}>
-              <View style={{ flex: 0.5 }}>
-                <Tooltip
-                  title="Drop set"
-                  theme={{
-                    colors: {
-                      surface: "white",
-                      onSurface: Colors.secondary.dark,
-                    },
-                  }}
-                >
-                  <Icon source="arrow-down" size={20} color="darkgray" />
-                </Tooltip>
-              </View>
-              <View style={{ flex: 3 }}>
-                <TextInput
-                  maxLength={4}
-                  keyboardType="numeric"
-                  placeholder="lbs"
-                  placeholderTextColor="gray"
-                  dense
-                  style={styles.setsInput}
-                  underlineColor="transparent"
-                  theme={{ colors: { surfaceVariant: Colors.secondary.main } }}
-                />
-              </View>
-
-              <View style={{ flex: 3 }}>
-                <TextInput
-                  maxLength={4}
-                  keyboardType="numeric"
-                  dense
-                  style={styles.setsInput}
-                  underlineColor="transparent"
-                  theme={{ colors: { surfaceVariant: Colors.secondary.main } }}
-                />
-              </View>
-              <View style={{ flex: 1.5 }}>
-                <View style={{ alignItems: "center" }}>
-                  <Checkbox status="unchecked" onPress={() => {}} />
+                  </Menu>
                 </View>
               </View>
-              <View style={{ flex: 1 }}>
-                <Menu
-                  visible={selectedSetOptions}
-                  onDismiss={() => setSelectedSetOptions(false)}
-                  anchor={
-                    <IconButton
-                      icon="dots-vertical"
-                      size={24}
-                      onPress={() => {
-                        // setSelectedSetOptions(true);
-                      }}
-                    />
-                  }
-                  anchorPosition="bottom"
-                  mode="elevated"
-                  elevation={5}
-                >
-                  <Menu.Item
-                    leadingIcon="dumbbell"
-                    onPress={() => {}}
-                    title="Change set type"
-                  />
-                  <Menu.Item
-                    leadingIcon="plus"
-                    onPress={() => {}}
-                    title="Add drop set"
-                  />
-                  <Menu.Item
-                    leadingIcon="arrow-up"
-                    onPress={() => {}}
-                    title="Move set up"
-                  />
-                  <Menu.Item
-                    leadingIcon="arrow-down"
-                    onPress={() => {}}
-                    title="Move set down"
-                  />
-                  <Divider
-                    style={{
-                      marginTop: 10,
-                      marginBottom: 10,
-                    }}
-                    bold
-                  />
-                  <Menu.Item
-                    leadingIcon={({ size }) => (
-                      <Icon
-                        source="delete"
-                        color={Colors.primary.light}
-                        size={size}
-                      />
-                    )}
-                    onPress={() => {}}
-                    title="Delete set"
-                    titleStyle={{
-                      color: Colors.primary.light,
-                      filter: "brightness(2)",
-                    }}
-                  />
-                </Menu>
-              </View>
-            </View>
 
-            <Button
-              icon={() => (
-                <Icon source="plus" size={24} color={Colors.primary.main} />
+              {plannedExercise.notes && (
+                <Pressable style={styles.exerciseNotes} onPress={() => {}}>
+                  <Icon source="pencil" size={24} color={Colors.accent.main} />
+                  <Text
+                    variant="bodySmall"
+                    style={{
+                      color: Colors.accent.light,
+                      flex: 1,
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    {plannedExercise.notes}
+                  </Text>
+                </Pressable>
               )}
-              compact
-              style={{ width: "100%", margin: "auto" }}
-              labelStyle={{ fontSize: 13, filter: "brightness(1.1)" }}
-              onPress={() => {}}
-            >
-              ADD SET
-            </Button>
-          </View>
-        </View>
+
+              <View style={styles.setsContainer}>
+                <View style={styles.setsLabelRow}>
+                  <View style={{ flex: 0.5 }} />
+                  <Text
+                    style={{ flex: 3, textAlign: "center" }}
+                    variant="bodyMedium"
+                  >
+                    WEIGHT
+                  </Text>
+                  <Text
+                    style={{ flex: 3, textAlign: "center" }}
+                    variant="bodyMedium"
+                  >
+                    REPS
+                  </Text>
+                  <Text
+                    style={{ flex: 1.5, textAlign: "center" }}
+                    variant="bodyMedium"
+                  >
+                    LOG
+                  </Text>
+                  <View style={{ flex: 1 }} />
+                </View>
+
+                {plannedExercise.plannedSets.map((plannedSet) => (
+                  <View style={styles.setsRow} key={plannedSet.setOrder}>
+                    <View style={{ flex: 0.5 }}>
+                      {!!plannedSet.type && (
+                        <Tooltip
+                          title={getFullSetType(plannedSet.type)}
+                          theme={{
+                            colors: {
+                              surface: "white",
+                              onSurface: Colors.secondary.dark,
+                            },
+                          }}
+                        >
+                          <Text variant="bodySmall" style={styles.setType}>
+                            {plannedSet.type}
+                          </Text>
+                        </Tooltip>
+                      )}
+                    </View>
+                    {/* TODO: Maybe change font family */}
+                    <View style={{ flex: 3 }}>
+                      <TextInput
+                        multiline
+                        maxLength={4}
+                        defaultValue={plannedSet.weight?.toString()}
+                        keyboardType="numeric"
+                        placeholder="lbs"
+                        placeholderTextColor="gray"
+                        dense
+                        style={styles.setsInput}
+                        underlineColor="transparent"
+                        theme={{
+                          colors: { surfaceVariant: Colors.secondary.main },
+                        }}
+                      />
+                    </View>
+
+                    <View style={{ flex: 3 }}>
+                      <TextInput
+                        multiline
+                        maxLength={4}
+                        defaultValue={plannedSet.reps?.toString()}
+                        keyboardType="numeric"
+                        dense
+                        style={styles.setsInput}
+                        underlineColor="transparent"
+                        theme={{
+                          colors: { surfaceVariant: Colors.secondary.main },
+                        }}
+                      />
+                    </View>
+                    <View style={{ flex: 1.5 }}>
+                      <View style={{ alignItems: "center" }}>
+                        <Checkbox status="unchecked" onPress={() => {}} />
+                      </View>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                      <Menu
+                        visible={selectedSetOptions}
+                        onDismiss={() => setSelectedSetOptions(false)}
+                        anchor={
+                          <IconButton
+                            icon="dots-vertical"
+                            size={24}
+                            onPress={() => {
+                              setSelectedSetOptions(true);
+                            }}
+                          />
+                        }
+                        anchorPosition="bottom"
+                        mode="elevated"
+                        elevation={5}
+                      >
+                        <Menu.Item
+                          leadingIcon="dumbbell"
+                          onPress={() => {}}
+                          title="Change set type"
+                        />
+                        <Menu.Item
+                          leadingIcon="plus"
+                          onPress={() => {}}
+                          title="Add drop set"
+                        />
+                        <Menu.Item
+                          leadingIcon="arrow-up"
+                          onPress={() => {}}
+                          title="Move set up"
+                        />
+                        <Menu.Item
+                          leadingIcon="arrow-down"
+                          onPress={() => {}}
+                          title="Move set down"
+                        />
+                        <Divider
+                          style={{
+                            marginTop: 10,
+                            marginBottom: 10,
+                          }}
+                          bold
+                        />
+                        <Menu.Item
+                          leadingIcon={({ size }) => (
+                            <Icon
+                              source="delete"
+                              color={Colors.primary.light}
+                              size={size}
+                            />
+                          )}
+                          onPress={() => {}}
+                          title="Delete set"
+                          titleStyle={{
+                            color: Colors.primary.light,
+                            filter: "brightness(2)",
+                          }}
+                        />
+                      </Menu>
+                    </View>
+                  </View>
+                ))}
+
+                <Button
+                  icon={() => (
+                    <Icon source="plus" size={24} color={Colors.primary.main} />
+                  )}
+                  compact
+                  style={{ width: "100%", margin: "auto" }}
+                  labelStyle={{ fontSize: 13, filter: "brightness(1.1)" }}
+                  onPress={() => {}}
+                >
+                  ADD SET
+                </Button>
+              </View>
+            </View>
+          )}
+        />
 
         <View style={{ margin: 10, height: 50, marginBottom: 30 }}>
           <Button
