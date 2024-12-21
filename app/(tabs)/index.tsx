@@ -377,7 +377,7 @@ export default function Logs() {
           bouncesZoom={false}
           scrollsToTop
           renderItem={() => (
-            <ScrollView style={{ width, flex: 1 }}>
+            <ScrollView style={{ width, flex: 1, paddingBottom: 30 }}>
               <View style={styles.sessionMainInfo}>
                 <View style={styles.sessionInfoTopRow}>
                   <View>
