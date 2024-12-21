@@ -1,6 +1,8 @@
 type PlannedSet = {
   weight?: number;
   reps?: number;
+  prevWeight?: number;
+  prevReps?: number;
   logged: boolean;
   /**
    * Type of set. (`undefined` if default straight set).
