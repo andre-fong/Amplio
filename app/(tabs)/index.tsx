@@ -214,8 +214,8 @@ const mockSessionsData: Session[] = [
         notes: "Remember to keep your core tight",
         plannedSets: [
           {
-            weight: 0,
-            prevWeight: 0,
+            weight: 60,
+            prevWeight: 60,
             reps: 10,
             prevReps: 10,
             logged: false,
@@ -223,16 +223,16 @@ const mockSessionsData: Session[] = [
             type: "W",
           },
           {
-            weight: 0,
-            prevWeight: 0,
+            weight: 60,
+            prevWeight: 60,
             reps: 8,
             prevReps: 8,
             logged: false,
             setOrder: 2,
           },
           {
-            weight: 0,
-            prevWeight: 0,
+            weight: 60,
+            prevWeight: 60,
             reps: 6,
             prevReps: 6,
             logged: false,
@@ -489,7 +489,11 @@ export default function Logs() {
 
       {/* ///////////////////////// PAGE DESIGN BELOW /////////////////////////// */}
 
-      <ScrollView style={styles.sessionContainer} nestedScrollEnabled>
+      <ScrollView
+        style={styles.sessionContainer}
+        // nestedScrollEnabled
+        keyboardDismissMode="on-drag"
+      >
         <View style={styles.sessionDateInfo}>
           <IconButton icon="arrow-left" size={24} onPress={() => {}} />
           <View style={styles.sessionDateInfoText}>
