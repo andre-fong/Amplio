@@ -421,25 +421,17 @@ export default function Logs() {
         {/* <Appbar.BackAction onPress={() => {}} /> */}
         <Appbar.Content title="Logs" style={{ display: "none" }} />
         <View style={styles.headerTitleSubtitle}>
-          <Pressable onPress={() => {}}>
-            <Text
-              style={styles.headerTitle}
-              ellipsizeMode="tail"
-              numberOfLines={1}
-            >
-              {mockMesoData.name}
-            </Text>
-          </Pressable>
-          <Text style={styles.headerSubtitle}>
-            Microcycle #
-            <Text style={styles.headerSubtitleBold}>
-              {mockSessionData.microcycleNum}
-            </Text>
-            , Day{" "}
-            <Text style={styles.headerSubtitleBold}>
-              {mockSessionData.dayNum}
-            </Text>
+          <Text
+            style={styles.headerTitle}
+            variant="titleLarge"
+            ellipsizeMode="tail"
+            numberOfLines={1}
+          >
+            Logs
           </Text>
+          <Pressable onPress={() => {}}>
+            <Text style={styles.headerSubtitle}>{mockMesoData.name}</Text>
+          </Pressable>
         </View>
         <Menu
           visible={mesocycleOptionsOpen}
@@ -1167,10 +1159,8 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
   },
   headerTitle: {
-    fontSize: 20,
-    color: "white",
-    fontWeight: "600",
     marginBottom: 3,
+    fontWeight: "bold",
   },
   headerSubtitle: {
     fontSize: 12,
