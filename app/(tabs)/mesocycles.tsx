@@ -2,6 +2,7 @@ import { FlatList, StyleSheet, View } from "react-native";
 import { Appbar, FAB, Portal, Text } from "react-native-paper";
 import Colors from "@/constants/colors";
 import { useState } from "react";
+import MesocycleCard from "@/components/mesocycleCard";
 
 const mockMesocycles: Mesocycle[] = [
   {
@@ -19,11 +20,8 @@ const mockMesocycles: Mesocycle[] = [
     id: "2",
     name: "Mesocycle 2",
     startDate: "2021-02-01",
-    endDate: "2021-02-28",
     type: "custom",
     numMicrocycles: 4,
-    numSessionsPerMicrocycle: 3,
-    percentFinished: 60,
   },
   {
     id: "3",
@@ -61,11 +59,11 @@ function Mesocycles() {
 
       <View style={styles.container}>
         <FlatList
+          style={{ paddingHorizontal: 10 }}
+          ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
           data={mockMesocycles}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <Text style={{ marginBottom: 500 }}>{item.name}</Text>
-          )}
+          renderItem={({ item: meso }) => <MesocycleCard data={meso} />}
         />
       </View>
 

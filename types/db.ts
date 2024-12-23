@@ -3,7 +3,7 @@ type MesocycleDb = {
   name: string;
   notes?: string;
   startDate: string;
-  endDate: string;
+  endDate?: string;
   type: "planned" | "custom";
   numMicrocycles?: number;
 };
