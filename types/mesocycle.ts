@@ -5,9 +5,9 @@ type Mesocycle = {
   startDate: string;
   endDate: string;
   type: "planned" | "custom";
-  numMicrocycles: number;
-  numSessionsPerMicrocycle: number;
-  percentFinished: number;
+  numMicrocycles?: number;
+  numSessionsPerMicrocycle?: number;
+  percentFinished?: number;
 };
 
 type MesocycleCondensed = {

@@ -5,7 +5,7 @@ type MesocycleDb = {
   startDate: string;
   endDate: string;
   type: "planned" | "custom";
-  numMicrocycles: number;
+  numMicrocycles?: number;
 };
 
 type SessionDb = {
