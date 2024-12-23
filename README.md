@@ -1,50 +1,83 @@
-# Welcome to your Expo app 👋
+# Amplio
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Meaning** (Latin): to improve, amplify
 
-## Get started
+## Idea
+A non-opinionated gym workout log app for hypertrophy training. Built using React Native and to be deployed on Google Play.  
 
-1. Install dependencies
+*Comparison*: A free version of the RP Hypertrophy App but with more emphasis on tracking.  
 
-   ```bash
-   npm install
-   ```
+## Motivation
+Lose the logbook and $200 apps for a simple yet powerful gym tracker that tracks your exercise, set, and rep progression over mesocycles. Focus on making your training uniquely yours while Amplio takes care of the tracking. Visualize your training data with dynamic graphs on your performance over time.
 
-2. Start the app
+## Preview (0.1.0)
 
-   ```bash
-    npx expo start
-   ```
+![image](https://github.com/user-attachments/assets/c2e61c7a-a6c7-4c3c-a9d2-299ffc8720f0)
+![image](https://github.com/user-attachments/assets/faa1d404-1304-4f9c-9b17-9bede55e65e4)
+![image](https://github.com/user-attachments/assets/cbc34876-1b75-40b2-bc45-4001eb9b66ec)
 
-In the output, you'll find options to open the app in a
+---
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Features (rough)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### Planning
+- Plan a mesocycle (slightly opinionated)
+  - Choose number of sessions (days)
+  - Add exercises by day
+    - Exercises labelled by muscle group
+  - Add sets per exercise
+    - Support straight sets (default), warmup sets, giant set, myorep match, and drop sets
+  - Ability to rearrange exercise order and day
+  - Name mesocycle, add notes
 
-## Get a fresh project
+- Log from scratch (not opinionated)
+  - Name sheet, add notes
+  - No further planning necessary, jump straight to tracking
 
-When you're ready, run:
+### Tracking
+- Planned mesocycle
+  - See a day’s view of exercises
+  - View previous performance for each exercise
+  - Fill out exercise weight and reps
+  - Add or remove set from exercise
+    - Support changing set type
+  - Add exercise
+    - Option to have this be permanent for rest of mesocycle
+  - Replace exercise
+    - Option to have this be permanent for rest of mesocycle
+  - Remove exercise
+    - Option to have this be permanent for rest of mesocycle
+  - Rearrange exercise order
+  - Add exercise notes
+  - Extend mesocycle (by a week, etc.)
+  - Mark deload period
 
-```bash
-npm run reset-project
-```
+- From scratch
+  - Copy previous day’s exercises
+  - Add exercise
+  - Add sets and reps
+    - Support straight sets (default), warmup sets, giant set, myorep match, and drop sets
+  - View previous performance for each exercise
+  - Remove exercise
+  - Rearrange exercise order
+  - Add exercise notes
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Viewing
+- View muscle group volume per week/microcycle while planning a mesocycle (bar graph, pie chart)
+  - Optionally, toggle to view fractional sets
+- View graph of load and rep progression for a specific exercise over a mesocycle OR several mesocycles (multiple line graph)
+  - Switch graph mode to estimated 1RM?
+- View set volume by muscle group
+- View calendar for training frequency (?)  
 
-## Learn more
+### Customization
+- Add new muscle groups
+- Add new exercises
+  - For a new exercise, add target muscle group and synergist groups
+- Toggle between tracking by reps and RIR?
+- Toggle between lbs and kgs
 
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### Learn
+- FAQ page
+- Basic terminology (what is a mesocycle, etc.)
+- How to use app
