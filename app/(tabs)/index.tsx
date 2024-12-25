@@ -184,7 +184,7 @@ const mockSessionsData: Session[] = [
     ],
   },
   {
-    date: "2024-09-02",
+    date: "2023-09-02",
     meso: mockMesoData,
     name: "Pull",
     notes: "This was a great session, I felt strong and energized!",
@@ -332,6 +332,11 @@ export default function Logs() {
   ///////////// DATA //////////////
   const sessionIsCurrent =
     new Date().getTime() === new Date(mockSessionData.date).getTime();
+
+  const dateYearString =
+    new Date(mockSessionData.date).getFullYear() !== new Date().getFullYear()
+      ? ` (${new Date(mockSessionData.date).getFullYear()})`
+      : "";
 
   const sessionMuscleGroups = useMemo(() => {
     const muscleGroupMap = new Map<string, MuscleGroup>();
@@ -669,9 +674,18 @@ export default function Logs() {
                   ))}
                 </View>
 
-                <View>
-                  {/* TODO: Datepicker */}
-                  <Text>Date: {session.date}</Text>
+                <View style={styles.dateRow}>
+                  <Icon source="calendar" size={24} color="darkgray" />
+                  <Pressable style={styles.datePressable}>
+                    <Text style={{}}>
+                      {new Date(session.date).toLocaleDateString(undefined, {
+                        weekday: "short",
+                        month: "short",
+                        day: "numeric",
+                      })}
+                      {dateYearString}
+                    </Text>
+                  </Pressable>
                 </View>
               </View>
 
@@ -1253,6 +1267,20 @@ const styles = StyleSheet.create({
   sessionDateInfoText: {
     flex: 1,
     alignItems: "center",
+  },
+  dateRow: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    paddingHorizontal: 7,
+    gap: 15,
+    marginTop: 5,
+  },
+  datePressable: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: Colors.secondary.main,
   },
 
   exerciseContainer: {
