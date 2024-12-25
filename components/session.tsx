@@ -29,12 +29,14 @@ import { getFullSetType } from "@/utils/set";
 export default function Session({
   data: session,
   setSelectedSetOptions,
+  setSessionDateOpen,
 }: {
   data: Session;
   setSelectedSetOptions: (options: {
     exerciseId: string;
     setOrder: number;
   }) => void;
+  setSessionDateOpen: (open: boolean) => void;
 }) {
   ///////////// DATA //////////////
   const { width } = useWindowDimensions();
@@ -222,9 +224,12 @@ export default function Session({
             ))}
           </View>
 
-          <View style={styles.dateRow}>
+          <Pressable
+            style={styles.dateRow}
+            onPress={() => setSessionDateOpen(true)}
+          >
             <Icon source="calendar" size={24} color="darkgray" />
-            <Pressable style={styles.datePressable}>
+            <View style={styles.datePressable}>
               <Text style={{}}>
                 {new Date(session.date).toLocaleDateString(undefined, {
                   weekday: "short",
@@ -233,8 +238,8 @@ export default function Session({
                 })}
                 {dateYearString}
               </Text>
-            </Pressable>
-          </View>
+            </View>
+          </Pressable>
         </View>
 
         <FlatList

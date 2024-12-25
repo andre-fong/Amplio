@@ -29,18 +29,20 @@ import BottomSheet, {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import Colors from "@/constants/colors";
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { spinUpDatabase, getAllMuscleGroups, clearDatabase } from "@/api";
 import { getFullSetType } from "@/utils/set";
 import Session from "@/components/session";
+import { Calendar, DateData } from "react-native-calendars";
+import { getCalendarDateString } from "react-native-calendars/src/services";
 
 // TODO: Replace with real data
 const mockMesoData: Mesocycle = {
   id: "1",
   name: "Chest Emphasis 2024",
   notes: "This is a great mesocycle to focus on chest strength",
-  startDate: "2024-08-01",
-  endDate: "2024-09-01",
+  startDate: "2022-08-01T00:00:00.000-05:00",
+  endDate: "2025-09-01T00:00:00.000-05:00",
   type: "planned",
   numMicrocycles: 4,
   numSessionsPerMicrocycle: 4,
@@ -49,7 +51,7 @@ const mockMesoData: Mesocycle = {
 
 const mockSessionsData: Session[] = [
   {
-    date: "2024-09-01",
+    date: "2024-09-01T00:00:00.000-05:00",
     meso: mockMesoData,
     name: "Push",
     notes: "This was a great session, I felt strong and energized!",
@@ -187,7 +189,7 @@ const mockSessionsData: Session[] = [
     ],
   },
   {
-    date: "2023-09-02",
+    date: "2023-09-02T00:00:00.000-05:00",
     meso: mockMesoData,
     name: "Pull",
     notes: "This was an alright session, I felt a bit tired",
@@ -329,7 +331,7 @@ const mockSessionsData: Session[] = [
     ],
   },
   {
-    date: "2023-09-03",
+    date: "2023-09-03T00:00:00.000-05:00",
     meso: mockMesoData,
     name: "Legs",
     notes: "Ok session, felt exhausted",
@@ -478,6 +480,28 @@ export default function Logs() {
 
   ///////////// FORM STATE //////////////
   const [sessionIndex, setSessionIndex] = useState(0);
+  const [sessionDateOpen, setSessionDateOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string>(
+    getCalendarDateString(mockSessionsData[sessionIndex].date)
+  );
+
+  const onDayPress = useCallback((day: DateData) => {
+    setSelectedDate(day.dateString);
+  }, []);
+
+  const marked = useMemo(() => {
+    return {
+      [selectedDate]: {
+        selected: true,
+        disableTouchEvent: true,
+      },
+    };
+  }, [selectedDate]);
+
+  function handleCloseDateModal() {
+    setSessionDateOpen(false);
+    setSelectedDate(getCalendarDateString(mockSessionsData[sessionIndex].date));
+  }
 
   const [mesocycleOptionsOpen, setMesocycleOptionsOpen] = useState(false);
   const [selectedSetOptions, setSelectedSetOptions] = useState<{
@@ -637,6 +661,7 @@ export default function Logs() {
                 setSelectedSetOptions({ exerciseId, setOrder });
                 bottomSheetRef.current?.expand();
               }}
+              setSessionDateOpen={setSessionDateOpen}
             />
           )}
         />
@@ -815,6 +840,40 @@ export default function Logs() {
           </BottomSheetScrollView>
         </BottomSheet>
       )}
+
+      <Portal>
+        <Modal
+          visible={sessionDateOpen}
+          onDismiss={handleCloseDateModal}
+          contentContainerStyle={{
+            backgroundColor: "rgb(65, 65, 65)",
+            padding: 20,
+            margin: 20,
+            borderRadius: 3,
+          }}
+        >
+          <Calendar
+            enableSwipeMonths
+            hideExtraDays
+            current={selectedDate}
+            onDayPress={onDayPress}
+            markedDates={marked}
+            minDate={getCalendarDateString(mockMesoData.startDate)}
+            maxDate={getCalendarDateString(mockMesoData.endDate)}
+            theme={{
+              calendarBackground: "transparent",
+              monthTextColor: "white",
+              arrowColor: Colors.primary.light,
+              dayTextColor: "white",
+              todayTextColor: "#fcbbbb",
+              selectedDayBackgroundColor: Colors.primary.main,
+              textDisabledColor: "gray",
+            }}
+          />
+
+          <Button onPress={() => setSessionDateOpen(false)}>Close</Button>
+        </Modal>
+      </Portal>
     </>
   );
 }

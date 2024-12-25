@@ -3,6 +3,8 @@ import { PaperProvider, MD3DarkTheme, MD3Theme } from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import Colors from "@/constants/colors";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useEffect } from "react";
+import { LocaleConfig } from "react-native-calendars";
 
 const theme: MD3Theme = {
   ...MD3DarkTheme,
@@ -53,6 +55,53 @@ const theme: MD3Theme = {
 };
 
 export default function RootLayout() {
+  ///////////// CONFIG //////////////
+  useEffect(() => {
+    LocaleConfig.locales["en"] = {
+      monthNames: [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ],
+      monthNamesShort: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
+      dayNames: [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+      ],
+      dayNamesShort: ["S", "M", "T", "W", "T", "F", "S"],
+      amDesignator: "AM",
+      pmDesignator: "PM",
+    };
+    LocaleConfig.defaultLocale = "en";
+  }, []);
+
   return (
     <>
       <PaperProvider theme={theme}>
