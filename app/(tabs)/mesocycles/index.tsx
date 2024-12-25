@@ -3,6 +3,7 @@ import { Appbar, FAB, Portal, Searchbar, Text } from "react-native-paper";
 import Colors from "@/constants/colors";
 import { useState } from "react";
 import MesocycleCard from "@/components/mesocycleCard";
+import { useRouter } from "expo-router";
 
 // TODO: Use ISO date strings
 const mockMesocycles: Mesocycle[] = [
@@ -47,6 +48,8 @@ const mockMesocycles: Mesocycle[] = [
 function Mesocycles() {
   const [FABOpen, setFABOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const router = useRouter();
 
   return (
     <Portal.Host>
@@ -105,7 +108,9 @@ function Mesocycles() {
             {
               icon: "calendar-month",
               label: "Plan mesocycle",
-              onPress: () => {},
+              onPress: () => {
+                router.push("/(tabs)/mesocycles/newPlanned");
+              },
               size: "medium",
               labelStyle: { fontWeight: "bold" },
             },
