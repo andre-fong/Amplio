@@ -13,6 +13,27 @@ import { useState } from "react";
 import Colors from "@/constants/colors";
 
 export default function MesocycleCard({ data }: { data: Mesocycle }) {
+  ///////////// DATA //////////////
+  const showYear =
+    new Date(data.startDate).getFullYear() !== new Date().getFullYear();
+  const startDate = new Date(data.startDate).toLocaleDateString(undefined, {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+  const endDate = data.endDate ? (
+    new Date(data.endDate).toLocaleDateString(undefined, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    })
+  ) : (
+    <Text variant="bodyMedium" style={{ fontWeight: "bold" }}>
+      Ongoing
+    </Text>
+  );
+
+  ///////////// FORM STATE /////////////
   const [mesoOptionsOpen, setMesoOptionsOpen] = useState(false);
 
   return (
@@ -28,13 +49,13 @@ export default function MesocycleCard({ data }: { data: Mesocycle }) {
       <>
         <View style={styles.headerRow}>
           <Text
-            variant="titleMedium"
+            variant="titleLarge"
             ellipsizeMode="tail"
             numberOfLines={1}
             style={{
               flex: 1,
               marginTop: 5,
-              fontSize: 18,
+              fontWeight: "bold",
             }}
           >
             {data.name}
@@ -165,7 +186,19 @@ export default function MesocycleCard({ data }: { data: Mesocycle }) {
           )}
         </View>
 
-        {/* TODO: Date range */}
+        <View style={styles.dateRow}>
+          <Icon source="calendar" size={22} />
+
+          <Text variant="bodySmall" style={{ marginLeft: 5 }}>
+            {startDate}{" "}
+            {showYear && `(${new Date(data.startDate).getFullYear()})`}
+            {"  —  "}
+            {endDate}{" "}
+            {showYear &&
+              !!data.endDate &&
+              `(${new Date(data.endDate).getFullYear()})`}
+          </Text>
+        </View>
 
         {data.type === "planned" && (
           <View style={styles.progressContainer}>
@@ -235,5 +268,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 15,
+  },
+  dateRow: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    paddingHorizontal: 7,
+    gap: 5,
+    marginTop: 5,
   },
 });

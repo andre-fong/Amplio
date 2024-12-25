@@ -4,17 +4,18 @@ import Colors from "@/constants/colors";
 import { useState } from "react";
 import MesocycleCard from "@/components/mesocycleCard";
 
+// TODO: Use ISO date strings
 const mockMesocycles: Mesocycle[] = [
   {
     id: "1",
     name: "Mesocycle 1",
     notes: "This is a test mesocycle.",
-    startDate: "2021-01-01",
-    endDate: "2021-01-31",
+    startDate: "2024-01-02",
+    endDate: "2024-01-31",
     type: "planned",
     numMicrocycles: 4,
     numSessionsPerMicrocycle: 3,
-    percentFinished: 0,
+    percentFinished: 10,
   },
   {
     id: "2",
