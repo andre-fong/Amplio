@@ -34,6 +34,14 @@ const mockMesocycles: Mesocycle[] = [
     numSessionsPerMicrocycle: 3,
     percentFinished: 100,
   },
+  {
+    id: "4",
+    name: "Mesocycle 4",
+    startDate: "2021-03-01",
+    endDate: "2021-03-31",
+    type: "custom",
+    numMicrocycles: 4,
+  },
 ];
 
 function Mesocycles() {
@@ -60,7 +68,11 @@ function Mesocycles() {
 
       <View style={styles.container}>
         <FlatList
-          style={{ paddingHorizontal: 10 }}
+          contentContainerStyle={{
+            paddingHorizontal: 10,
+            paddingTop: 20,
+            paddingBottom: 80,
+          }}
           ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
           data={mockMesocycles}
           keyExtractor={(item) => item.id}
@@ -102,7 +114,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.secondary.main,
-    paddingVertical: 30,
   },
   headerTitle: {
     paddingLeft: 5,
