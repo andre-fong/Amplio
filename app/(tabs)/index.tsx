@@ -484,6 +484,17 @@ export default function Logs() {
   const [selectedDate, setSelectedDate] = useState<string>(
     getCalendarDateString(mockSessionsData[sessionIndex].date)
   );
+  const formattedDate = useMemo(() => {
+    const userTimezoneOffset = new Date().getTimezoneOffset() * 60000;
+    return new Date(
+      new Date(selectedDate).getTime() + userTimezoneOffset
+    ).toLocaleDateString(undefined, {
+      year: "numeric",
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
+  }, [selectedDate]);
 
   const onDayPress = useCallback((day: DateData) => {
     setSelectedDate(day.dateString);
@@ -852,6 +863,9 @@ export default function Logs() {
             borderRadius: 3,
           }}
         >
+          <Text variant="titleMedium" style={{ marginBottom: 20 }}>
+            Edit session date
+          </Text>
           <Calendar
             enableSwipeMonths
             hideExtraDays
@@ -871,7 +885,28 @@ export default function Logs() {
             }}
           />
 
-          <Button onPress={() => setSessionDateOpen(false)}>Close</Button>
+          <View style={styles.dateRow}>
+            <Icon source="calendar" size={22} color="darkgray" />
+
+            <Text variant="bodySmall">{formattedDate}</Text>
+          </View>
+
+          <View style={styles.sessionDateButtons}>
+            <Button
+              labelStyle={{ color: Colors.primary.light }}
+              onPress={handleCloseDateModal}
+            >
+              Cancel
+            </Button>
+            <Button
+              labelStyle={{ color: "white" }}
+              contentStyle={{ backgroundColor: Colors.primary.main }}
+              mode="contained"
+              onPress={() => {}}
+            >
+              Save
+            </Button>
+          </View>
         </Modal>
       </Portal>
     </>
@@ -901,62 +936,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.secondary.main,
     height: "100%",
   },
-  sessionMainInfo: {
-    margin: 10,
-    backgroundColor: Colors.secondary.light,
-    padding: 15,
-    borderRadius: 3,
-  },
-  sessionInfoMesoName: {
-    color: "darkgray",
-    marginBottom: 5,
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-  },
-  sessionName: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "center",
-  },
-  sessionInfoTopRow: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 10,
-    flexWrap: "wrap",
-    marginBottom: 8,
-  },
-  sessionInfoTopButtons: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-start",
-  },
-  sessionInfoNotes: {
-    marginBottom: 12,
-    padding: 7,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    borderRadius: 3,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.accent.dark,
-  },
-  sessionInfoMuscleGroups: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-    marginTop: 10,
-    marginBottom: 20,
-  },
   sessionDeload: {
     color: "darkgray",
     fontSize: 14,
   },
-  sessionNotesButtons: {
+  sessionDateButtons: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-end",
@@ -974,65 +958,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
   },
-  dateRow: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "center",
-    paddingHorizontal: 7,
-    gap: 15,
-    marginTop: 5,
-  },
-  datePressable: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: Colors.secondary.main,
-  },
 
-  exerciseContainer: {
-    position: "relative",
-    margin: 10,
-    marginTop: 25,
-    backgroundColor: Colors.secondary.light,
-    padding: 15,
-    paddingBottom: 3,
-    borderRadius: 3,
-  },
-  exerciseHeader: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: 10,
-  },
-  exerciseActions: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  exerciseNotes: {
-    marginBottom: 12,
-    padding: 7,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    borderRadius: 3,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: Colors.accent.dark,
-  },
-  addExerciseButton: {
-    margin: "auto",
-    width: "100%",
-    backgroundColor: Colors.secondary.light,
-    borderRadius: 3,
-  },
-
-  setsContainer: {
-    marginTop: 10,
-    marginBottom: 10,
-    paddingRight: 5,
-  },
   setsLabelRow: {
     display: "flex",
     flexDirection: "row",
@@ -1044,11 +970,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-  },
-  setsInput: {
-    width: "80%",
-    margin: "auto",
-    textAlign: "center",
   },
   setType: {
     textAlign: "center",
@@ -1067,5 +988,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 20,
     gap: 25,
+  },
+  dateRow: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 7,
+    gap: 15,
+    marginTop: 15,
   },
 });

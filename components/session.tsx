@@ -230,7 +230,7 @@ export default function Session({
           >
             <Icon source="calendar" size={24} color="darkgray" />
             <View style={styles.datePressable}>
-              <Text style={{}}>
+              <Text>
                 {new Date(session.date).toLocaleDateString(undefined, {
                   weekday: "short",
                   month: "short",
@@ -500,13 +500,13 @@ export default function Session({
           visible={sessionNotesOpen}
           onDismiss={handleSessionNotesCancel}
           contentContainerStyle={{
-            backgroundColor: Colors.secondary.dark,
+            backgroundColor: "rgb(65, 65, 65)",
             padding: 20,
             margin: 20,
             borderRadius: 3,
           }}
         >
-          <Text variant="titleLarge" style={{ marginBottom: 20 }}>
+          <Text variant="titleMedium" style={{ marginBottom: 20 }}>
             {!sessionNotes ? "Add session note" : "Edit session note"}
           </Text>
 
@@ -517,12 +517,24 @@ export default function Session({
             multiline
             numberOfLines={4}
             contentStyle={{ marginVertical: 5 }}
-            theme={{ colors: { primary: Colors.accent.main } }}
+            theme={{ colors: { surfaceVariant: Colors.secondary.light } }}
           />
 
           <View style={styles.sessionNotesButtons}>
-            <Button onPress={handleSessionNotesCancel}>Cancel</Button>
-            <Button onPress={handleSessionNotesSave}>Save</Button>
+            <Button
+              labelStyle={{ color: Colors.accent.main }}
+              onPress={handleSessionNotesCancel}
+            >
+              Cancel
+            </Button>
+            <Button
+              labelStyle={{ color: "black" }}
+              contentStyle={{ backgroundColor: Colors.accent.dark }}
+              mode="contained"
+              onPress={handleSessionNotesSave}
+            >
+              Save
+            </Button>
           </View>
         </Modal>
       </Portal>
@@ -595,7 +607,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
     marginTop: 20,
-    gap: 10,
+    gap: 15,
   },
   sessionDateInfo: {
     marginTop: 10,
