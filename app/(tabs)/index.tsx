@@ -451,12 +451,17 @@ export default function Logs() {
           <Menu.Item
             leadingIcon="comment-processing"
             onPress={() => {}}
-            title="Add mesocycle note"
+            title="Add meso note"
+          />
+          <Menu.Item
+            leadingIcon="tag"
+            onPress={() => {}}
+            title="Change meso name"
           />
           <Menu.Item
             leadingIcon="pencil"
             onPress={() => {}}
-            title="Change mesocycle name"
+            title="Edit meso structure"
           />
           <Divider
             style={{

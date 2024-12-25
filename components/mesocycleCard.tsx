@@ -74,6 +74,11 @@ export default function MesocycleCard({ data }: { data: Mesocycle }) {
                 onPress={() => {}}
                 title="Change name"
               />
+              <Menu.Item
+                leadingIcon="pencil"
+                onPress={() => {}}
+                title="Edit structure"
+              />
 
               <Divider
                 style={{
@@ -166,7 +171,7 @@ export default function MesocycleCard({ data }: { data: Mesocycle }) {
           <View style={styles.progressContainer}>
             <View style={{ flex: 1 }}>
               <ProgressBar
-                progress={data.percentFinished / 100}
+                animatedValue={data.percentFinished / 100}
                 color={Colors.accent.main}
               />
             </View>
