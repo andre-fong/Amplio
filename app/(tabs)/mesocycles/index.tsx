@@ -89,6 +89,7 @@ function Mesocycles() {
         <FlatList
           contentContainerStyle={{
             paddingHorizontal: 10,
+            paddingTop: 10,
             paddingBottom: 80,
           }}
           ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
