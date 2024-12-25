@@ -5,6 +5,8 @@ import {
   ScrollView,
   FlatList,
   useWindowDimensions,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from "react-native";
 import {
   Appbar,
@@ -326,13 +328,157 @@ const mockSessionsData: Session[] = [
       },
     ],
   },
+  {
+    date: "2023-09-03",
+    meso: mockMesoData,
+    name: "Legs",
+    notes: "Ok session, felt exhausted",
+    deload: false,
+    microcycleNum: 1,
+    dayNum: 5,
+    exercises: [
+      {
+        id: "7",
+        name: "Squats",
+        targetMuscle: {
+          name: "Quads",
+          color: "#ff0000",
+        },
+        synergistMuscles: [
+          {
+            name: "Glutes",
+            color: "#00ff00",
+          },
+          {
+            name: "Hamstrings",
+            color: "#0000ff",
+          },
+        ],
+        equipment: "Barbell",
+        exerciseOrder: 1,
+        notes: "Remember to keep your back straight",
+        plannedSets: [
+          {
+            weight: 135,
+            prevWeight: 135,
+            reps: 10,
+            prevReps: 10,
+            logged: false,
+            setOrder: 1,
+            type: "W",
+          },
+          {
+            weight: 185,
+            prevWeight: 185,
+            reps: 8,
+            prevReps: 8,
+            logged: false,
+            setOrder: 2,
+          },
+          {
+            weight: 225,
+            prevWeight: 215,
+            reps: 6,
+            prevReps: 6,
+            logged: false,
+            setOrder: 3,
+          },
+        ],
+      },
+      {
+        id: "8",
+        name: "Leg Press",
+        targetMuscle: {
+          name: "Quads",
+          color: "#ff0000",
+        },
+        synergistMuscles: [
+          {
+            name: "Glutes",
+            color: "#00ff00",
+          },
+          {
+            name: "Hamstrings",
+            color: "#0000ff",
+          },
+        ],
+        equipment: "Machine",
+        exerciseOrder: 2,
+        notes: "Focus on the stretch at the bottom",
+        plannedSets: [
+          {
+            weight: 180,
+            prevWeight: 180,
+            reps: 12,
+            prevReps: 12,
+            logged: false,
+            setOrder: 1,
+          },
+          {
+            weight: 180,
+            prevWeight: 180,
+            reps: 12,
+            prevReps: 12,
+            logged: false,
+            setOrder: 2,
+          },
+          {
+            weight: 180,
+            prevWeight: 180,
+            reps: 12,
+            prevReps: 12,
+            logged: false,
+            setOrder: 3,
+          },
+        ],
+      },
+      {
+        id: "9",
+        name: "Leg Curls",
+        targetMuscle: {
+          name: "Hamstrings",
+          color: "#00ff00",
+        },
+        equipment: "Machine",
+        exerciseOrder: 3,
+        plannedSets: [
+          {
+            weight: 60,
+            prevWeight: 60,
+            reps: 15,
+            prevReps: 15,
+            logged: false,
+            setOrder: 1,
+          },
+          {
+            weight: 70,
+            prevWeight: 70,
+            reps: 12,
+            prevReps: 12,
+            logged: false,
+            setOrder: 2,
+          },
+          {
+            weight: 80,
+            prevWeight: 80,
+            reps: 10,
+            prevReps: 10,
+            logged: false,
+            setOrder: 3,
+          },
+        ],
+      },
+    ],
+  },
 ];
-const mockSessionData = mockSessionsData[0];
 
 export default function Logs() {
   ///////////// DATA //////////////
+  const { width } = useWindowDimensions();
 
   ///////////// FORM STATE //////////////
+  const [sessionIndex, setSessionIndex] = useState(0);
+
   const [mesocycleOptionsOpen, setMesocycleOptionsOpen] = useState(false);
   const [selectedSetOptions, setSelectedSetOptions] = useState<{
     exerciseId: string;
@@ -341,7 +487,7 @@ export default function Logs() {
 
   const setOptionsData = useMemo(() => {
     if (!selectedSetOptions) return null;
-    const selectedExercise = mockSessionData.exercises.find(
+    const selectedExercise = mockSessionsData[sessionIndex].exercises.find(
       (exercise) => exercise.id === selectedSetOptions.exerciseId
     );
     if (!selectedExercise) return null;
@@ -358,6 +504,12 @@ export default function Logs() {
   }, [selectedSetOptions]);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
+
+  function handleScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
+    const contentOffsetX = event.nativeEvent.contentOffset.x;
+    const index = Math.round(contentOffsetX / width);
+    setSessionIndex(index);
+  }
 
   // TODO: Remove db testing
   useEffect(() => {
@@ -458,11 +610,11 @@ export default function Logs() {
             <Text variant="bodyMedium">
               Microcycle #
               <Text style={styles.headerSubtitleBold}>
-                {mockSessionData.microcycleNum}
+                {mockSessionsData[sessionIndex].microcycleNum}
               </Text>
               , Day{" "}
               <Text style={styles.headerSubtitleBold}>
-                {mockSessionData.dayNum}
+                {mockSessionsData[sessionIndex].dayNum}
               </Text>
             </Text>
           </View>
@@ -477,7 +629,7 @@ export default function Logs() {
           pagingEnabled
           bounces={false}
           bouncesZoom={false}
-          scrollsToTop
+          onScroll={handleScroll}
           renderItem={({ item: session }) => (
             <Session
               data={session}
@@ -529,6 +681,8 @@ export default function Logs() {
                 style={{ color: "darkgray", marginTop: 5 }}
               >
                 {setOptionsData?.exercise.equipment.toUpperCase()}
+                {"  "}&middot;
+                {`  SET ${setOptionsData?.set.setOrder} OF ${setOptionsData?.exercise.plannedSets.length}`}
               </Text>
             </View>
 
