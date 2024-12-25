@@ -56,6 +56,7 @@ export default function MesocycleCard({ data }: { data: Mesocycle }) {
               flex: 1,
               marginTop: 5,
               fontWeight: "bold",
+              fontSize: 20,
             }}
           >
             {data.name}
@@ -263,7 +264,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.accent.dark,
   },
   progressContainer: {
-    marginTop: 10,
+    marginTop: 15,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",

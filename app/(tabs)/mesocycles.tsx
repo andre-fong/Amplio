@@ -1,5 +1,5 @@
 import { FlatList, StyleSheet, View } from "react-native";
-import { Appbar, FAB, Portal, Text } from "react-native-paper";
+import { Appbar, FAB, Portal, Searchbar, Text } from "react-native-paper";
 import Colors from "@/constants/colors";
 import { useState } from "react";
 import MesocycleCard from "@/components/mesocycleCard";
@@ -46,6 +46,7 @@ const mockMesocycles: Mesocycle[] = [
 
 function Mesocycles() {
   const [FABOpen, setFABOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <Portal.Host>
@@ -67,13 +68,27 @@ function Mesocycles() {
       </Appbar.Header>
 
       <View style={styles.container}>
+        <View
+          style={{
+            marginTop: -10,
+            paddingHorizontal: 20,
+            paddingBottom: 15,
+            backgroundColor: Colors.secondary.dark,
+          }}
+        >
+          <Searchbar
+            theme={{ colors: { onSurface: "rgb(137, 124, 121)" } }}
+            placeholder="Search your mesocycles"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+        </View>
         <FlatList
           contentContainerStyle={{
             paddingHorizontal: 10,
-            paddingTop: 20,
             paddingBottom: 80,
           }}
-          ItemSeparatorComponent={() => <View style={{ height: 15 }} />}
+          ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
           data={mockMesocycles}
           keyExtractor={(item) => item.id}
           renderItem={({ item: meso }) => <MesocycleCard data={meso} />}
