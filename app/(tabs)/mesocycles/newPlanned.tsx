@@ -50,7 +50,7 @@ export default function NewPlannedMesocycle() {
     }
   }
 
-  const [exercisesListOpen, setExercisesListOpen] = useState(true);
+  const [exercisesListOpen, setExercisesListOpen] = useState(false);
 
   return (
     <Portal.Host>
@@ -160,14 +160,13 @@ export default function NewPlannedMesocycle() {
             </Text>
           </Pressable>
         </View>
+        <Button onPress={() => setExercisesListOpen(true)}>Add exercise</Button>
       </ScrollView>
 
-      {exercisesListOpen && (
-        <ExerciseSelectBottomSheet
-          open={exercisesListOpen}
-          setOpen={setExercisesListOpen}
-        />
-      )}
+      <ExerciseSelectBottomSheet
+        open={exercisesListOpen}
+        setOpen={setExercisesListOpen}
+      />
 
       <Portal>
         <Modal

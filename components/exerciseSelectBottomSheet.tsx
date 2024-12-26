@@ -1,16 +1,17 @@
-import { StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList as FlatListGH } from "react-native-gesture-handler";
 import {
+  Chip,
   Divider,
   Icon,
   Searchbar,
   Text,
   TouchableRipple,
 } from "react-native-paper";
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetFlashList,
-  BottomSheetFlatList,
 } from "@gorhom/bottom-sheet";
 import Colors from "@/constants/colors";
 
@@ -125,6 +126,17 @@ const mockExerciseList: Exercise[] = [
   },
 ];
 
+const mockMuscleGroupList: MuscleGroup[] = [
+  { name: "Chest", color: "red" },
+  { name: "Quads", color: "green" },
+  { name: "Hamstrings", color: "yellow" },
+  { name: "Back", color: "blue" },
+  { name: "Biceps", color: "purple" },
+  { name: "Triceps", color: "pink" },
+  { name: "Calves", color: "orange" },
+  { name: "Shoulders", color: "cyan" },
+];
+
 export default function ExerciseSelectBottomSheet({
   open,
   setOpen,
@@ -138,103 +150,169 @@ export default function ExerciseSelectBottomSheet({
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [selectedMuscleGroups, setSelectedMuscleGroups] = useState<
+    Record<string, boolean>
+  >({
+    Chest: true,
+  });
+
+  const handleMuscleGroupSelect = useCallback(
+    (muscleGroupName: string) => {
+      setSelectedMuscleGroups((prev) => ({
+        ...prev,
+        [muscleGroupName]: !prev[muscleGroupName],
+      }));
+    },
+    [setSelectedMuscleGroups]
+  );
+
   return (
     <>
-      {open && (
-        <BottomSheet
-          backgroundStyle={{ backgroundColor: Colors.secondary.main }}
-          snapPoints={["80%"]}
-          handleStyle={{
-            height: 30,
-            justifyContent: "center",
+      {/* {open && ( */}
+      <BottomSheet
+        backgroundStyle={{ backgroundColor: Colors.secondary.main }}
+        snapPoints={["80%"]}
+        handleStyle={{
+          height: 30,
+          justifyContent: "center",
+          backgroundColor: Colors.secondary.main,
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
+        }}
+        enableDynamicSizing={false}
+        handleIndicatorStyle={{ backgroundColor: "white", width: 50 }}
+        ref={bottomSheetRef}
+        backdropComponent={(props) => (
+          <BottomSheetBackdrop
+            {...props}
+            enableTouchThrough={true}
+            pressBehavior="close"
+            appearsOnIndex={0}
+            disappearsOnIndex={-1}
+          />
+        )}
+        enablePanDownToClose
+        onClose={() => {
+          setOpen(false);
+        }}
+        index={open ? 0 : -1}
+      >
+        <View
+          style={{
+            paddingTop: 10,
+            paddingHorizontal: 25,
             backgroundColor: Colors.secondary.main,
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
           }}
-          enableDynamicSizing={false}
-          handleIndicatorStyle={{ backgroundColor: "white", width: 50 }}
-          ref={bottomSheetRef}
-          backdropComponent={(props) => (
-            <BottomSheetBackdrop
-              {...props}
-              enableTouchThrough={true}
-              pressBehavior="close"
-              appearsOnIndex={0}
-              disappearsOnIndex={-1}
-            />
-          )}
-          enablePanDownToClose
-          onClose={() => {
-            setOpen(false);
-          }}
-          index={0}
         >
-          <View
-            style={{
-              paddingTop: 10,
-              paddingHorizontal: 25,
-              paddingBottom: 15,
-              backgroundColor: Colors.secondary.main,
-            }}
-          >
-            <Text variant="headlineMedium" style={{ fontWeight: "bold" }}>
-              Exercises
-            </Text>
-            <Searchbar
-              placeholder="Search for an exercise"
-              value={searchQuery}
-              style={{ marginTop: 12 }}
-              onChangeText={setSearchQuery}
-              theme={{ colors: { onSurface: "rgb(137, 124, 121)" } }}
-            />
-            {/* TODO: Filters */}
-            <View></View>
-          </View>
+          <Text variant="headlineMedium" style={{ fontWeight: "bold" }}>
+            Exercises
+          </Text>
+          <Searchbar
+            placeholder="Search for an exercise"
+            value={searchQuery}
+            style={{ marginTop: 12 }}
+            onChangeText={setSearchQuery}
+            theme={{ colors: { onSurface: "rgb(137, 124, 121)" } }}
+          />
 
-          <BottomSheetFlashList
-            contentContainerStyle={styles.sheetContainer}
-            data={mockExerciseList}
-            estimatedItemSize={20}
-            renderItem={({ item: exercise }) => (
-              <TouchableRipple onPress={() => {}} key={exercise.id}>
+          <FlatListGH
+            style={styles.muscleGroupsFilters}
+            ItemSeparatorComponent={() => (
+              <View style={{ marginHorizontal: 8 }} />
+            )}
+            horizontal
+            data={mockMuscleGroupList}
+            renderItem={({ item: muscleGroup }) => (
+              <Chip
+                compact
+                style={{
+                  // TODO: Set muscle group colors once they're not ugly
+                  backgroundColor: "rgba(222, 0, 0, 0.5)",
+                  filter: "brightness(1.1)",
+                }}
+                textStyle={{
+                  color: "white",
+                  opacity: 0.7,
+                  fontSize: 12,
+                }}
+                onPress={() => {
+                  handleMuscleGroupSelect(muscleGroup.name);
+                }}
+                selected={selectedMuscleGroups[muscleGroup.name]}
+                selectedColor="white"
+                key={muscleGroup.name}
+              >
+                {muscleGroup.name.toUpperCase()}
+              </Chip>
+            )}
+            keyExtractor={(item) => item.name}
+          />
+        </View>
+
+        <BottomSheetFlashList
+          contentContainerStyle={styles.sheetContainer}
+          data={mockExerciseList}
+          estimatedItemSize={20}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item: exercise }) => (
+            <TouchableRipple onPress={() => {}} key={exercise.id}>
+              <View style={styles.exerciseContainer}>
+                <View>
+                  <Text
+                    variant="titleLarge"
+                    style={{ fontSize: 18, fontWeight: "bold" }}
+                  >
+                    {exercise.name}
+                  </Text>
+                  <Text
+                    variant="bodySmall"
+                    style={{ color: "darkgray", marginTop: 5 }}
+                  >
+                    {exercise.equipment.toUpperCase()}
+                    {"  "}
+                    <Text variant="bodyMedium" style={{ fontWeight: "bold" }}>
+                      &middot;
+                    </Text>
+                    {"  "}
+                    <Text style={{ color: "#b87a7a" }}>
+                      {exercise.targetMuscle.name.toUpperCase()}
+                    </Text>
+                  </Text>
+                </View>
+
+                <Icon source="chevron-right" size={24} />
+              </View>
+            </TouchableRipple>
+          )}
+          ItemSeparatorComponent={() => <Divider />}
+          ListFooterComponent={
+            <>
+              <Divider />
+              <TouchableRipple onPress={() => {}}>
                 <View style={styles.exerciseContainer}>
-                  <View>
+                  <Text variant="bodySmall" style={{ paddingVertical: 7 }}>
+                    Exercise not listed?{" "}
                     <Text
-                      variant="titleLarge"
-                      style={{ fontSize: 18, fontWeight: "bold" }}
+                      style={{
+                        fontWeight: "bold",
+                      }}
                     >
-                      {exercise.name}
+                      Create a custom exercise.
                     </Text>
-                    <Text
-                      variant="bodySmall"
-                      style={{ color: "darkgray", marginTop: 5 }}
-                    >
-                      {exercise.equipment.toUpperCase()}
-                      {"  "}
-                      <Text variant="bodyMedium" style={{ fontWeight: "bold" }}>
-                        &middot;
-                      </Text>
-                      {"  "}
-                      <Text style={{ color: "#b87a7a" }}>
-                        {exercise.targetMuscle.name.toUpperCase()}
-                      </Text>
-                    </Text>
-                  </View>
-
-                  <Icon source="chevron-right" size={24} />
+                  </Text>
                 </View>
               </TouchableRipple>
-            )}
-          />
-        </BottomSheet>
-      )}
+            </>
+          }
+        />
+      </BottomSheet>
+      {/* )} */}
     </>
   );
 }
 
 const styles = StyleSheet.create({
   sheetContainer: {
-    paddingBottom: 10,
     backgroundColor: Colors.secondary.main,
   },
   exerciseContainer: {
@@ -244,5 +322,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 13,
     paddingHorizontal: 25,
+  },
+  muscleGroupsFilters: {
+    marginTop: 15,
+    paddingTop: 5,
+    paddingBottom: 15,
   },
 });
