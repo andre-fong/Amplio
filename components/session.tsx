@@ -24,7 +24,7 @@ import {
   TouchableRipple,
 } from "react-native-paper";
 import Colors from "@/constants/colors";
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { getFullSetType } from "@/utils/set";
 
 export default function Session({
@@ -71,6 +71,14 @@ export default function Session({
   >(null);
 
   const sessionNotesRef = useRef<TextInputRN | null>(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (sessionNotesOpen && sessionNotesRef.current) {
+        sessionNotesRef.current?.focus();
+      }
+    }, 150);
+  }, [sessionNotesOpen]);
 
   function handleSessionNotesCancel() {
     setSessionNotesEditValue(sessionNotes);

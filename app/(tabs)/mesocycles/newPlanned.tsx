@@ -19,7 +19,7 @@ import {
 } from "react-native-paper";
 import Colors from "@/constants/colors";
 import { useRouter } from "expo-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ExerciseSelectBottomSheet from "@/components/exerciseSelectBottomSheet";
 
 export default function NewPlannedMesocycle() {
@@ -32,6 +32,14 @@ export default function NewPlannedMesocycle() {
   const [mesocycleNotesOpen, setMesocycleNotesOpen] = useState(false);
 
   const mesoNotesRef = useRef<TextInputRN | null>(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (mesocycleNotesOpen && mesoNotesRef.current) {
+        mesoNotesRef.current?.focus();
+      }
+    }, 150);
+  }, [mesocycleNotesOpen]);
 
   function handleMesoNotesCancel() {
     setMesocycleNotes(mesocycleNotesSaved);
@@ -160,7 +168,10 @@ export default function NewPlannedMesocycle() {
             </Text>
           </Pressable>
         </View>
-        <Button onPress={() => setExercisesListOpen(true)}>Add exercise</Button>
+
+        <View style={styles.sessionContainer}>
+          <View></View>
+        </View>
       </ScrollView>
 
       <ExerciseSelectBottomSheet
@@ -271,5 +282,12 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     marginTop: 20,
     gap: 15,
+  },
+
+  sessionContainer: {
+    margin: 10,
+    backgroundColor: Colors.secondary.light,
+    padding: 15,
+    borderRadius: 3,
   },
 });
