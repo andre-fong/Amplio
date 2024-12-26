@@ -140,12 +140,11 @@ const mockMuscleGroupList: MuscleGroup[] = [
 export default function ExerciseSelectBottomSheet({
   open,
   setOpen,
-}: // onExerciseSelect,
-{
+  onExerciseSelect,
+}: {
   open: boolean;
   setOpen: (open: boolean) => void;
-  // TODO: Change exercise param type
-  // onExerciseSelect: (exercise: string) => void;
+  onExerciseSelect: (exercise: Exercise) => void;
 }) {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -166,9 +165,21 @@ export default function ExerciseSelectBottomSheet({
     [setSelectedMuscleGroups]
   );
 
+  const handleExerciseSelect = useCallback(
+    (exercise: Exercise) => {
+      onExerciseSelect(exercise);
+      handleClose();
+    },
+    [onExerciseSelect, setOpen]
+  );
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    bottomSheetRef.current?.close();
+  }, [setOpen, bottomSheetRef]);
+
   return (
     <>
-      {/* {open && ( */}
       <BottomSheet
         backgroundStyle={{ backgroundColor: Colors.secondary.main }}
         snapPoints={["80%"]}
@@ -192,9 +203,7 @@ export default function ExerciseSelectBottomSheet({
           />
         )}
         enablePanDownToClose
-        onClose={() => {
-          setOpen(false);
-        }}
+        onClose={handleClose}
         index={open ? 0 : -1}
       >
         <View
@@ -255,7 +264,12 @@ export default function ExerciseSelectBottomSheet({
           estimatedItemSize={20}
           keyExtractor={(item) => item.id}
           renderItem={({ item: exercise }) => (
-            <TouchableRipple onPress={() => {}} key={exercise.id}>
+            <TouchableRipple
+              onPress={() => {
+                handleExerciseSelect(exercise);
+              }}
+              key={exercise.id}
+            >
               <View style={styles.exerciseContainer}>
                 <View>
                   <Text
@@ -306,7 +320,6 @@ export default function ExerciseSelectBottomSheet({
           }
         />
       </BottomSheet>
-      {/* )} */}
     </>
   );
 }

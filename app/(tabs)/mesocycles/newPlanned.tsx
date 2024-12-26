@@ -166,6 +166,7 @@ export default function NewPlannedMesocycle() {
       <ExerciseSelectBottomSheet
         open={exercisesListOpen}
         setOpen={setExercisesListOpen}
+        onExerciseSelect={() => {}}
       />
 
       <Portal>
