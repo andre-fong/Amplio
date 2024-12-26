@@ -8,6 +8,7 @@ import {
 import {
   Appbar,
   Button,
+  Chip,
   Divider,
   Icon,
   IconButton,
@@ -169,6 +170,9 @@ export default function NewPlannedMesocycle() {
               )}
             </Text>
           </Pressable>
+
+          {/* TODO: Calendar range */}
+          <View></View>
         </View>
 
         <View style={styles.sessionContainer}>
@@ -190,6 +194,50 @@ export default function NewPlannedMesocycle() {
               )}
               onPress={() => {}}
             />
+          </View>
+
+          <View style={styles.exerciseList}>
+            <View style={styles.exerciseContainer}>
+              <View style={styles.exerciseTopRow}>
+                <Chip
+                  compact
+                  style={{
+                    // TODO: Set muscle group colors once they're not ugly
+                    backgroundColor: "rgba(222, 0, 0, 0.5)",
+                    filter: "brightness(1.1)",
+                  }}
+                  textStyle={{
+                    color: "white",
+                    opacity: 0.7,
+                    fontSize: 12,
+                  }}
+                >
+                  CHEST
+                </Chip>
+
+                <Icon source="drag" size={28} color="darkgray" />
+              </View>
+
+              <Pressable
+                style={styles.exerciseEditable}
+                onPress={() => {
+                  setExercisesListOpen(true);
+                }}
+              >
+                <Text
+                  variant="titleLarge"
+                  style={{ fontSize: 18, fontWeight: "bold" }}
+                >
+                  Bench Press
+                </Text>
+                <Text
+                  variant="bodySmall"
+                  style={{ color: "darkgray", marginTop: 2 }}
+                >
+                  BARBELL
+                </Text>
+              </Pressable>
+            </View>
           </View>
 
           <Button
@@ -349,6 +397,31 @@ const styles = StyleSheet.create({
     margin: "auto",
     width: "100%",
     backgroundColor: Colors.secondary.light,
+    borderRadius: 3,
+  },
+
+  exerciseList: {
+    marginVertical: 10,
+  },
+  exerciseContainer: {
+    // borderColor: "lightgray",
+    // borderRadius: 3,
+    // borderWidth: StyleSheet.hairlineWidth,
+    backgroundColor: "#292929",
+  },
+  exerciseTopRow: {
+    marginTop: 5,
+    paddingHorizontal: 10,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  exerciseEditable: {
+    margin: 10,
+    marginBottom: 5,
+    padding: 10,
+    backgroundColor: Colors.secondary.main,
     borderRadius: 3,
   },
 });
