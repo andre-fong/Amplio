@@ -21,10 +21,10 @@ import {
 } from "react-native-paper";
 import Colors from "@/constants/colors";
 import { useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ExerciseSelectBottomSheet from "@/components/exerciseSelectBottomSheet";
 import MuscleSelectBottomSheet from "@/components/muscleSelectBottomSheet";
-import DraggableFlatlist from "react-native-draggable-flatlist";
+import DragList from "react-native-draglist";
 
 const mockExerciseList: Exercise[] = [
   {
@@ -112,6 +112,20 @@ export default function NewPlannedMesocycle() {
 
   const [muscleGroupListOpen, setMuscleGroupListOpen] = useState(false);
   const [exercisesListOpen, setExercisesListOpen] = useState(false);
+
+  const [exercises, setExercises] = useState<Exercise[]>(mockExerciseList);
+  const exerciseDragListRef = useRef<FlatList<Exercise> | null>(null);
+
+  const onReordered = useCallback(
+    async (fromIndex: number, toIndex: number) => {
+      const copy = [...exercises];
+      const removed = copy.splice(fromIndex, 1);
+
+      copy.splice(toIndex, 0, removed[0]);
+      setExercises(copy);
+    },
+    [exercises]
+  );
 
   return (
     <Portal.Host>
@@ -250,14 +264,29 @@ export default function NewPlannedMesocycle() {
             />
           </View>
 
-          <FlatList
-            scrollEnabled={false}
+          <DragList
             keyExtractor={(item) => item.id}
             ItemSeparatorComponent={() => <View style={{ marginBottom: 10 }} />}
-            data={mockExerciseList}
+            data={exercises}
             style={styles.exerciseList}
-            renderItem={({ item: exercise }) => (
-              <View style={styles.exerciseContainer}>
+            onReordered={onReordered}
+            scrollEnabled={false}
+            ref={exerciseDragListRef}
+            renderItem={({
+              item: exercise,
+              onDragStart,
+              onDragEnd,
+              isActive,
+            }) => (
+              <View
+                style={[
+                  styles.exerciseContainer,
+                  {
+                    transform: isActive ? [{ scale: 1.05 }] : [],
+                    opacity: isActive ? 0.8 : 1,
+                  },
+                ]}
+              >
                 <View style={styles.exerciseTopRow}>
                   <Chip
                     compact
@@ -275,7 +304,11 @@ export default function NewPlannedMesocycle() {
                     {exercise.targetMuscle.name}
                   </Chip>
 
-                  <Icon source="drag" size={28} color="darkgray" />
+                  <IconButton
+                    icon={() => <Icon source="drag" size={24} />}
+                    onPressIn={onDragStart}
+                    onPressOut={onDragEnd}
+                  />
                 </View>
 
                 <Pressable
@@ -283,6 +316,7 @@ export default function NewPlannedMesocycle() {
                   onPress={() => {
                     setExercisesListOpen(true);
                   }}
+                  disabled={isActive}
                 >
                   <Text
                     variant="titleLarge"
@@ -462,6 +496,8 @@ const styles = StyleSheet.create({
   },
 
   exerciseList: {
+    paddingHorizontal: 10,
+    marginHorizontal: -10,
     marginVertical: 10,
   },
   exerciseContainer: {
@@ -469,6 +505,11 @@ const styles = StyleSheet.create({
     // borderRadius: 3,
     // borderWidth: StyleSheet.hairlineWidth,
     backgroundColor: "#292929",
+  },
+  exercisePlaceholder: {
+    width: "100%",
+    height: 120,
+    opacity: 0.8,
   },
   exerciseTopRow: {
     marginTop: 5,
