@@ -363,19 +363,18 @@ export default function NewPlannedMesocycle() {
         </View>
       </ScrollView>
 
-      <MuscleSelectBottomSheet
-        open={muscleGroupListOpen}
-        setOpen={setMuscleGroupListOpen}
-        onMuscleGroupSelect={() => {}}
-      />
-
-      <ExerciseSelectBottomSheet
-        open={exercisesListOpen}
-        setOpen={setExercisesListOpen}
-        onExerciseSelect={() => {}}
-      />
-
       <Portal>
+        <MuscleSelectBottomSheet
+          open={muscleGroupListOpen}
+          setOpen={setMuscleGroupListOpen}
+          onMuscleGroupSelect={() => {}}
+        />
+
+        <ExerciseSelectBottomSheet
+          open={exercisesListOpen}
+          setOpen={setExercisesListOpen}
+          onExerciseSelect={() => {}}
+        />
         <Modal
           visible={mesocycleNotesOpen}
           onDismiss={handleMesoNotesCancel}
