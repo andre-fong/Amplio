@@ -5,6 +5,7 @@ import {
   ScrollView,
   FlatList,
   useWindowDimensions,
+  TextInput as TextInputRN,
 } from "react-native";
 import {
   Appbar,
@@ -23,7 +24,7 @@ import {
   TouchableRipple,
 } from "react-native-paper";
 import Colors from "@/constants/colors";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { getFullSetType } from "@/utils/set";
 
 export default function Session({
@@ -69,6 +70,8 @@ export default function Session({
     string | null
   >(null);
 
+  const sessionNotesRef = useRef<TextInputRN | null>(null);
+
   function handleSessionNotesCancel() {
     setSessionNotesEditValue(sessionNotes);
     setSessionNotesOpen(false);
@@ -77,6 +80,13 @@ export default function Session({
   function handleSessionNotesSave() {
     setSessionNotes(sessionNotesEditValue);
     setSessionNotesOpen(false);
+  }
+
+  function handleSessionNotesClear() {
+    setSessionNotesEditValue("");
+    if (sessionNotesRef.current) {
+      sessionNotesRef.current?.clear();
+    }
   }
 
   return (
@@ -517,8 +527,16 @@ export default function Session({
           <TextInput
             label="Session notes"
             defaultValue={sessionNotes}
+            ref={sessionNotesRef}
             onChangeText={(text) => setSessionNotesEditValue(text)}
             multiline
+            right={
+              <TextInput.Icon
+                icon="close"
+                size={20}
+                onPress={handleSessionNotesClear}
+              />
+            }
             numberOfLines={4}
             contentStyle={{ marginVertical: 5 }}
             theme={{ colors: { surfaceVariant: Colors.secondary.light } }}
