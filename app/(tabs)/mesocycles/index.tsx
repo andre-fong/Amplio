@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import { Appbar, FAB, Portal, Searchbar, Text } from "react-native-paper";
 import Colors from "@/constants/colors";
 import { useCallback, useState } from "react";
@@ -97,6 +97,16 @@ function Mesocycles() {
             paddingTop: 10,
             paddingBottom: 80,
           }}
+          refreshControl={
+            <RefreshControl
+              refreshing={false}
+              colors={[Colors.primary.light, Colors.secondary.dark]}
+              progressBackgroundColor={Colors.secondary.main}
+              onRefresh={() => {
+                console.log("refreshing");
+              }}
+            />
+          }
           ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
           data={mockMesocycles}
           keyExtractor={(item) => item.id}
