@@ -1,9 +1,9 @@
 import { FlatList, StyleSheet, View } from "react-native";
 import { Appbar, FAB, Portal, Searchbar, Text } from "react-native-paper";
 import Colors from "@/constants/colors";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import MesocycleCard from "@/components/mesocycleCard";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 
 // TODO: Use ISO date strings
 const mockMesocycles: Mesocycle[] = [
@@ -49,6 +49,11 @@ function Mesocycles() {
   const [FABOpen, setFABOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
+  useFocusEffect(
+    useCallback(() => {
+      // TODO: Fetch mesocycles
+    }, [])
+  );
   const router = useRouter();
 
   return (
