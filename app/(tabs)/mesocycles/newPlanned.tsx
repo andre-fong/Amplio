@@ -21,6 +21,7 @@ import Colors from "@/constants/colors";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import ExerciseSelectBottomSheet from "@/components/exerciseSelectBottomSheet";
+import MuscleSelectBottomSheet from "@/components/muscleSelectBottomSheet";
 
 export default function NewPlannedMesocycle() {
   const router = useRouter();
@@ -58,6 +59,7 @@ export default function NewPlannedMesocycle() {
     }
   }
 
+  const [muscleGroupListOpen, setMuscleGroupListOpen] = useState(false);
   const [exercisesListOpen, setExercisesListOpen] = useState(false);
 
   return (
@@ -170,9 +172,59 @@ export default function NewPlannedMesocycle() {
         </View>
 
         <View style={styles.sessionContainer}>
-          <View></View>
+          <View style={styles.mesoInfoTopRow}>
+            <View style={styles.sessionName}>
+              <TextInput
+                style={{ height: 42 }}
+                contentStyle={{ fontSize: 14 }}
+                // value={mesocycleTitle}
+                // onChangeText={setMesocycleTitle}
+                // placeholder="Untitled Mesocycle"
+              />
+            </View>
+
+            <IconButton
+              style={{ filter: "brightness(2)" }}
+              icon={() => (
+                <Icon source="delete" color={Colors.primary.light} size={24} />
+              )}
+              onPress={() => {}}
+            />
+          </View>
+
+          <Button
+            style={{ marginTop: 10 }}
+            labelStyle={{ fontSize: 13, color: Colors.primary.light }}
+            onPress={() => {
+              setMuscleGroupListOpen(true);
+            }}
+            icon={() => (
+              <Icon source="plus" size={24} color={Colors.primary.light} />
+            )}
+          >
+            ADD A MUSCLE GROUP
+          </Button>
+        </View>
+
+        <View style={{ margin: 10, height: 50, marginBottom: 30 }}>
+          <Button
+            style={styles.addSessionButton}
+            contentStyle={{ height: "100%" }}
+            icon={() => <Icon source="plus" size={24} color="darkgray" />}
+            labelStyle={{ color: "darkgray" }}
+            onPress={() => {}}
+            rippleColor="#424242"
+          >
+            ADD SESSION
+          </Button>
         </View>
       </ScrollView>
+
+      <MuscleSelectBottomSheet
+        open={muscleGroupListOpen}
+        setOpen={setMuscleGroupListOpen}
+        onMuscleGroupSelect={() => {}}
+      />
 
       <ExerciseSelectBottomSheet
         open={exercisesListOpen}
@@ -288,6 +340,15 @@ const styles = StyleSheet.create({
     margin: 10,
     backgroundColor: Colors.secondary.light,
     padding: 15,
+    borderRadius: 3,
+  },
+  sessionName: {
+    flex: 0.8,
+  },
+  addSessionButton: {
+    margin: "auto",
+    width: "100%",
+    backgroundColor: Colors.secondary.light,
     borderRadius: 3,
   },
 });

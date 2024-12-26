@@ -318,11 +318,15 @@ export default function ExerciseSelectBottomSheet({
               {/* TODO: Add new exercise capabilities */}
               <TouchableRipple onPress={() => {}}>
                 <View style={styles.exerciseContainer}>
-                  <Text variant="bodySmall" style={{ paddingVertical: 7 }}>
+                  <Text
+                    variant="bodySmall"
+                    style={{ paddingVertical: 7, color: "darkgray" }}
+                  >
                     Exercise not listed?{" "}
                     <Text
                       style={{
                         fontWeight: "bold",
+                        color: "lightgray",
                       }}
                     >
                       Create a custom exercise.
