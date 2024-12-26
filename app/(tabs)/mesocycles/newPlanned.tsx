@@ -4,6 +4,7 @@ import {
   StyleSheet,
   View,
   TextInput as TextInputRN,
+  FlatList,
 } from "react-native";
 import {
   Appbar,
@@ -23,6 +24,55 @@ import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import ExerciseSelectBottomSheet from "@/components/exerciseSelectBottomSheet";
 import MuscleSelectBottomSheet from "@/components/muscleSelectBottomSheet";
+import DraggableFlatlist from "react-native-draggable-flatlist";
+
+const mockExerciseList: Exercise[] = [
+  {
+    id: "1",
+    name: "Bench Press",
+    targetMuscle: {
+      name: "Chest",
+      color: "red",
+    },
+    equipment: "Barbell",
+  },
+  {
+    id: "2",
+    name: "Squat",
+    targetMuscle: {
+      name: "Quads",
+      color: "green",
+    },
+    equipment: "Barbell",
+  },
+  {
+    id: "6",
+    name: "Tricep Extension",
+    targetMuscle: {
+      name: "Triceps",
+      color: "pink",
+    },
+    equipment: "Dumbbell",
+  },
+  {
+    id: "11",
+    name: "Hammer Curl",
+    targetMuscle: {
+      name: "Biceps",
+      color: "purple",
+    },
+    equipment: "Dumbbell",
+  },
+  {
+    id: "12",
+    name: "Skullcrusher",
+    targetMuscle: {
+      name: "Triceps",
+      color: "pink",
+    },
+    equipment: "Barbell",
+  },
+];
 
 export default function NewPlannedMesocycle() {
   const router = useRouter();
@@ -83,7 +133,11 @@ export default function NewPlannedMesocycle() {
         />
       </Appbar.Header>
 
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        keyboardDismissMode="on-drag"
+        nestedScrollEnabled
+      >
         <View style={styles.mesoMainInfo}>
           <View style={styles.mesoInfoTopRow}>
             <View style={styles.mesoName}>
@@ -196,49 +250,56 @@ export default function NewPlannedMesocycle() {
             />
           </View>
 
-          <View style={styles.exerciseList}>
-            <View style={styles.exerciseContainer}>
-              <View style={styles.exerciseTopRow}>
-                <Chip
-                  compact
-                  style={{
-                    // TODO: Set muscle group colors once they're not ugly
-                    backgroundColor: "rgba(222, 0, 0, 0.5)",
-                    filter: "brightness(1.1)",
-                  }}
-                  textStyle={{
-                    color: "white",
-                    opacity: 0.7,
-                    fontSize: 12,
+          <FlatList
+            scrollEnabled={false}
+            keyExtractor={(item) => item.id}
+            ItemSeparatorComponent={() => <View style={{ marginBottom: 10 }} />}
+            data={mockExerciseList}
+            style={styles.exerciseList}
+            renderItem={({ item: exercise }) => (
+              <View style={styles.exerciseContainer}>
+                <View style={styles.exerciseTopRow}>
+                  <Chip
+                    compact
+                    style={{
+                      // TODO: Set muscle group colors once they're not ugly
+                      backgroundColor: "rgba(222, 0, 0, 0.5)",
+                      filter: "brightness(1.1)",
+                    }}
+                    textStyle={{
+                      color: "white",
+                      opacity: 0.7,
+                      fontSize: 12,
+                    }}
+                  >
+                    {exercise.targetMuscle.name}
+                  </Chip>
+
+                  <Icon source="drag" size={28} color="darkgray" />
+                </View>
+
+                <Pressable
+                  style={styles.exerciseEditable}
+                  onPress={() => {
+                    setExercisesListOpen(true);
                   }}
                 >
-                  CHEST
-                </Chip>
-
-                <Icon source="drag" size={28} color="darkgray" />
+                  <Text
+                    variant="titleLarge"
+                    style={{ fontSize: 18, fontWeight: "bold" }}
+                  >
+                    {exercise.name}
+                  </Text>
+                  <Text
+                    variant="bodySmall"
+                    style={{ color: "darkgray", marginTop: 2 }}
+                  >
+                    {exercise.equipment.toUpperCase()}
+                  </Text>
+                </Pressable>
               </View>
-
-              <Pressable
-                style={styles.exerciseEditable}
-                onPress={() => {
-                  setExercisesListOpen(true);
-                }}
-              >
-                <Text
-                  variant="titleLarge"
-                  style={{ fontSize: 18, fontWeight: "bold" }}
-                >
-                  Bench Press
-                </Text>
-                <Text
-                  variant="bodySmall"
-                  style={{ color: "darkgray", marginTop: 2 }}
-                >
-                  BARBELL
-                </Text>
-              </Pressable>
-            </View>
-          </View>
+            )}
+          />
 
           <Button
             style={{ marginTop: 10 }}
