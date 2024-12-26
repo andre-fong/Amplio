@@ -239,19 +239,32 @@ export default function ExerciseSelectBottomSheet({
                   backgroundColor: "rgba(222, 0, 0, 0.5)",
                   filter: "brightness(1.1)",
                 }}
-                textStyle={{
-                  color: "white",
-                  opacity: 0.7,
-                  fontSize: 12,
-                }}
                 onPress={() => {
                   handleMuscleGroupSelect(muscleGroup.name);
                 }}
-                selected={selectedMuscleGroups[muscleGroup.name]}
-                selectedColor="white"
-                key={muscleGroup.name}
               >
-                {muscleGroup.name.toUpperCase()}
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 5,
+                  }}
+                >
+                  {selectedMuscleGroups[muscleGroup.name] && (
+                    <Icon source="check" size={20} />
+                  )}
+                  <Text
+                    style={{
+                      color: "white",
+                      opacity: 0.7,
+                      fontSize: 12,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {muscleGroup.name.toUpperCase()}
+                  </Text>
+                </View>
               </Chip>
             )}
             keyExtractor={(item) => item.name}
@@ -302,6 +315,7 @@ export default function ExerciseSelectBottomSheet({
           ListFooterComponent={
             <>
               <Divider />
+              {/* TODO: Add new exercise capabilities */}
               <TouchableRipple onPress={() => {}}>
                 <View style={styles.exerciseContainer}>
                   <Text variant="bodySmall" style={{ paddingVertical: 7 }}>
