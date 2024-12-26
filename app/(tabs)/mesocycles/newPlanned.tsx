@@ -20,6 +20,7 @@ import {
 import Colors from "@/constants/colors";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
+import ExerciseSelectBottomSheet from "@/components/exerciseSelectBottomSheet";
 
 export default function NewPlannedMesocycle() {
   const router = useRouter();
@@ -48,6 +49,8 @@ export default function NewPlannedMesocycle() {
       mesoNotesRef.current?.clear();
     }
   }
+
+  const [exercisesListOpen, setExercisesListOpen] = useState(true);
 
   return (
     <Portal.Host>
@@ -158,6 +161,13 @@ export default function NewPlannedMesocycle() {
           </Pressable>
         </View>
       </ScrollView>
+
+      {exercisesListOpen && (
+        <ExerciseSelectBottomSheet
+          open={exercisesListOpen}
+          setOpen={setExercisesListOpen}
+        />
+      )}
 
       <Portal>
         <Modal
