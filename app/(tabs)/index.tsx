@@ -85,7 +85,7 @@ const mockSessionsData: Session[] = [
             prevWeight: 135,
             reps: 10,
             prevReps: 9,
-            logged: false,
+            logged: true,
             setOrder: 1,
             type: "W",
           },
@@ -94,7 +94,7 @@ const mockSessionsData: Session[] = [
             prevWeight: 185,
             reps: 3,
             prevReps: 3,
-            logged: false,
+            logged: true,
             setOrder: 2,
           },
           {
@@ -129,7 +129,7 @@ const mockSessionsData: Session[] = [
             prevWeight: 30,
             reps: 12,
             prevReps: 12,
-            logged: false,
+            logged: true,
             setOrder: 1,
           },
           {

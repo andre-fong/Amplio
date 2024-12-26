@@ -447,7 +447,11 @@ export default function Session({
                     </View>
                     <View style={{ flex: 1.5 }}>
                       <View style={{ alignItems: "center" }}>
-                        <Checkbox status="unchecked" onPress={() => {}} />
+                        <Checkbox
+                          status={plannedSet.logged ? "checked" : "unchecked"}
+                          color={Colors.primary.light}
+                          onPress={() => {}}
+                        />
                       </View>
                     </View>
                     <View style={{ flex: 1 }}>
