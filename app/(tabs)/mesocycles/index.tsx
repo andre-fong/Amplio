@@ -123,7 +123,7 @@ function Mesocycles() {
           actions={[
             {
               icon: "calendar-month",
-              label: "Plan mesocycle",
+              label: "Plan a mesocycle",
               onPress: () => {
                 router.push("/(tabs)/mesocycles/newPlanned");
               },
