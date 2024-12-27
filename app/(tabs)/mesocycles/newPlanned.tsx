@@ -410,14 +410,16 @@ export default function NewPlannedMesocycle() {
 
           <View style={styles.mesoNotesButtons}>
             <Button
-              labelStyle={{ color: Colors.accent.main }}
+              theme={{ colors: { primary: Colors.accent.light } }}
               onPress={handleMesoNotesCancel}
             >
               Cancel
             </Button>
             <Button
-              labelStyle={{ color: "black" }}
-              contentStyle={{ backgroundColor: Colors.accent.dark }}
+              theme={{
+                colors: { primary: Colors.accent.light, onPrimary: "black" },
+              }}
+              // rippleColor={Colors.accent.dark}
               mode="contained"
               onPress={handleMesoNotesSave}
             >
