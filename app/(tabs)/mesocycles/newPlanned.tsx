@@ -5,12 +5,14 @@ import {
   View,
   TextInput as TextInputRN,
   FlatList,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
+  useWindowDimensions,
 } from "react-native";
 import {
   Appbar,
   Button,
   Chip,
-  Divider,
   Icon,
   IconButton,
   Menu,
@@ -18,6 +20,7 @@ import {
   Portal,
   Text,
   TextInput,
+  TouchableRipple,
 } from "react-native-paper";
 import Colors from "@/constants/colors";
 import { useRouter } from "expo-router";
@@ -76,6 +79,9 @@ const mockExerciseList: Exercise[] = [
 
 export default function NewPlannedMesocycle() {
   const router = useRouter();
+  const { width } = useWindowDimensions();
+
+  const [sessionIndex, setSessionIndex] = useState(0);
 
   const [mesocycleTitle, setMesocycleTitle] = useState("");
   const [mesocycleNotes, setMesocycleNotes] = useState("");
@@ -126,6 +132,12 @@ export default function NewPlannedMesocycle() {
     },
     [exercises]
   );
+
+  function handleScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
+    const contentOffsetX = event.nativeEvent.contentOffset.x;
+    const index = Math.round(contentOffsetX / width);
+    setSessionIndex(index);
+  }
 
   return (
     <Portal.Host>
@@ -243,114 +255,163 @@ export default function NewPlannedMesocycle() {
           <View></View>
         </View>
 
-        <View style={styles.sessionContainer}>
-          <View style={styles.mesoInfoTopRow}>
-            <View style={styles.sessionName}>
-              <TextInput
-                style={{ height: 42 }}
-                contentStyle={{ fontSize: 14 }}
-                // value={mesocycleTitle}
-                // onChangeText={setMesocycleTitle}
-                // placeholder="Untitled Mesocycle"
-              />
-            </View>
-
-            <IconButton
-              style={{ filter: "brightness(2)" }}
-              icon={() => (
-                <Icon source="delete" color={Colors.primary.light} size={24} />
-              )}
-              onPress={() => {}}
-            />
-          </View>
-
-          <DragList
-            keyExtractor={(item) => item.id}
-            ItemSeparatorComponent={() => <View style={{ marginBottom: 10 }} />}
-            data={exercises}
-            style={styles.exerciseList}
-            onReordered={onReordered}
-            scrollEnabled={false}
-            ref={exerciseDragListRef}
-            renderItem={({
-              item: exercise,
-              onDragStart,
-              onDragEnd,
-              isActive,
-            }) => (
-              <View
+        <FlatList
+          data={[1, 2, 3]}
+          // keyExtractor={(item) => item.date.toString()}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled
+          bounces={false}
+          bouncesZoom={false}
+          onScroll={handleScroll}
+          ListFooterComponent={() => (
+            <View style={{ width, flex: 1 }}>
+              <TouchableRipple
                 style={[
-                  styles.exerciseContainer,
+                  styles.sessionContainer,
                   {
-                    transform: isActive ? [{ scale: 1.05 }] : [],
-                    opacity: isActive ? 0.8 : 1,
+                    height: 80,
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: 12,
                   },
                 ]}
+                onPress={() => {}}
               >
-                <View style={styles.exerciseTopRow}>
-                  <Chip
-                    compact
-                    style={{
-                      // TODO: Set muscle group colors once they're not ugly
-                      backgroundColor: "rgba(222, 0, 0, 0.5)",
-                      filter: "brightness(1.1)",
-                    }}
-                    textStyle={{
-                      color: "white",
-                      opacity: 0.7,
-                      fontSize: 12,
-                    }}
-                  >
-                    {exercise.targetMuscle.name.toUpperCase()}
-                  </Chip>
+                <>
+                  <Icon source="plus" size={28} color="darkgray" />
+                  <Text variant="titleMedium" style={{ color: "darkgray" }}>
+                    ADD SESSION
+                  </Text>
+                </>
+              </TouchableRipple>
+            </View>
+          )}
+          renderItem={() => (
+            <View style={{ width, flex: 1, marginBottom: 10 }}>
+              <View style={styles.sessionContainer}>
+                <View style={styles.mesoInfoTopRow}>
+                  <View style={styles.sessionName}>
+                    <TextInput
+                      style={{ height: 42 }}
+                      contentStyle={{ fontSize: 14 }}
+                      // value={mesocycleTitle}
+                      // onChangeText={setMesocycleTitle}
+                      // placeholder="Untitled Mesocycle"
+                    />
+                  </View>
 
                   <IconButton
-                    icon={() => <Icon source="drag" size={24} />}
-                    onLongPress={onDragStart}
-                    delayLongPress={250}
-                    onPressOut={onDragEnd}
+                    style={{ filter: "brightness(2)" }}
+                    icon={() => (
+                      <Icon
+                        source="delete"
+                        color={Colors.primary.light}
+                        size={24}
+                      />
+                    )}
+                    onPress={() => {}}
                   />
                 </View>
 
-                <Pressable
-                  style={styles.exerciseEditable}
+                <DragList
+                  keyExtractor={(item) => item.id}
+                  ItemSeparatorComponent={() => (
+                    <View style={{ marginBottom: 10 }} />
+                  )}
+                  data={exercises}
+                  style={styles.exerciseList}
+                  onReordered={onReordered}
+                  scrollEnabled={false}
+                  ref={exerciseDragListRef}
+                  renderItem={({
+                    item: exercise,
+                    onDragStart,
+                    onDragEnd,
+                    isActive,
+                  }) => (
+                    <View
+                      style={[
+                        styles.exerciseContainer,
+                        {
+                          transform: isActive ? [{ scale: 1.05 }] : [],
+                          opacity: isActive ? 0.8 : 1,
+                        },
+                      ]}
+                    >
+                      <View style={styles.exerciseTopRow}>
+                        <Chip
+                          compact
+                          style={{
+                            // TODO: Set muscle group colors once they're not ugly
+                            backgroundColor: "rgba(222, 0, 0, 0.5)",
+                            filter: "brightness(1.1)",
+                          }}
+                          textStyle={{
+                            color: "white",
+                            opacity: 0.7,
+                            fontSize: 12,
+                          }}
+                        >
+                          {exercise.targetMuscle.name.toUpperCase()}
+                        </Chip>
+
+                        <IconButton
+                          icon={() => <Icon source="drag" size={24} />}
+                          onLongPress={onDragStart}
+                          delayLongPress={250}
+                          onPressOut={onDragEnd}
+                        />
+                      </View>
+
+                      <Pressable
+                        style={styles.exerciseEditable}
+                        onPress={() => {
+                          setExercisesListOpen(true);
+                        }}
+                        disabled={isActive}
+                      >
+                        <Text
+                          variant="titleLarge"
+                          style={{ fontSize: 18, fontWeight: "bold" }}
+                        >
+                          {exercise.name}
+                        </Text>
+                        <Text
+                          variant="bodySmall"
+                          style={{ color: "darkgray", marginTop: 2 }}
+                        >
+                          {exercise.equipment.toUpperCase()}
+                        </Text>
+                      </Pressable>
+                    </View>
+                  )}
+                />
+
+                <Button
+                  style={{ marginTop: 10 }}
+                  labelStyle={{ fontSize: 13, color: Colors.primary.light }}
                   onPress={() => {
-                    setExercisesListOpen(true);
+                    setMuscleGroupListOpen(true);
                   }}
-                  disabled={isActive}
+                  icon={() => (
+                    <Icon
+                      source="plus"
+                      size={24}
+                      color={Colors.primary.light}
+                    />
+                  )}
                 >
-                  <Text
-                    variant="titleLarge"
-                    style={{ fontSize: 18, fontWeight: "bold" }}
-                  >
-                    {exercise.name}
-                  </Text>
-                  <Text
-                    variant="bodySmall"
-                    style={{ color: "darkgray", marginTop: 2 }}
-                  >
-                    {exercise.equipment.toUpperCase()}
-                  </Text>
-                </Pressable>
+                  ADD A MUSCLE GROUP
+                </Button>
               </View>
-            )}
-          />
+            </View>
+          )}
+        />
 
-          <Button
-            style={{ marginTop: 10 }}
-            labelStyle={{ fontSize: 13, color: Colors.primary.light }}
-            onPress={() => {
-              setMuscleGroupListOpen(true);
-            }}
-            icon={() => (
-              <Icon source="plus" size={24} color={Colors.primary.light} />
-            )}
-          >
-            ADD A MUSCLE GROUP
-          </Button>
-        </View>
-
-        <View style={{ margin: 10, height: 50, marginBottom: 30 }}>
+        {/* <View style={{ margin: 10, height: 50, marginBottom: 30 }}>
           <Button
             style={styles.addSessionButton}
             contentStyle={{ height: "100%" }}
@@ -361,7 +422,7 @@ export default function NewPlannedMesocycle() {
           >
             ADD SESSION
           </Button>
-        </View>
+        </View> */}
       </ScrollView>
 
       <Portal>
