@@ -1,11 +1,23 @@
-import { View, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { Text } from "react-native-paper";
+import Colors from "@/constants/colors";
 
-const Me = () => {
+export default function Me() {
   return (
-    <View>
-      <Text>Me</Text>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: Colors.secondary.main,
+      }}
+    >
+      <Text variant="titleLarge" style={{ marginBottom: 20 }}>
+        Your profile is coming soon!
+      </Text>
+      <Text>Drop a message on Discord (@mandree) for ideas.</Text>
     </View>
   );
-};
+}
 
-export default Me;
+const styles = StyleSheet.create({});
