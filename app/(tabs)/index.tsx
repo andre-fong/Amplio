@@ -35,15 +35,6 @@ import { getFullSetType } from "@/utils/set";
 import Session from "@/components/session";
 import { Calendar, DateData } from "react-native-calendars";
 import { getCalendarDateString } from "react-native-calendars/src/services";
-import * as SplashScreen from "expo-splash-screen";
-
-SplashScreen.preventAutoHideAsync();
-
-// Set the animation options. This is optional.
-SplashScreen.setOptions({
-  duration: 1000,
-  fade: true,
-});
 
 // TODO: Replace with real data
 const mockMesoData: Mesocycle = {
@@ -485,7 +476,6 @@ const mockSessionsData: Session[] = [
 
 export default function Logs() {
   ///////////// SPLASH SCREEN /////////////
-  const [appIsReady, setAppIsReady] = useState(false);
 
   // TODO: Remove db testing
   useEffect(() => {
@@ -496,7 +486,7 @@ export default function Logs() {
       } catch (error) {
         console.error(error);
       } finally {
-        setAppIsReady(true);
+        // setAppIsReady(true);
       }
     }
     prepare();
@@ -505,12 +495,6 @@ export default function Logs() {
       clearDatabase();
     };
   }, []);
-
-  const onLayoutRootView = useCallback(() => {
-    if (appIsReady) {
-      SplashScreen.hide();
-    }
-  }, [appIsReady]);
 
   ///////////// DATA //////////////
   const { width } = useWindowDimensions();
@@ -581,11 +565,6 @@ export default function Logs() {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
     const index = Math.round(contentOffsetX / width);
     setSessionIndex(index);
-  }
-
-  // If the app is not ready, don't render anything
-  if (!appIsReady) {
-    return null;
   }
 
   return (
@@ -665,7 +644,7 @@ export default function Logs() {
         style={styles.sessionContainer}
         // nestedScrollEnabled
         keyboardDismissMode="on-drag"
-        onLayout={onLayoutRootView}
+        // onLayout={onLayoutRootView}
       >
         <View style={styles.sessionDateInfo}>
           <IconButton icon="arrow-left" size={24} onPress={() => {}} />
