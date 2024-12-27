@@ -301,12 +301,13 @@ export default function NewPlannedMesocycle() {
                       fontSize: 12,
                     }}
                   >
-                    {exercise.targetMuscle.name}
+                    {exercise.targetMuscle.name.toUpperCase()}
                   </Chip>
 
                   <IconButton
                     icon={() => <Icon source="drag" size={24} />}
-                    onPressIn={onDragStart}
+                    onLongPress={onDragStart}
+                    delayLongPress={250}
                     onPressOut={onDragEnd}
                   />
                 </View>
@@ -521,7 +522,9 @@ const styles = StyleSheet.create({
   exerciseEditable: {
     margin: 10,
     marginBottom: 5,
-    padding: 10,
+    marginTop: -4,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     backgroundColor: Colors.secondary.main,
     borderRadius: 3,
   },
