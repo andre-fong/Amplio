@@ -20,6 +20,7 @@ import {
   Portal,
   Text,
   TextInput,
+  Tooltip,
   TouchableRipple,
 } from "react-native-paper";
 import Colors from "@/constants/colors";
@@ -157,6 +158,18 @@ export default function NewPlannedMesocycle() {
             </Text>
           }
         />
+
+        <Tooltip title="Create mesocycle">
+          <Appbar.Action
+            icon={() => (
+              <Icon source="check" size={32} color={Colors.primary.light} />
+            )}
+            animated={false}
+            size={32}
+            onPress={() => {}}
+            style={{ marginRight: 10 }}
+          />
+        </Tooltip>
       </Appbar.Header>
 
       <ScrollView
