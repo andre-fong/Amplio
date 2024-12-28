@@ -499,6 +499,20 @@ export default function Logs() {
 
   ///////////// FORM STATE //////////////
   const [sessionIndex, setSessionIndex] = useState(0);
+  const changeSessionIndex = useCallback(
+    (offset: number) => {
+      sessionListRef?.current?.scrollToIndex({
+        index: Math.min(
+          Math.max(0, sessionIndex + offset),
+          mockSessionsData.length - 1
+        ),
+      });
+    },
+    [sessionIndex, mockSessionsData.length]
+  );
+
+  const sessionListRef = useRef<FlatList>(null);
+
   const [mesocycleOptionsOpen, setMesocycleOptionsOpen] = useState(false);
   const [selectedSetOptions, setSelectedSetOptions] = useState<{
     exerciseId: string;
@@ -639,7 +653,11 @@ export default function Logs() {
         // onLayout={onLayoutRootView}
       >
         <View style={styles.sessionDateInfo}>
-          <IconButton icon="arrow-left" size={24} onPress={() => {}} />
+          <IconButton
+            icon="chevron-left"
+            size={26}
+            onPress={() => changeSessionIndex(-1)}
+          />
           <View style={styles.sessionDateInfoText}>
             <Text variant="bodyMedium">
               Microcycle #
@@ -652,12 +670,17 @@ export default function Logs() {
               </Text>
             </Text>
           </View>
-          <IconButton icon="arrow-right" size={24} onPress={() => {}} />
+          <IconButton
+            icon="chevron-right"
+            size={26}
+            onPress={() => changeSessionIndex(1)}
+          />
         </View>
 
         <FlatList
           data={mockSessionsData}
           keyExtractor={(item) => item.date.toString()}
+          ref={sessionListRef}
           horizontal
           showsHorizontalScrollIndicator={false}
           pagingEnabled

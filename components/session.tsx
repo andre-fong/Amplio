@@ -199,9 +199,12 @@ export default function Session({
                   leadingIcon="heart-pulse"
                   onPress={() => {}}
                   title={
-                    session.deload
-                      ? "Unmark session as deload"
-                      : "Mark session as deload"
+                    // session.deload
+                    //   ? "Unmark session as deload"
+                    //   : "Mark session as deload"
+                    <Text>
+                      {session.deload ? "Unmark" : "Mark"} session as deload
+                    </Text>
                   }
                 />
                 <Divider
