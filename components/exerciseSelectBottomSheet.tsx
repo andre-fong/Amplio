@@ -1,5 +1,8 @@
 import { FlatList, StyleSheet, View } from "react-native";
-import { FlatList as FlatListGH } from "react-native-gesture-handler";
+import {
+  FlatList as FlatListGH,
+  ScrollView,
+} from "react-native-gesture-handler";
 import {
   Chip,
   Divider,
@@ -8,7 +11,7 @@ import {
   Text,
   TouchableRipple,
 } from "react-native-paper";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetFlashList,
@@ -146,6 +149,13 @@ export default function ExerciseSelectBottomSheet({
   setOpen: (open: boolean) => void;
   onExerciseSelect: (exercise: Exercise) => void;
 }) {
+  // Open bottom sheet when open is true
+  useEffect(() => {
+    if (open) {
+      bottomSheetRef.current?.expand();
+    }
+  }, [open]);
+
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -178,11 +188,143 @@ export default function ExerciseSelectBottomSheet({
     bottomSheetRef.current?.close();
   }, [setOpen, bottomSheetRef]);
 
+  const renderBackdropComponent = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        enableTouchThrough={true}
+        pressBehavior="close"
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+      />
+    ),
+    []
+  );
+
+  const renderFooter = useCallback(
+    () => (
+      <>
+        <Divider />
+        {/* TODO: Add new exercise capabilities */}
+        <TouchableRipple onPress={() => {}}>
+          <View style={styles.exerciseContainer}>
+            <Text
+              variant="bodySmall"
+              style={{ paddingVertical: 7, color: "darkgray" }}
+            >
+              Exercise not listed?{" "}
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  color: "lightgray",
+                }}
+              >
+                Create a custom exercise.
+              </Text>
+            </Text>
+          </View>
+        </TouchableRipple>
+      </>
+    ),
+    []
+  );
+
+  const renderMuscleItem = useCallback(
+    ({ item: muscleGroup }: { item: MuscleGroup }) => (
+      <Chip
+        key={muscleGroup.name}
+        compact
+        style={{
+          // TODO: Set muscle group colors once they're not ugly
+          backgroundColor: "rgba(222, 0, 0, 0.5)",
+          filter: "brightness(1.1)",
+        }}
+        onPress={() => {
+          handleMuscleGroupSelect(muscleGroup.name);
+        }}
+      >
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 5,
+          }}
+        >
+          {selectedMuscleGroups[muscleGroup.name] && (
+            <Icon source="check" size={20} />
+          )}
+          <Text
+            style={{
+              color: "white",
+              opacity: 0.7,
+              fontSize: 12,
+              fontWeight: "bold",
+            }}
+          >
+            {muscleGroup.name.toUpperCase()}
+          </Text>
+        </View>
+      </Chip>
+    ),
+    [selectedMuscleGroups]
+  );
+  const renderItem = useCallback(
+    ({ item: exercise }: { item: Exercise }) => (
+      <TouchableRipple
+        onPress={() => {
+          handleExerciseSelect(exercise);
+        }}
+        key={exercise.id}
+      >
+        <View style={styles.exerciseContainer}>
+          <View>
+            <Text
+              variant="titleLarge"
+              style={{ fontSize: 18, fontWeight: "bold" }}
+            >
+              {exercise.name}
+            </Text>
+            <Text
+              variant="bodySmall"
+              style={{ color: "darkgray", marginTop: 5 }}
+            >
+              {exercise.equipment.toUpperCase()}
+              {"  "}
+              <Text variant="bodyMedium" style={{ fontWeight: "bold" }}>
+                &middot;
+              </Text>
+              {"  "}
+              <Text style={{ color: "#b87a7a" }}>
+                {exercise.targetMuscle.name.toUpperCase()}
+              </Text>
+            </Text>
+          </View>
+
+          <Icon source="chevron-right" size={24} />
+        </View>
+      </TouchableRipple>
+    ),
+    [handleExerciseSelect]
+  );
+
+  const muscleListKeyExtractor = useCallback(
+    (item: MuscleGroup) => item.name,
+    []
+  );
+  const flashListKeyExtractor = useCallback((item: Exercise) => item.id, []);
+
+  const muscleListItemSeparatorComponent = useCallback(
+    () => <View style={{ marginHorizontal: 8 }} />,
+    []
+  );
+  const flashListItemSeparatorComponent = useCallback(() => <Divider />, []);
+
   return (
     <>
       <BottomSheet
         backgroundStyle={{ backgroundColor: Colors.secondary.main }}
-        snapPoints={["80%"]}
+        snapPoints={["50%", "80%"]}
         handleStyle={{
           height: 30,
           justifyContent: "center",
@@ -193,149 +335,48 @@ export default function ExerciseSelectBottomSheet({
         enableDynamicSizing={false}
         handleIndicatorStyle={{ backgroundColor: "white", width: 50 }}
         ref={bottomSheetRef}
-        backdropComponent={(props) => (
-          <BottomSheetBackdrop
-            {...props}
-            enableTouchThrough={true}
-            pressBehavior="close"
-            appearsOnIndex={0}
-            disappearsOnIndex={-1}
-          />
-        )}
+        backdropComponent={renderBackdropComponent}
         enablePanDownToClose
         onClose={handleClose}
-        index={open ? 0 : -1}
+        index={-1}
       >
-        <View
-          style={{
-            paddingTop: 10,
-            paddingHorizontal: 25,
-            backgroundColor: Colors.secondary.main,
-          }}
-        >
-          <Text variant="headlineMedium" style={{ fontWeight: "bold" }}>
-            Exercises
-          </Text>
-          <Searchbar
-            placeholder="Search for an exercise"
-            value={searchQuery}
-            style={{ marginTop: 12 }}
-            onChangeText={setSearchQuery}
-            theme={{ colors: { onSurface: "rgb(137, 124, 121)" } }}
-          />
-
-          <FlatListGH
-            style={styles.muscleGroupsFilters}
-            ItemSeparatorComponent={() => (
-              <View style={{ marginHorizontal: 8 }} />
-            )}
-            horizontal
-            data={mockMuscleGroupList}
-            renderItem={({ item: muscleGroup }) => (
-              <Chip
-                compact
-                style={{
-                  // TODO: Set muscle group colors once they're not ugly
-                  backgroundColor: "rgba(222, 0, 0, 0.5)",
-                  filter: "brightness(1.1)",
-                }}
-                onPress={() => {
-                  handleMuscleGroupSelect(muscleGroup.name);
-                }}
-              >
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    gap: 5,
-                  }}
-                >
-                  {selectedMuscleGroups[muscleGroup.name] && (
-                    <Icon source="check" size={20} />
-                  )}
-                  <Text
-                    style={{
-                      color: "white",
-                      opacity: 0.7,
-                      fontSize: 12,
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {muscleGroup.name.toUpperCase()}
-                  </Text>
-                </View>
-              </Chip>
-            )}
-            keyExtractor={(item) => item.name}
-          />
-        </View>
-
         <BottomSheetFlashList
           contentContainerStyle={styles.sheetContainer}
           data={mockExerciseList}
           estimatedItemSize={20}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item: exercise }) => (
-            <TouchableRipple
-              onPress={() => {
-                handleExerciseSelect(exercise);
+          keyExtractor={flashListKeyExtractor}
+          ListHeaderComponent={
+            <View
+              style={{
+                paddingTop: 10,
+                paddingHorizontal: 25,
+                backgroundColor: Colors.secondary.main,
               }}
-              key={exercise.id}
             >
-              <View style={styles.exerciseContainer}>
-                <View>
-                  <Text
-                    variant="titleLarge"
-                    style={{ fontSize: 18, fontWeight: "bold" }}
-                  >
-                    {exercise.name}
-                  </Text>
-                  <Text
-                    variant="bodySmall"
-                    style={{ color: "darkgray", marginTop: 5 }}
-                  >
-                    {exercise.equipment.toUpperCase()}
-                    {"  "}
-                    <Text variant="bodyMedium" style={{ fontWeight: "bold" }}>
-                      &middot;
-                    </Text>
-                    {"  "}
-                    <Text style={{ color: "#b87a7a" }}>
-                      {exercise.targetMuscle.name.toUpperCase()}
-                    </Text>
-                  </Text>
-                </View>
+              <Text variant="headlineMedium" style={{ fontWeight: "bold" }}>
+                Exercises
+              </Text>
+              <Searchbar
+                placeholder="Search for an exercise"
+                value={searchQuery}
+                style={{ marginTop: 12 }}
+                onChangeText={setSearchQuery}
+                theme={{ colors: { onSurface: "rgb(137, 124, 121)" } }}
+              />
 
-                <Icon source="chevron-right" size={24} />
-              </View>
-            </TouchableRipple>
-          )}
-          ItemSeparatorComponent={() => <Divider />}
-          ListFooterComponent={
-            <>
-              <Divider />
-              {/* TODO: Add new exercise capabilities */}
-              <TouchableRipple onPress={() => {}}>
-                <View style={styles.exerciseContainer}>
-                  <Text
-                    variant="bodySmall"
-                    style={{ paddingVertical: 7, color: "darkgray" }}
-                  >
-                    Exercise not listed?{" "}
-                    <Text
-                      style={{
-                        fontWeight: "bold",
-                        color: "lightgray",
-                      }}
-                    >
-                      Create a custom exercise.
-                    </Text>
-                  </Text>
-                </View>
-              </TouchableRipple>
-            </>
+              <FlatListGH
+                style={styles.muscleGroupsFilters}
+                ItemSeparatorComponent={muscleListItemSeparatorComponent}
+                horizontal
+                data={mockMuscleGroupList}
+                renderItem={renderMuscleItem}
+                keyExtractor={muscleListKeyExtractor}
+              />
+            </View>
           }
+          renderItem={renderItem}
+          ItemSeparatorComponent={flashListItemSeparatorComponent}
+          ListFooterComponent={renderFooter}
         />
       </BottomSheet>
     </>
