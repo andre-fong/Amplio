@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { Divider, Icon, Text, TouchableRipple } from "react-native-paper";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetFlashList,
@@ -27,6 +27,13 @@ export default function MuscleSelectBottomSheet({
   setOpen: (open: boolean) => void;
   onMuscleGroupSelect: (muscleGroup: MuscleGroup) => void;
 }) {
+  // Open bottom sheet when open is true
+  useEffect(() => {
+    if (open) {
+      bottomSheetRef.current?.expand();
+    }
+  }, [open]);
+
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   const handleMuscleSelect = useCallback(
@@ -42,11 +49,46 @@ export default function MuscleSelectBottomSheet({
     bottomSheetRef.current?.close();
   }, [setOpen, bottomSheetRef]);
 
+  const renderBackdropComponent = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        enableTouchThrough={true}
+        pressBehavior="close"
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+      />
+    ),
+    []
+  );
+
+  const renderItem = useCallback(
+    ({ item: muscleGroup }: { item: MuscleGroup }) => (
+      <TouchableRipple
+        onPress={() => {
+          handleMuscleSelect(muscleGroup);
+        }}
+        key={muscleGroup.name}
+      >
+        <View style={styles.muscleGroupContainer}>
+          <View>
+            <Text variant="titleLarge" style={{ fontSize: 16 }}>
+              {muscleGroup.name}
+            </Text>
+          </View>
+
+          <Icon source="chevron-right" size={24} />
+        </View>
+      </TouchableRipple>
+    ),
+    [handleMuscleSelect]
+  );
+
   return (
     <>
       <BottomSheet
         backgroundStyle={{ backgroundColor: Colors.secondary.main }}
-        snapPoints={["80%"]}
+        snapPoints={["50%", "80%"]}
         handleStyle={{
           height: 30,
           justifyContent: "center",
@@ -57,55 +99,31 @@ export default function MuscleSelectBottomSheet({
         enableDynamicSizing={false}
         handleIndicatorStyle={{ backgroundColor: "white", width: 50 }}
         ref={bottomSheetRef}
-        backdropComponent={(props) => (
-          <BottomSheetBackdrop
-            {...props}
-            enableTouchThrough={true}
-            pressBehavior="close"
-            appearsOnIndex={0}
-            disappearsOnIndex={-1}
-          />
-        )}
+        backdropComponent={renderBackdropComponent}
         enablePanDownToClose
         onClose={handleClose}
-        index={open ? 0 : -1}
+        index={-1}
       >
-        <View
-          style={{
-            paddingTop: 10,
-            paddingHorizontal: 25,
-            paddingBottom: 10,
-            backgroundColor: Colors.secondary.main,
-          }}
-        >
-          <Text variant="headlineMedium" style={{ fontWeight: "bold" }}>
-            Muscle Groups
-          </Text>
-        </View>
-
         <BottomSheetFlashList
           contentContainerStyle={styles.sheetContainer}
           data={mockMuscleGroupList}
           estimatedItemSize={20}
           keyExtractor={(item) => item.name}
-          renderItem={({ item: muscleGroup }) => (
-            <TouchableRipple
-              onPress={() => {
-                handleMuscleSelect(muscleGroup);
+          ListHeaderComponent={
+            <View
+              style={{
+                paddingTop: 10,
+                paddingHorizontal: 25,
+                paddingBottom: 10,
+                backgroundColor: Colors.secondary.main,
               }}
-              key={muscleGroup.name}
             >
-              <View style={styles.muscleGroupContainer}>
-                <View>
-                  <Text variant="titleLarge" style={{ fontSize: 16 }}>
-                    {muscleGroup.name}
-                  </Text>
-                </View>
-
-                <Icon source="chevron-right" size={24} />
-              </View>
-            </TouchableRipple>
-          )}
+              <Text variant="headlineMedium" style={{ fontWeight: "bold" }}>
+                Muscle Groups
+              </Text>
+            </View>
+          }
+          renderItem={renderItem}
           ItemSeparatorComponent={() => <Divider />}
           ListFooterComponent={
             <>
