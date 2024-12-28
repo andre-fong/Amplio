@@ -679,7 +679,7 @@ export default function Logs() {
       <Portal>
         <BottomSheet
           backgroundStyle={{ backgroundColor: Colors.secondary.main }}
-          snapPoints={["80%"]}
+          // snapPoints={["80%"]}
           handleStyle={{
             height: 30,
             justifyContent: "center",
