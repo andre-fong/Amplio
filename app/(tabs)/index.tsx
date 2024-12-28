@@ -567,8 +567,36 @@ export default function Logs() {
     setSessionIndex(index);
   }
 
+  const handleSetOptionsClose = useCallback(() => {
+    setSelectedSetOptions(null);
+  }, []);
+
+  const handleMoveSetUp = useCallback(() => {
+    // TODO: Move set up
+    bottomSheetRef.current?.close();
+  }, []);
+
+  const handleMoveSetDown = useCallback(() => {
+    // TODO: Move set down
+    bottomSheetRef.current?.close();
+  }, []);
+
+  ///////////// RENDER //////////////
+  const renderBackdropComponent = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        enableTouchThrough={true}
+        pressBehavior="close"
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+      />
+    ),
+    []
+  );
+
   return (
-    <>
+    <Portal.Host>
       <Appbar.Header
         style={{ height: 80, backgroundColor: Colors.secondary.dark }}
       >
@@ -685,9 +713,10 @@ export default function Logs() {
         />
       </ScrollView>
 
-      {selectedSetOptions && (
+      <Portal>
         <BottomSheet
           backgroundStyle={{ backgroundColor: Colors.secondary.main }}
+          snapPoints={["80%"]}
           handleStyle={{
             height: 30,
             justifyContent: "center",
@@ -697,20 +726,10 @@ export default function Logs() {
           }}
           handleIndicatorStyle={{ backgroundColor: "white", width: 50 }}
           ref={bottomSheetRef}
-          backdropComponent={(props) => (
-            <BottomSheetBackdrop
-              {...props}
-              enableTouchThrough={true}
-              pressBehavior="close"
-              appearsOnIndex={0}
-              disappearsOnIndex={-1}
-            />
-          )}
+          backdropComponent={renderBackdropComponent}
           enablePanDownToClose
-          onClose={() => {
-            setSelectedSetOptions(null);
-          }}
-          index={0}
+          onClose={handleSetOptionsClose}
+          index={-1}
         >
           <BottomSheetScrollView
             contentContainerStyle={styles.setOptionsContainer}
@@ -818,23 +837,31 @@ export default function Logs() {
               </View>
             </TouchableRipple>
 
-            {selectedSetOptions.setOrder > 1 && (
-              <TouchableRipple onPress={() => {}}>
-                <View style={styles.setOption}>
-                  <Icon source="arrow-up" size={24} color="white" />
-                  <Text variant="bodyLarge">Move set up</Text>
-                </View>
-              </TouchableRipple>
+            {selectedSetOptions ? (
+              selectedSetOptions.setOrder > 1 && (
+                <TouchableRipple onPress={handleMoveSetUp}>
+                  <View style={styles.setOption}>
+                    <Icon source="arrow-up" size={24} color="white" />
+                    <Text variant="bodyLarge">Move set up</Text>
+                  </View>
+                </TouchableRipple>
+              )
+            ) : (
+              <View style={{ height: 60 }} />
             )}
 
-            {selectedSetOptions.setOrder <
-              (setOptionsData?.exercise.plannedSets.length || 0) && (
-              <TouchableRipple onPress={() => {}}>
-                <View style={styles.setOption}>
-                  <Icon source="arrow-down" size={24} color="white" />
-                  <Text variant="bodyLarge">Move set down</Text>
-                </View>
-              </TouchableRipple>
+            {selectedSetOptions ? (
+              selectedSetOptions.setOrder <
+                (setOptionsData?.exercise.plannedSets.length || 0) && (
+                <TouchableRipple onPress={handleMoveSetDown}>
+                  <View style={styles.setOption}>
+                    <Icon source="arrow-down" size={24} color="white" />
+                    <Text variant="bodyLarge">Move set down</Text>
+                  </View>
+                </TouchableRipple>
+              )
+            ) : (
+              <View style={{ height: 60 }} />
             )}
 
             <Divider
@@ -857,9 +884,7 @@ export default function Logs() {
             </TouchableRipple>
           </BottomSheetScrollView>
         </BottomSheet>
-      )}
 
-      <Portal>
         <Modal
           visible={sessionDateOpen}
           onDismiss={handleCloseDateModal}
@@ -916,7 +941,7 @@ export default function Logs() {
           </View>
         </Modal>
       </Portal>
-    </>
+    </Portal.Host>
   );
 }
 
