@@ -274,49 +274,44 @@ export default function Session({
           </View>
 
           <View style={styles.dateRow}>
-            <View style={{ flex: 1 }}>
-              <List.Accordion
-                title={
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 20,
-                    }}
-                  >
-                    <Icon source="calendar" size={24} color="darkgray" />
-                    <Text
-                      variant="bodySmall"
-                      style={styles.sessionDateInfoText}
-                    >
-                      {formattedDate}
-                    </Text>
-                  </View>
-                }
-                right={(props) => null}
-                style={styles.datePressable}
-                rippleColor="rgba(255, 255, 255, 0.1)"
-              >
-                <Calendar
-                  hideExtraDays
-                  current={selectedDate}
-                  onDayPress={onDayPress}
-                  markedDates={marked}
-                  minDate={minDate}
-                  maxDate={maxDate}
-                  theme={{
-                    calendarBackground: "transparent",
-                    monthTextColor: "white",
-                    arrowColor: Colors.primary.light,
-                    dayTextColor: "white",
-                    todayTextColor: "#fcbbbb",
-                    selectedDayBackgroundColor: Colors.primary.main,
-                    textDisabledColor: "gray",
+            <List.Accordion
+              title={
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 20,
                   }}
-                />
-              </List.Accordion>
-            </View>
+                >
+                  <Icon source="calendar" size={24} color="darkgray" />
+                  <Text variant="bodySmall" style={styles.sessionDateInfoText}>
+                    {formattedDate}
+                  </Text>
+                </View>
+              }
+              right={(props) => null}
+              style={styles.datePressable}
+              rippleColor="rgba(255, 255, 255, 0.1)"
+            >
+              <Calendar
+                hideExtraDays
+                current={selectedDate}
+                onDayPress={onDayPress}
+                markedDates={marked}
+                minDate={minDate}
+                maxDate={maxDate}
+                theme={{
+                  calendarBackground: "transparent",
+                  monthTextColor: "white",
+                  arrowColor: Colors.primary.light,
+                  dayTextColor: "white",
+                  todayTextColor: "#fcbbbb",
+                  selectedDayBackgroundColor: Colors.primary.main,
+                  textDisabledColor: "gray",
+                }}
+              />
+            </List.Accordion>
           </View>
         </View>
 
@@ -710,10 +705,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   dateRow: {
-    display: "flex",
-    flexDirection: "row",
-    flexWrap: "wrap",
-    alignItems: "flex-start",
+    flex: 1,
     paddingHorizontal: 7,
     gap: 15,
     marginTop: 5,

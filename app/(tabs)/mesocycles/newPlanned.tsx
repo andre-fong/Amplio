@@ -15,6 +15,7 @@ import {
   Chip,
   Icon,
   IconButton,
+  List,
   Menu,
   Modal,
   Portal,
@@ -25,10 +26,12 @@ import {
 } from "react-native-paper";
 import Colors from "@/constants/colors";
 import { useRouter } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ExerciseSelectBottomSheet from "@/components/exerciseSelectBottomSheet";
 import MuscleSelectBottomSheet from "@/components/muscleSelectBottomSheet";
 import DragList from "react-native-draglist";
+import { Calendar, DateData } from "react-native-calendars";
+import { getCalendarDateString } from "react-native-calendars/src/services";
 
 const mockExerciseList: Exercise[] = [
   {
@@ -100,22 +103,22 @@ export default function NewPlannedMesocycle() {
     }, 150);
   }, [mesocycleNotesOpen]);
 
-  function handleMesoNotesCancel() {
+  const handleMesoNotesCancel = useCallback(() => {
     setMesocycleNotes(mesocycleNotesSaved);
     setMesocycleNotesOpen(false);
-  }
+  }, [mesocycleNotesSaved]);
 
-  function handleMesoNotesSave() {
+  const handleMesoNotesSave = useCallback(() => {
     setMesocycleNotesSaved(mesocycleNotes);
     setMesocycleNotesOpen(false);
-  }
+  }, [mesocycleNotes]);
 
-  function handleMesoNotesClear() {
+  const handleMesoNotesClear = useCallback(() => {
     setMesocycleNotes("");
     if (mesoNotesRef.current) {
       mesoNotesRef.current?.clear();
     }
-  }
+  }, []);
 
   const [muscleGroupListOpen, setMuscleGroupListOpen] = useState(false);
   const [exercisesListOpen, setExercisesListOpen] = useState(false);
@@ -134,11 +137,42 @@ export default function NewPlannedMesocycle() {
     [exercises]
   );
 
-  function handleScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
-    const contentOffsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(contentOffsetX / width);
-    setSessionIndex(index);
-  }
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const contentOffsetX = event.nativeEvent.contentOffset.x;
+      const index = Math.round(contentOffsetX / width);
+      setSessionIndex(index);
+    },
+    [width]
+  );
+
+  const [selectedDate, setSelectedDate] = useState<string>(
+    getCalendarDateString(new Date())
+  );
+  const formattedDate = useMemo(() => {
+    const userTimezoneOffset = new Date().getTimezoneOffset() * 60000;
+    return new Date(
+      new Date(selectedDate).getTime() + userTimezoneOffset
+    ).toLocaleDateString(undefined, {
+      year: "numeric",
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
+  }, [selectedDate]);
+
+  const onDayPress = useCallback((day: DateData) => {
+    setSelectedDate(day.dateString);
+  }, []);
+
+  const marked = useMemo(() => {
+    return {
+      [selectedDate]: {
+        selected: true,
+        disableTouchEvent: true,
+      },
+    };
+  }, [selectedDate]);
 
   return (
     <Portal.Host>
@@ -264,8 +298,44 @@ export default function NewPlannedMesocycle() {
             </Text>
           </Pressable>
 
-          {/* TODO: Calendar range */}
-          <View></View>
+          <View style={styles.dateRow}>
+            <List.Accordion
+              title={
+                <View
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 20,
+                  }}
+                >
+                  <Icon source="calendar" size={24} color="darkgray" />
+                  <Text variant="bodySmall" style={styles.sessionDateInfoText}>
+                    {formattedDate}
+                  </Text>
+                </View>
+              }
+              right={(props) => null}
+              style={styles.datePressable}
+              rippleColor="rgba(255, 255, 255, 0.1)"
+            >
+              <Calendar
+                hideExtraDays
+                current={selectedDate}
+                onDayPress={onDayPress}
+                markedDates={marked}
+                theme={{
+                  calendarBackground: "transparent",
+                  monthTextColor: "white",
+                  arrowColor: Colors.primary.light,
+                  dayTextColor: "white",
+                  todayTextColor: "#fcbbbb",
+                  selectedDayBackgroundColor: Colors.primary.main,
+                  textDisabledColor: "gray",
+                }}
+              />
+            </List.Accordion>
+          </View>
         </View>
 
         <FlatList
@@ -569,6 +639,17 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: Colors.secondary.light,
     borderRadius: 3,
+  },
+  sessionDateInfoText: {
+    fontSize: 13,
+  },
+  dateRow: {
+    flex: 1,
+    gap: 15,
+    marginTop: 5,
+  },
+  datePressable: {
+    backgroundColor: Colors.secondary.main,
   },
 
   exerciseList: {
