@@ -33,8 +33,6 @@ import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { spinUpDatabase, getAllMuscleGroups, clearDatabase } from "@/api";
 import { getFullSetType } from "@/utils/set";
 import Session from "@/components/session";
-import { Calendar, DateData } from "react-native-calendars";
-import { getCalendarDateString } from "react-native-calendars/src/services";
 
 // TODO: Replace with real data
 const mockMesoData: Mesocycle = {
@@ -501,40 +499,6 @@ export default function Logs() {
 
   ///////////// FORM STATE //////////////
   const [sessionIndex, setSessionIndex] = useState(0);
-  const [sessionDateOpen, setSessionDateOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<string>(
-    getCalendarDateString(mockSessionsData[sessionIndex].date)
-  );
-  const formattedDate = useMemo(() => {
-    const userTimezoneOffset = new Date().getTimezoneOffset() * 60000;
-    return new Date(
-      new Date(selectedDate).getTime() + userTimezoneOffset
-    ).toLocaleDateString(undefined, {
-      year: "numeric",
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    });
-  }, [selectedDate]);
-
-  const onDayPress = useCallback((day: DateData) => {
-    setSelectedDate(day.dateString);
-  }, []);
-
-  const marked = useMemo(() => {
-    return {
-      [selectedDate]: {
-        selected: true,
-        disableTouchEvent: true,
-      },
-    };
-  }, [selectedDate]);
-
-  function handleCloseDateModal() {
-    setSessionDateOpen(false);
-    setSelectedDate(getCalendarDateString(mockSessionsData[sessionIndex].date));
-  }
-
   const [mesocycleOptionsOpen, setMesocycleOptionsOpen] = useState(false);
   const [selectedSetOptions, setSelectedSetOptions] = useState<{
     exerciseId: string;
@@ -707,7 +671,6 @@ export default function Logs() {
                 setSelectedSetOptions({ exerciseId, setOrder });
                 bottomSheetRef.current?.expand();
               }}
-              setSessionDateOpen={setSessionDateOpen}
             />
           )}
         />
@@ -884,62 +847,6 @@ export default function Logs() {
             </TouchableRipple>
           </BottomSheetScrollView>
         </BottomSheet>
-
-        <Modal
-          visible={sessionDateOpen}
-          onDismiss={handleCloseDateModal}
-          contentContainerStyle={{
-            backgroundColor: "rgb(65, 65, 65)",
-            padding: 20,
-            margin: 20,
-            borderRadius: 3,
-          }}
-        >
-          <Text variant="titleMedium" style={{ marginBottom: 20 }}>
-            Edit session date
-          </Text>
-          <Calendar
-            enableSwipeMonths
-            hideExtraDays
-            current={selectedDate}
-            onDayPress={onDayPress}
-            markedDates={marked}
-            minDate={getCalendarDateString(mockMesoData.startDate)}
-            maxDate={getCalendarDateString(mockMesoData.endDate)}
-            theme={{
-              calendarBackground: "transparent",
-              monthTextColor: "white",
-              arrowColor: Colors.primary.light,
-              dayTextColor: "white",
-              todayTextColor: "#fcbbbb",
-              selectedDayBackgroundColor: Colors.primary.main,
-              textDisabledColor: "gray",
-            }}
-          />
-
-          <View style={styles.dateRow}>
-            <Icon source="calendar" size={22} color="darkgray" />
-
-            <Text variant="bodySmall">{formattedDate}</Text>
-          </View>
-
-          <View style={styles.sessionDateButtons}>
-            <Button
-              labelStyle={{ color: Colors.primary.light }}
-              onPress={handleCloseDateModal}
-            >
-              Cancel
-            </Button>
-            <Button
-              labelStyle={{ color: "white" }}
-              contentStyle={{ backgroundColor: Colors.primary.main }}
-              mode="contained"
-              onPress={() => {}}
-            >
-              Save
-            </Button>
-          </View>
-        </Modal>
       </Portal>
     </Portal.Host>
   );

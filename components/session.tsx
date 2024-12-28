@@ -22,22 +22,23 @@ import {
   Checkbox,
   Tooltip,
   TouchableRipple,
+  List,
 } from "react-native-paper";
 import Colors from "@/constants/colors";
-import { useState, useMemo, useRef, useEffect } from "react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
 import { getFullSetType } from "@/utils/set";
+import { Calendar, DateData } from "react-native-calendars";
+import { getCalendarDateString } from "react-native-calendars/src/services";
 
 export default function Session({
   data: session,
   setSelectedSetOptions,
-  setSessionDateOpen,
 }: {
   data: Session;
   setSelectedSetOptions: (options: {
     exerciseId: string;
     setOrder: number;
   }) => void;
-  setSessionDateOpen: (open: boolean) => void;
 }) {
   ///////////// DATA //////////////
   const { width } = useWindowDimensions();
@@ -58,10 +59,12 @@ export default function Session({
   const sessionIsCurrent =
     new Date().getTime() === new Date(session.date).getTime();
 
-  const dateYearString =
-    new Date(session.date).getFullYear() !== new Date().getFullYear()
-      ? ` (${new Date(session.date).getFullYear()})`
-      : "";
+  const minDate = useMemo(() => {
+    return getCalendarDateString(session.meso.startDate);
+  }, [session.meso.startDate]);
+  const maxDate = useMemo(() => {
+    return getCalendarDateString(session.meso.endDate);
+  }, [session.meso.endDate]);
 
   ///////////// FORM STATE /////////////
   const [sessionNotesOpen, setSessionNotesOpen] = useState(false);
@@ -96,6 +99,34 @@ export default function Session({
       sessionNotesRef.current?.clear();
     }
   }
+
+  const [selectedDate, setSelectedDate] = useState<string>(
+    getCalendarDateString(session.date)
+  );
+  const formattedDate = useMemo(() => {
+    const userTimezoneOffset = new Date().getTimezoneOffset() * 60000;
+    return new Date(
+      new Date(selectedDate).getTime() + userTimezoneOffset
+    ).toLocaleDateString(undefined, {
+      year: "numeric",
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
+  }, [selectedDate]);
+
+  const onDayPress = useCallback((day: DateData) => {
+    setSelectedDate(day.dateString);
+  }, []);
+
+  const marked = useMemo(() => {
+    return {
+      [selectedDate]: {
+        selected: true,
+        disableTouchEvent: true,
+      },
+    };
+  }, [selectedDate]);
 
   return (
     <>
@@ -242,22 +273,51 @@ export default function Session({
             ))}
           </View>
 
-          <Pressable
-            style={styles.dateRow}
-            onPress={() => setSessionDateOpen(true)}
-          >
-            <Icon source="calendar" size={24} color="darkgray" />
-            <View style={styles.datePressable}>
-              <Text>
-                {new Date(session.date).toLocaleDateString(undefined, {
-                  weekday: "short",
-                  month: "short",
-                  day: "numeric",
-                })}
-                {dateYearString}
-              </Text>
+          <View style={styles.dateRow}>
+            <View style={{ flex: 1 }}>
+              <List.Accordion
+                title={
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 20,
+                    }}
+                  >
+                    <Icon source="calendar" size={24} color="darkgray" />
+                    <Text
+                      variant="bodySmall"
+                      style={styles.sessionDateInfoText}
+                    >
+                      {formattedDate}
+                    </Text>
+                  </View>
+                }
+                right={(props) => null}
+                style={styles.datePressable}
+                rippleColor="rgba(255, 255, 255, 0.1)"
+              >
+                <Calendar
+                  hideExtraDays
+                  current={selectedDate}
+                  onDayPress={onDayPress}
+                  markedDates={marked}
+                  minDate={minDate}
+                  maxDate={maxDate}
+                  theme={{
+                    calendarBackground: "transparent",
+                    monthTextColor: "white",
+                    arrowColor: Colors.primary.light,
+                    dayTextColor: "white",
+                    todayTextColor: "#fcbbbb",
+                    selectedDayBackgroundColor: Colors.primary.main,
+                    textDisabledColor: "gray",
+                  }}
+                />
+              </List.Accordion>
             </View>
-          </Pressable>
+          </View>
         </View>
 
         <FlatList
@@ -647,21 +707,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   sessionDateInfoText: {
-    flex: 1,
-    alignItems: "center",
+    fontSize: 13,
   },
   dateRow: {
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    alignItems: "center",
+    alignItems: "flex-start",
     paddingHorizontal: 7,
     gap: 15,
     marginTop: 5,
   },
   datePressable: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
     backgroundColor: Colors.secondary.main,
   },
 
