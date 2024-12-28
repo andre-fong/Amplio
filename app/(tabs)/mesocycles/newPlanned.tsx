@@ -146,10 +146,13 @@ export default function NewPlannedMesocycle() {
     [width]
   );
 
-  const [selectedDate, setSelectedDate] = useState<string>(
-    getCalendarDateString(new Date())
+  const [selectedDate, setSelectedDate] = useState<string | undefined>(
+    undefined
   );
   const formattedDate = useMemo(() => {
+    if (!selectedDate)
+      return <Text style={{ color: "lightgray" }}>Select a start date</Text>;
+
     const userTimezoneOffset = new Date().getTimezoneOffset() * 60000;
     return new Date(
       new Date(selectedDate).getTime() + userTimezoneOffset
@@ -161,15 +164,20 @@ export default function NewPlannedMesocycle() {
     });
   }, [selectedDate]);
 
-  const onDayPress = useCallback((day: DateData) => {
-    setSelectedDate(day.dateString);
-  }, []);
+  const onDayPress = useCallback(
+    (day: DateData) => {
+      if (day.dateString === selectedDate) setSelectedDate(undefined);
+      else setSelectedDate(day.dateString);
+    },
+    [selectedDate]
+  );
 
   const marked = useMemo(() => {
+    if (!selectedDate) return {};
+
     return {
       [selectedDate]: {
         selected: true,
-        disableTouchEvent: true,
       },
     };
   }, [selectedDate]);
