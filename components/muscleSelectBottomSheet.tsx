@@ -88,7 +88,7 @@ export default function MuscleSelectBottomSheet({
     <>
       <BottomSheet
         backgroundStyle={{ backgroundColor: Colors.secondary.main }}
-        snapPoints={["50%", "80%"]}
+        snapPoints={[85, "80%"]}
         handleStyle={{
           height: 30,
           justifyContent: "center",
@@ -100,7 +100,6 @@ export default function MuscleSelectBottomSheet({
         handleIndicatorStyle={{ backgroundColor: "white", width: 50 }}
         ref={bottomSheetRef}
         backdropComponent={renderBackdropComponent}
-        enablePanDownToClose
         onClose={handleClose}
         index={-1}
       >
