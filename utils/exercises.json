@@ -232,6 +232,7 @@
   {
     "name": "Bench Press",
     "targetMuscle": "Chest",
+    "synergistMuscles": ["Triceps", "Shoulders"],
     "equipment": "Barbell"
   },
   {
