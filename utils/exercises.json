@@ -1,0 +1,762 @@
+[
+  {
+    "name": "Cable Crunch",
+    "targetMuscle": "Abs",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Bodyweight Crunch",
+    "targetMuscle": "Abs",
+    "equipment": "Bodyweight"
+  },
+  {
+    "name": "Dragon Flag",
+    "targetMuscle": "Abs",
+    "equipment": "Bodyweight"
+  },
+  {
+    "name": "Plate-weighted Crunch",
+    "targetMuscle": "Abs",
+    "equipment": "Bodyweight Loadable"
+  },
+  {
+    "name": "Straight Leg Raise",
+    "targetMuscle": "Abs",
+    "equipment": "Bodyweight"
+  },
+  {
+    "name": "Bent Knee Raise",
+    "targetMuscle": "Abs",
+    "equipment": "Bodyweight"
+  },
+  {
+    "name": "Lat Pulldown",
+    "targetMuscle": "Back",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Lat Pulldown",
+    "targetMuscle": "Back",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Deadlift",
+    "targetMuscle": "Back",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Dumbbell Row",
+    "targetMuscle": "Back",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Pull-up",
+    "targetMuscle": "Back",
+    "equipment": "Bodyweight Loadable"
+  },
+  {
+    "name": "Pull-up (Assisted)",
+    "targetMuscle": "Back",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Single Arm Lat Pulldown",
+    "targetMuscle": "Back",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Barbell Row",
+    "targetMuscle": "Back",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Deficit Barbell Row",
+    "targetMuscle": "Back",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "T-Bar Row",
+    "targetMuscle": "Back",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Smith Machine Row",
+    "targetMuscle": "Back",
+    "equipment": "Smith Machine"
+  },
+  {
+    "name": "Chest Supported Row",
+    "targetMuscle": "Back",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Cable Row",
+    "targetMuscle": "Back",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Wide Grip Cable Row",
+    "targetMuscle": "Back",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Face Pull",
+    "targetMuscle": "Back",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Lat Prayer",
+    "targetMuscle": "Back",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Lat Pullover",
+    "targetMuscle": "Back",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Machine Pullover",
+    "targetMuscle": "Back",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Shrug",
+    "targetMuscle": "Back",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Preacher Curl",
+    "targetMuscle": "Biceps",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Preacher Curl",
+    "targetMuscle": "Biceps",
+    "equipment": "EZ Bar"
+  },
+  {
+    "name": "Preacher Curl",
+    "targetMuscle": "Biceps",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Hammer Curl",
+    "targetMuscle": "Biceps",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Spider Curl",
+    "targetMuscle": "Biceps",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Barbell Curl",
+    "targetMuscle": "Biceps",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "EZ Bar Curl",
+    "targetMuscle": "Biceps",
+    "equipment": "EZ Bar"
+  },
+  {
+    "name": "Standing Dumbbell Curl",
+    "targetMuscle": "Biceps",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Seated Incline Curl",
+    "targetMuscle": "Biceps",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Lying Dumbbell Curl",
+    "targetMuscle": "Biceps",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Bayesian Cable Curl",
+    "targetMuscle": "Biceps",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Cable Curl",
+    "targetMuscle": "Biceps",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Face Away Cable Curl",
+    "targetMuscle": "Biceps",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Standing Calf Raise",
+    "targetMuscle": "Calves",
+    "equipment": "Bodyweight Loadable"
+  },
+  {
+    "name": "Standing Calf Raise",
+    "targetMuscle": "Calves",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Standing Calf Raise",
+    "targetMuscle": "Calves",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Seated Calf Raise",
+    "targetMuscle": "Calves",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Donkey Calf Raise",
+    "targetMuscle": "Calves",
+    "equipment": "Smith Machine"
+  },
+  {
+    "name": "Single Leg Calf Raise",
+    "targetMuscle": "Calves",
+    "equipment": "Bodyweight"
+  },
+  {
+    "name": "Calf Press",
+    "targetMuscle": "Calves",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Hex Press",
+    "targetMuscle": "Chest",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Bench Press",
+    "targetMuscle": "Chest",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Bench Press",
+    "targetMuscle": "Chest",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Bench Press",
+    "targetMuscle": "Chest",
+    "equipment": "Smith Machine"
+  },
+  {
+    "name": "Incline Bench Press",
+    "targetMuscle": "Chest",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Incline Bench Press",
+    "targetMuscle": "Chest",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Incline Bench Press",
+    "targetMuscle": "Chest",
+    "equipment": "Smith Machine"
+  },
+  {
+    "name": "Decline Bench Press",
+    "targetMuscle": "Chest",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Decline Bench Press",
+    "targetMuscle": "Chest",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Machine Chest Press",
+    "targetMuscle": "Chest",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Chest Dip",
+    "targetMuscle": "Chest",
+    "equipment": "Bodyweight Loadable"
+  },
+  {
+    "name": "Chest Dip (Assisted)",
+    "targetMuscle": "Chest",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Push-up",
+    "targetMuscle": "Chest",
+    "equipment": "Bodyweight"
+  },
+  {
+    "name": "Deficit Push-up",
+    "targetMuscle": "Chest",
+    "equipment": "Bodyweight"
+  },
+  {
+    "name": "Guillotine Press",
+    "targetMuscle": "Chest",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Guillotine Press",
+    "targetMuscle": "Chest",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Cable Chest Fly",
+    "targetMuscle": "Chest",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Seated Cable Chest Fly",
+    "targetMuscle": "Chest",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Pec Deck",
+    "targetMuscle": "Chest",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Dumbbell Chest Fly",
+    "targetMuscle": "Chest",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Reverse Curl",
+    "targetMuscle": "Forearms",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Reverse Curl",
+    "targetMuscle": "Forearms",
+    "equipment": "EZ Bar"
+  },
+  {
+    "name": "Reverse Curl",
+    "targetMuscle": "Forearms",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Wrist Extension",
+    "targetMuscle": "Forearms",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Dumbbell Wrist Curl",
+    "targetMuscle": "Forearms",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Forearm Pushdown",
+    "targetMuscle": "Forearms",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Step-up",
+    "targetMuscle": "Glutes",
+    "equipment": "Bodyweight"
+  },
+  {
+    "name": "Step-up",
+    "targetMuscle": "Glutes",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Hip Thrust",
+    "targetMuscle": "Glutes",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Bulgarian Split Squat",
+    "targetMuscle": "Glutes",
+    "equipment": "Bodyweight"
+  },
+  {
+    "name": "Bulgarian Split Squat",
+    "targetMuscle": "Glutes",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Bulgarian Split Squat",
+    "targetMuscle": "Glutes",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Romanian Deadlift",
+    "targetMuscle": "Glutes",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Romanian Deadlift",
+    "targetMuscle": "Glutes",
+    "equipment": "Smith Machine"
+  },
+  {
+    "name": "Hip Abduction",
+    "targetMuscle": "Glutes",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Hip Abduction",
+    "targetMuscle": "Glutes",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Lunge",
+    "targetMuscle": "Glutes",
+    "equipment": "Bodyweight"
+  },
+  {
+    "name": "Lunge",
+    "targetMuscle": "Glutes",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Lunge",
+    "targetMuscle": "Glutes",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Lunge",
+    "targetMuscle": "Glutes",
+    "equipment": "Smith Machine"
+  },
+  {
+    "name": "Walking Lunge",
+    "targetMuscle": "Glutes",
+    "equipment": "Bodyweight"
+  },
+  {
+    "name": "Walking Lunge",
+    "targetMuscle": "Glutes",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Walking Lunge",
+    "targetMuscle": "Glutes",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Seated Leg Curl",
+    "targetMuscle": "Hamstrings",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Lying Leg Curl",
+    "targetMuscle": "Hamstrings",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Stiff Legged Deadlift",
+    "targetMuscle": "Hamstrings",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Stiff Legged Deadlift",
+    "targetMuscle": "Hamstrings",
+    "equipment": "Smith Machine"
+  },
+  {
+    "name": "Stiff Legged Deadlift",
+    "targetMuscle": "Hamstrings",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Good Morning",
+    "targetMuscle": "Hamstrings",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Good Morning",
+    "targetMuscle": "Hamstrings",
+    "equipment": "Smith Machine"
+  },
+  {
+    "name": "Romanian Deadlift",
+    "targetMuscle": "Hamstrings",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Romanian Deadlift",
+    "targetMuscle": "Hamstrings",
+    "equipment": "Smith Machine"
+  },
+  {
+    "name": "Barbell Back Squat",
+    "targetMuscle": "Quads",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Smith Machine Squat",
+    "targetMuscle": "Quads",
+    "equipment": "Smith Machine"
+  },
+  {
+    "name": "Dumbbell Squat",
+    "targetMuscle": "Quads",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Barbell Front Squat",
+    "targetMuscle": "Quads",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Low Bar Squat",
+    "targetMuscle": "Quads",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Low Bar Squat",
+    "targetMuscle": "Quads",
+    "equipment": "Smith Machine"
+  },
+  {
+    "name": "Hack Squat",
+    "targetMuscle": "Quads",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Pendulum Squat",
+    "targetMuscle": "Quads",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Leg Press",
+    "targetMuscle": "Quads",
+    "equipment": "Machine"
+  },
+  {
+    "name": "45-degree Leg Press",
+    "targetMuscle": "Quads",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Leg Extension",
+    "targetMuscle": "Quads",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Goblet Squat",
+    "targetMuscle": "Quads",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Jump Squat",
+    "targetMuscle": "Quads",
+    "equipment": "Bodyweight"
+  },
+  {
+    "name": "Bulgarian Split Squat",
+    "targetMuscle": "Quads",
+    "equipment": "Bodyweight"
+  },
+  {
+    "name": "Bulgarian Split Squat",
+    "targetMuscle": "Quads",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Bulgarian Split Squat",
+    "targetMuscle": "Quads",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Dumbbell Lateral Raise",
+    "targetMuscle": "Shoulders",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Cable Lateral Raise",
+    "targetMuscle": "Shoulders",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Machine Lateral Raise",
+    "targetMuscle": "Shoulders",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Lean-in Lateral Raise",
+    "targetMuscle": "Shoulders",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Super ROM Lateral Raise",
+    "targetMuscle": "Shoulders",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Overhead Press",
+    "targetMuscle": "Shoulders",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Overhead Press",
+    "targetMuscle": "Shoulders",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Overhead Press",
+    "targetMuscle": "Shoulders",
+    "equipment": "Smith Machine"
+  },
+  {
+    "name": "Machine Shoulder Press",
+    "targetMuscle": "Shoulders",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Side Lying Dumbbell Raise",
+    "targetMuscle": "Shoulders",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Dumbbell Front Raise",
+    "targetMuscle": "Shoulders",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Cable Front Raise",
+    "targetMuscle": "Shoulders",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Cable Y-Raise",
+    "targetMuscle": "Shoulders",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Upright Row",
+    "targetMuscle": "Shoulders",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Upright Row",
+    "targetMuscle": "Shoulders",
+    "equipment": "EZ Bar"
+  },
+  {
+    "name": "Upright Row",
+    "targetMuscle": "Shoulders",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Reverse Pec Deck",
+    "targetMuscle": "Shoulders",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Single Arm Reverse Pec Deck",
+    "targetMuscle": "Shoulders",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Face Pull",
+    "targetMuscle": "Shoulders",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Bent-over Rear Delt Raise",
+    "targetMuscle": "Shoulders",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Reverse Cable Crossover",
+    "targetMuscle": "Shoulders",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Tricep Pushdown",
+    "targetMuscle": "Triceps",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Overhead Tricep Extension",
+    "targetMuscle": "Triceps",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Overhead Tricep Extension",
+    "targetMuscle": "Triceps",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Katana Tricep Extension",
+    "targetMuscle": "Triceps",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Skullcrusher",
+    "targetMuscle": "Triceps",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Skullcrusher",
+    "targetMuscle": "Triceps",
+    "equipment": "EZ Bar"
+  },
+  {
+    "name": "Skullcrusher",
+    "targetMuscle": "Triceps",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "JM Press",
+    "targetMuscle": "Triceps",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "JM Press",
+    "targetMuscle": "Triceps",
+    "equipment": "Smith Machine"
+  },
+  {
+    "name": "Tricep Kickback",
+    "targetMuscle": "Triceps",
+    "equipment": "Cable"
+  },
+  {
+    "name": "Tricep Kickback",
+    "targetMuscle": "Triceps",
+    "equipment": "Dumbbell"
+  },
+  {
+    "name": "Tricep Dip",
+    "targetMuscle": "Triceps",
+    "equipment": "Bodyweight Loadable"
+  },
+  {
+    "name": "Tricep Dip (Assisted)",
+    "targetMuscle": "Triceps",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Machine Dip",
+    "targetMuscle": "Triceps",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Close Grip Bench Press",
+    "targetMuscle": "Triceps",
+    "equipment": "Barbell"
+  },
+  {
+    "name": "Close Grip Bench Press",
+    "targetMuscle": "Triceps",
+    "equipment": "Smith Machine"
+  },
+  {
+    "name": "Push-up",
+    "targetMuscle": "Triceps",
+    "equipment": "Bodyweight"
+  },
+  {
+    "name": "Diamond Push-up",
+    "targetMuscle": "Triceps",
+    "equipment": "Bodyweight"
+  }
+]
