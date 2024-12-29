@@ -559,6 +559,18 @@ export default function Logs() {
     bottomSheetRef.current?.close();
   }, []);
 
+  const canMoveSetUp = useMemo(() => {
+    return selectedSetOptions && selectedSetOptions.setOrder > 1;
+  }, [selectedSetOptions]);
+
+  const canMoveSetDown = useMemo(() => {
+    return (
+      selectedSetOptions &&
+      selectedSetOptions.setOrder <
+        (setOptionsData?.exercise.plannedSets.length || 0)
+    );
+  }, [selectedSetOptions, setOptionsData]);
+
   ///////////// RENDER //////////////
   const renderBackdropComponent = useCallback(
     (props: any) => (
@@ -823,32 +835,40 @@ export default function Logs() {
               </View>
             </TouchableRipple>
 
-            {selectedSetOptions ? (
-              selectedSetOptions.setOrder > 1 && (
-                <TouchableRipple onPress={handleMoveSetUp}>
-                  <View style={styles.setOption}>
-                    <Icon source="arrow-up" size={24} color="white" />
-                    <Text variant="bodyLarge">Move set up</Text>
-                  </View>
-                </TouchableRipple>
-              )
-            ) : (
-              <View style={{ height: 60 }} />
-            )}
+            <TouchableRipple onPress={handleMoveSetUp} disabled={!canMoveSetUp}>
+              <View style={styles.setOption}>
+                <Icon
+                  source="arrow-up"
+                  size={24}
+                  color={canMoveSetUp ? "white" : "darkgray"}
+                />
+                <Text
+                  variant="bodyLarge"
+                  style={{ color: canMoveSetUp ? "white" : "darkgray" }}
+                >
+                  Move set up
+                </Text>
+              </View>
+            </TouchableRipple>
 
-            {selectedSetOptions ? (
-              selectedSetOptions.setOrder <
-                (setOptionsData?.exercise.plannedSets.length || 0) && (
-                <TouchableRipple onPress={handleMoveSetDown}>
-                  <View style={styles.setOption}>
-                    <Icon source="arrow-down" size={24} color="white" />
-                    <Text variant="bodyLarge">Move set down</Text>
-                  </View>
-                </TouchableRipple>
-              )
-            ) : (
-              <View style={{ height: 60 }} />
-            )}
+            <TouchableRipple
+              onPress={handleMoveSetDown}
+              disabled={!canMoveSetDown}
+            >
+              <View style={styles.setOption}>
+                <Icon
+                  source="arrow-down"
+                  size={24}
+                  color={canMoveSetDown ? "white" : "darkgray"}
+                />
+                <Text
+                  variant="bodyLarge"
+                  style={{ color: canMoveSetDown ? "white" : "darkgray" }}
+                >
+                  Move set down
+                </Text>
+              </View>
+            </TouchableRipple>
 
             <Divider
               bold
