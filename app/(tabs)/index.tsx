@@ -33,6 +33,7 @@ import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { spinUpDatabase, getAllMuscleGroups, clearDatabase } from "@/api";
 import { getFullSetType } from "@/utils/set";
 import Session from "@/components/session";
+import { getExercises } from "@/api/exercises";
 
 // TODO: Replace with real data
 const mockMesoData: Mesocycle = {
@@ -480,7 +481,12 @@ export default function Logs() {
     async function prepare() {
       try {
         await spinUpDatabase();
-        // await getAllMuscleGroups();
+        console.log(
+          await getExercises({
+            muscleGroups: ["Chest"],
+            searchQuery: "bench press",
+          })
+        );
       } catch (error) {
         console.error(error);
       } finally {
