@@ -13,12 +13,14 @@ import {
   Appbar,
   Button,
   Chip,
+  Dialog,
   Icon,
   IconButton,
   List,
   Menu,
   Modal,
   Portal,
+  SegmentedButtons,
   Text,
   TextInput,
   Tooltip,
@@ -182,6 +184,14 @@ export default function NewPlannedMesocycle() {
     };
   }, [selectedDate]);
 
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [confirmMesocycleOpen, setConfirmMesocycleOpen] = useState(false);
+  const [weeksToTrain, setWeeksToTrain] = useState("4");
+  const handleConfirmMesocycleCancel = useCallback(() => {
+    setConfirmMesocycleOpen(false);
+    setWeeksToTrain("4");
+  }, []);
+
   return (
     <Portal.Host>
       <Appbar.Header
@@ -208,7 +218,9 @@ export default function NewPlannedMesocycle() {
             )}
             animated={false}
             size={32}
-            onPress={() => {}}
+            onPress={() => {
+              setConfirmMesocycleOpen(true);
+            }}
             style={{ marginRight: 10 }}
           />
         </Tooltip>
@@ -560,7 +572,7 @@ export default function NewPlannedMesocycle() {
             theme={{ colors: { surfaceVariant: Colors.secondary.light } }}
           />
 
-          <View style={styles.mesoNotesButtons}>
+          <View style={styles.mesoModalButtons}>
             <Button
               theme={{ colors: { primary: Colors.accent.light } }}
               onPress={handleMesoNotesCancel}
@@ -579,6 +591,89 @@ export default function NewPlannedMesocycle() {
             </Button>
           </View>
         </Modal>
+
+        <Modal
+          visible={confirmMesocycleOpen}
+          onDismiss={handleConfirmMesocycleCancel}
+          contentContainerStyle={{
+            backgroundColor: "rgb(65, 65, 65)",
+            padding: 20,
+            margin: 20,
+            borderRadius: 3,
+          }}
+        >
+          <Text variant="titleMedium">Confirm new mesocycle</Text>
+          <Text variant="bodyMedium" style={{ marginTop: 20 }}>
+            How many weeks will you train?
+          </Text>
+          <SegmentedButtons
+            style={{ marginVertical: 15 }}
+            theme={{
+              colors: {
+                secondaryContainer: Colors.primary.dark,
+                onSecondaryContainer: "white",
+                primary: Colors.primary.light,
+              },
+            }}
+            value={weeksToTrain}
+            onValueChange={setWeeksToTrain}
+            buttons={[
+              {
+                label: "4",
+                value: "4",
+              },
+              {
+                label: "5",
+                value: "5",
+              },
+              {
+                label: "6",
+                value: "6",
+              },
+            ]}
+          />
+          <View style={styles.mesoModalButtons}>
+            <Button
+              theme={{ colors: { primary: Colors.primary.main } }}
+              onPress={handleConfirmMesocycleCancel}
+            >
+              Back
+            </Button>
+            <Button
+              theme={{
+                colors: { primary: Colors.primary.dark, onPrimary: "white" },
+              }}
+              // rippleColor={Colors.accent.dark}
+              mode="contained"
+              onPress={() => {}}
+            >
+              Confirm
+            </Button>
+          </View>
+        </Modal>
+
+        <Dialog
+          visible={errorDialogOpen}
+          onDismiss={() => setErrorDialogOpen(false)}
+          style={{
+            backgroundColor: "rgb(65, 65, 65)",
+          }}
+        >
+          <Dialog.Title>Error</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">
+              There was an error processing your request.
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button
+              labelStyle={{ fontSize: 13, color: Colors.primary.light }}
+              onPress={() => setErrorDialogOpen(false)}
+            >
+              OK
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
       </Portal>
     </Portal.Host>
   );
@@ -625,7 +720,7 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: Colors.accent.dark,
   },
-  mesoNotesButtons: {
+  mesoModalButtons: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "flex-end",
