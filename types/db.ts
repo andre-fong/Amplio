@@ -1,5 +1,5 @@
 type MesocycleDb = {
-  id: string;
+  id: number;
   name: string;
   notes?: string;
   startDate: string;
@@ -10,7 +10,7 @@ type MesocycleDb = {
 
 type SessionDb = {
   date: string;
-  mesoId: string;
+  mesoId: number;
   name: string;
   notes?: string;
   deload: boolean;
@@ -22,29 +22,29 @@ type MuscleGroupDb = {
 };
 
 type ExerciseDb = {
-  id: string;
+  id: number;
   name: string;
   equipment: Equipment;
   notes?: string;
 };
 
 type RecruitsDb = {
-  exerciseId: string;
+  exerciseId: number;
   muscleGroupName: string;
   relationship: "target" | "synergist";
 };
 
 type SessionExerciseDb = {
-  id: string;
+  id: number;
   date: string;
-  mesoId: string;
-  exerciseId: string;
+  mesoId: number;
+  exerciseId: number;
   notes?: string;
   exerciseOrder: number;
 };
 
 type ExerciseSetDb = {
-  sessionExerciseId: string;
+  sessionExerciseId: number;
   setOrder: number;
   parentSetOrder?: number;
   weight?: number;
