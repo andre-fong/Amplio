@@ -98,7 +98,8 @@ export default function MuscleSelectBottomSheet({
         <BottomSheetFlashList
           contentContainerStyle={styles.sheetContainer}
           data={muscleGroups}
-          estimatedItemSize={20}
+          // TODO: Change estimatedItemSize once restyled
+          estimatedItemSize={55}
           keyExtractor={(item) => item.name}
           ListHeaderComponent={
             <View

@@ -241,7 +241,7 @@ export default function ExerciseSelectBottomSheet({
           contentContainerStyle={styles.sheetContainer}
           data={exercises}
           ref={bottomSheetListRef}
-          estimatedItemSize={150}
+          estimatedItemSize={80}
           keyExtractor={flashListKeyExtractor}
           keyboardDismissMode="on-drag"
           ListHeaderComponent={
