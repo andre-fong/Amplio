@@ -10,6 +10,16 @@
     "equipment": "Bodyweight"
   },
   {
+    "name": "Machine Crunch",
+    "targetMuscle": "Abs",
+    "equipment": "Machine"
+  },
+  {
+    "name": "Decline Sit-up",
+    "targetMuscle": "Abs",
+    "equipment": "Bodyweight Loadable"
+  },
+  {
     "name": "Dragon Flag",
     "targetMuscle": "Abs",
     "equipment": "Bodyweight"
