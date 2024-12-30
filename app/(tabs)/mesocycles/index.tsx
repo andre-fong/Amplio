@@ -97,6 +97,8 @@ function Mesocycles() {
             paddingTop: 10,
             paddingBottom: 80,
           }}
+          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="always"
           refreshControl={
             <RefreshControl
               refreshing={false}
