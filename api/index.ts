@@ -39,7 +39,9 @@ export async function spinUpDatabase() {
   }
 
   try {
-    const db = await SQLite.openDatabaseAsync("amplio.db");
+    const db = await SQLite.openDatabaseAsync("amplio.db", {
+      useNewConnection: true,
+    });
     await db.execAsync(`
       CREATE TABLE IF NOT EXISTS Mesocycle (
         id INTEGER PRIMARY KEY,
@@ -136,16 +138,13 @@ export async function spinUpDatabase() {
   console.log("Database spun up!");
 }
 
-export async function getAllMuscleGroups() {
-  const db = await SQLite.openDatabaseAsync("amplio.db");
-  console.log(await db.getFirstAsync<MuscleGroup>(`SELECT * FROM muscleGroup`));
-}
-
 /**
  * WARNING: This function will drop all tables in the database.
  */
 export async function clearDatabase() {
-  const db = await SQLite.openDatabaseAsync("amplio.db");
+  const db = await SQLite.openDatabaseAsync("amplio.db", {
+    useNewConnection: true,
+  });
 
   // Drop all tables
   await db.execAsync(`
