@@ -15,6 +15,11 @@
     "equipment": "Machine"
   },
   {
+    "name": "Sit-up",
+    "targetMuscle": "Abs",
+    "equipment": "Bodyweight Loadable"
+  },
+  {
     "name": "Decline Sit-up",
     "targetMuscle": "Abs",
     "equipment": "Bodyweight Loadable"
