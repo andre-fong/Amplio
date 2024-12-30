@@ -1,34 +1,58 @@
 import * as SQLite from "expo-sqlite";
 
 type GetExerciseParams = {
-  muscleGroups: string[];
-  searchQuery: string;
+  targetMuscleGroups?: string[];
+  searchQuery?: string;
 };
 
-export async function getExercises({
-  muscleGroups,
-  searchQuery,
-}: GetExerciseParams) {
+export async function getExercises(
+  params?: GetExerciseParams
+): Promise<Exercise[]> {
   try {
     // TODO: Format result better
-    const db = await SQLite.openDatabaseAsync("amplio.db");
-    const muscleGroupQuery = muscleGroups
-      .map((_, index) => `muscleGroupName = ?${index + 1}`)
-      .join(" OR ");
-    const muscleGroupParams = muscleGroups.map((group) => group);
-    const searchQueryParams = `%${searchQuery}%`;
+    const db = await SQLite.openDatabaseAsync("amplio.db", {
+      useNewConnection: true,
+    });
+    const queryParams = [];
 
-    const exercises = await db.getAllAsync<Exercise>(
+    const muscleGroupQuery = params?.targetMuscleGroups
+      ? params.targetMuscleGroups
+          .map((_, index) => `muscleGroupName = ?`)
+          .join(" OR ")
+      : undefined;
+    if (params?.targetMuscleGroups)
+      queryParams.push(...params.targetMuscleGroups);
+
+    const searchQueryParams = params?.searchQuery
+      ? `%${params.searchQuery}%`
+      : undefined;
+    if (searchQueryParams) queryParams.push(searchQueryParams);
+
+    const exercises = await db.getAllAsync<
+      Omit<Exercise, "synergistMuscles" | "targetMuscle"> & {
+        targetMuscle: string;
+      }
+    >(
       `
-    SELECT e.id, e.name, e.equipment, e.notes, r.muscleGroupName, r.relationship
+    SELECT 
+      e.id,
+      e.name,
+      e.equipment,
+      json_object('name', m.name, 'color', m.color) AS targetMuscle
     FROM Exercise e
     JOIN Recruits r ON e.id = r.exerciseId
-    WHERE (${muscleGroupQuery}) AND e.name LIKE ?
+    JOIN MuscleGroup m ON r.muscleGroupName = m.name
+    WHERE r.relationship = 'target' 
+    ${muscleGroupQuery ? `AND (${muscleGroupQuery})` : ""} 
+    ${searchQueryParams ? `AND e.name LIKE ?` : ""}
   `,
-      [...muscleGroupParams, searchQueryParams]
+      queryParams
     );
 
-    return exercises;
+    return exercises.map((exercise) => ({
+      ...exercise,
+      targetMuscle: JSON.parse(exercise.targetMuscle) as MuscleGroup,
+    }));
   } catch (error) {
     console.error(error);
     return [];
