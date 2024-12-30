@@ -11,123 +11,14 @@ import {
   Text,
   TouchableRipple,
 } from "react-native-paper";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetFlashList,
 } from "@gorhom/bottom-sheet";
 import Colors from "@/constants/colors";
-
-const mockExerciseList: Exercise[] = [
-  {
-    id: "1",
-    name: "Bench Press",
-    targetMuscle: {
-      name: "Chest",
-      color: "red",
-    },
-    equipment: "Barbell",
-  },
-  {
-    id: "2",
-    name: "Squat",
-    targetMuscle: {
-      name: "Quads",
-      color: "green",
-    },
-    equipment: "Barbell",
-  },
-  {
-    id: "3",
-    name: "Deadlift",
-    targetMuscle: {
-      name: "Hamstrings",
-      color: "yellow",
-    },
-    equipment: "Barbell",
-  },
-  {
-    id: "4",
-    name: "Pull-up",
-    targetMuscle: {
-      name: "Back",
-      color: "blue",
-    },
-    equipment: "Bodyweight",
-  },
-  {
-    id: "5",
-    name: "Dumbbell Curl",
-    targetMuscle: {
-      name: "Biceps",
-      color: "purple",
-    },
-    equipment: "Dumbbell",
-  },
-  {
-    id: "6",
-    name: "Tricep Extension",
-    targetMuscle: {
-      name: "Triceps",
-      color: "pink",
-    },
-    equipment: "Dumbbell",
-  },
-  {
-    id: "7",
-    name: "Leg Press",
-    targetMuscle: {
-      name: "Quads",
-      color: "green",
-    },
-    equipment: "Machine",
-  },
-  {
-    id: "8",
-    name: "Calf Raise",
-    targetMuscle: {
-      name: "Calves",
-      color: "orange",
-    },
-    equipment: "Machine",
-  },
-  {
-    id: "9",
-    name: "Shoulder Press",
-    targetMuscle: {
-      name: "Shoulders",
-      color: "cyan",
-    },
-    equipment: "Barbell",
-  },
-  {
-    id: "10",
-    name: "Lat Pulldown",
-    targetMuscle: {
-      name: "Back",
-      color: "blue",
-    },
-    equipment: "Machine",
-  },
-  {
-    id: "11",
-    name: "Hammer Curl",
-    targetMuscle: {
-      name: "Biceps",
-      color: "purple",
-    },
-    equipment: "Dumbbell",
-  },
-  {
-    id: "12",
-    name: "Skullcrusher",
-    targetMuscle: {
-      name: "Triceps",
-      color: "pink",
-    },
-    equipment: "Barbell",
-  },
-];
+import useExercises from "@/hooks/useExercises";
+import { FlashList } from "@shopify/flash-list";
 
 const mockMuscleGroupList: MuscleGroup[] = [
   { name: "Chest", color: "red" },
@@ -157,20 +48,32 @@ export default function ExerciseSelectBottomSheet({
   }, [open]);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const bottomSheetListRef = useRef<any>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   const [selectedMuscleGroups, setSelectedMuscleGroups] = useState<
     Record<string, boolean>
-  >({
-    Chest: true,
+  >({});
+  const selectedMuscleGroupNames = useMemo(
+    () => Object.keys(selectedMuscleGroups),
+    [selectedMuscleGroups]
+  );
+
+  const { exercises, loading } = useExercises({
+    targetMuscleGroups: selectedMuscleGroupNames,
+    searchQuery,
   });
+  console.log(exercises.length);
 
   const handleMuscleGroupSelect = useCallback(
     (muscleGroupName: string) => {
-      setSelectedMuscleGroups((prev) => ({
-        ...prev,
-        [muscleGroupName]: !prev[muscleGroupName],
-      }));
+      setSelectedMuscleGroups((prev) => {
+        if (prev[muscleGroupName]) {
+          delete prev[muscleGroupName];
+          return { ...prev };
+        }
+        return { ...prev, [muscleGroupName]: true };
+      });
     },
     [setSelectedMuscleGroups]
   );
@@ -186,7 +89,12 @@ export default function ExerciseSelectBottomSheet({
   const handleClose = useCallback(() => {
     setOpen(false);
     bottomSheetRef.current?.close();
-  }, [setOpen, bottomSheetRef]);
+    setTimeout(() => {
+      (
+        bottomSheetListRef.current as FlashList<Exercise> | undefined
+      )?.scrollToOffset({ offset: 0 });
+    }, 300);
+  }, [setOpen]);
 
   const renderBackdropComponent = useCallback(
     (props: any) => (
@@ -232,7 +140,6 @@ export default function ExerciseSelectBottomSheet({
   const renderMuscleItem = useCallback(
     ({ item: muscleGroup }: { item: MuscleGroup }) => (
       <Chip
-        key={muscleGroup.name}
         compact
         style={{
           // TODO: Set muscle group colors once they're not ugly
@@ -275,7 +182,6 @@ export default function ExerciseSelectBottomSheet({
         onPress={() => {
           handleExerciseSelect(exercise);
         }}
-        key={exercise.id}
       >
         <View style={styles.exerciseContainer}>
           <View>
@@ -341,8 +247,9 @@ export default function ExerciseSelectBottomSheet({
       >
         <BottomSheetFlashList
           contentContainerStyle={styles.sheetContainer}
-          data={mockExerciseList}
-          estimatedItemSize={20}
+          data={exercises}
+          ref={bottomSheetListRef}
+          estimatedItemSize={150}
           keyExtractor={flashListKeyExtractor}
           ListHeaderComponent={
             <View
@@ -360,6 +267,7 @@ export default function ExerciseSelectBottomSheet({
                 value={searchQuery}
                 style={{ marginTop: 12 }}
                 onChangeText={setSearchQuery}
+                loading={loading}
                 theme={{ colors: { onSurface: "rgb(137, 124, 121)" } }}
               />
 

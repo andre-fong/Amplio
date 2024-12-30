@@ -481,12 +481,6 @@ export default function Logs() {
     async function prepare() {
       try {
         await spinUpDatabase();
-        console.log(
-          await getExercises({
-            muscleGroups: ["Chest"],
-            searchQuery: "bench press",
-          })
-        );
       } catch (error) {
         console.error(error);
       } finally {
