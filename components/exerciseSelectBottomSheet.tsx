@@ -243,6 +243,7 @@ export default function ExerciseSelectBottomSheet({
           ref={bottomSheetListRef}
           estimatedItemSize={150}
           keyExtractor={flashListKeyExtractor}
+          keyboardDismissMode="on-drag"
           ListHeaderComponent={
             <View
               style={{
