@@ -6,17 +6,7 @@ import BottomSheet, {
   BottomSheetFlashList,
 } from "@gorhom/bottom-sheet";
 import Colors from "@/constants/colors";
-
-const mockMuscleGroupList: MuscleGroup[] = [
-  { name: "Chest", color: "red" },
-  { name: "Quads", color: "green" },
-  { name: "Hamstrings", color: "yellow" },
-  { name: "Back", color: "blue" },
-  { name: "Biceps", color: "purple" },
-  { name: "Triceps", color: "pink" },
-  { name: "Calves", color: "orange" },
-  { name: "Shoulders", color: "cyan" },
-];
+import useMuscleGroups from "@/hooks/useMuscleGroups";
 
 export default function MuscleSelectBottomSheet({
   open,
@@ -27,6 +17,8 @@ export default function MuscleSelectBottomSheet({
   setOpen: (open: boolean) => void;
   onMuscleGroupSelect: (muscleGroup: MuscleGroup) => void;
 }) {
+  const { muscleGroups, loading } = useMuscleGroups();
+
   // Open bottom sheet when open is true
   useEffect(() => {
     if (open) {
@@ -105,7 +97,7 @@ export default function MuscleSelectBottomSheet({
       >
         <BottomSheetFlashList
           contentContainerStyle={styles.sheetContainer}
-          data={mockMuscleGroupList}
+          data={muscleGroups}
           estimatedItemSize={20}
           keyExtractor={(item) => item.name}
           ListHeaderComponent={

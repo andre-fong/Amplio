@@ -18,18 +18,8 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import Colors from "@/constants/colors";
 import useExercises from "@/hooks/useExercises";
+import useMuscleGroups from "@/hooks/useMuscleGroups";
 import { FlashList } from "@shopify/flash-list";
-
-const mockMuscleGroupList: MuscleGroup[] = [
-  { name: "Chest", color: "red" },
-  { name: "Quads", color: "green" },
-  { name: "Hamstrings", color: "yellow" },
-  { name: "Back", color: "blue" },
-  { name: "Biceps", color: "purple" },
-  { name: "Triceps", color: "pink" },
-  { name: "Calves", color: "orange" },
-  { name: "Shoulders", color: "cyan" },
-];
 
 export default function ExerciseSelectBottomSheet({
   open,
@@ -64,6 +54,8 @@ export default function ExerciseSelectBottomSheet({
     searchQuery,
   });
   console.log(exercises.length);
+
+  const { muscleGroups, loading: musclesLoading } = useMuscleGroups();
 
   const handleMuscleGroupSelect = useCallback(
     (muscleGroupName: string) => {
@@ -267,7 +259,7 @@ export default function ExerciseSelectBottomSheet({
                 value={searchQuery}
                 style={{ marginTop: 12 }}
                 onChangeText={setSearchQuery}
-                loading={loading}
+                loading={loading || musclesLoading}
                 theme={{ colors: { onSurface: "rgb(137, 124, 121)" } }}
               />
 
@@ -275,7 +267,7 @@ export default function ExerciseSelectBottomSheet({
                 style={styles.muscleGroupsFilters}
                 ItemSeparatorComponent={muscleListItemSeparatorComponent}
                 horizontal
-                data={mockMuscleGroupList}
+                data={muscleGroups}
                 renderItem={renderMuscleItem}
                 keyExtractor={muscleListKeyExtractor}
               />
