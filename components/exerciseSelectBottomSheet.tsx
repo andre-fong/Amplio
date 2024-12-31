@@ -1,8 +1,5 @@
-import { FlatList, StyleSheet, View } from "react-native";
-import {
-  FlatList as FlatListGH,
-  ScrollView,
-} from "react-native-gesture-handler";
+import { StyleSheet, View, Keyboard } from "react-native";
+import { FlatList as FlatListGH } from "react-native-gesture-handler";
 import {
   Chip,
   Divider,
@@ -79,6 +76,7 @@ export default function ExerciseSelectBottomSheet({
   );
 
   const handleClose = useCallback(() => {
+    Keyboard.dismiss();
     setOpen(false);
     bottomSheetRef.current?.close();
     setTimeout(() => {
@@ -243,7 +241,7 @@ export default function ExerciseSelectBottomSheet({
           ref={bottomSheetListRef}
           estimatedItemSize={80}
           keyExtractor={flashListKeyExtractor}
-          keyboardDismissMode="on-drag"
+          keyboardShouldPersistTaps="always"
           ListHeaderComponent={
             <View
               style={{
