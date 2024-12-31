@@ -26,6 +26,14 @@ type Mesocycle =
       numMicrocycles: number;
     };
 
+type MesocycleSchedule = {
+  mesocycle: MesocycleCondensed;
+  days: {
+    day: number;
+    exercises: Exercise[];
+  };
+};
+
 type MesocycleCondensed = {
   name: string;
   startDate: string;

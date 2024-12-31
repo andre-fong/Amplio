@@ -8,6 +8,13 @@ type MesocycleDb = {
   numMicrocycles?: number;
 };
 
+type MesocycleScheduleDb = {
+  mesoId: number;
+  day: number;
+  exerciseId: number;
+  exerciseOrder: number;
+};
+
 type SessionDb = {
   date: string;
   mesoId: number;

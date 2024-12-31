@@ -52,6 +52,15 @@ export async function spinUpDatabase() {
         type TEXT NOT NULL,
         numMicrocycles INTEGER CHECK(numMicrocycles > 0)
       );
+      CREATE TABLE IF NOT EXISTS MesocycleSchedule (
+        mesoId INTEGER,
+        day INTEGER CHECK(day > 0),
+        exerciseId INTEGER,
+        exerciseOrder INTEGER NOT NULL CHECK(exerciseOrder >= 0),
+        PRIMARY KEY (mesoId, day, exerciseId),
+        FOREIGN KEY (mesoId) REFERENCES Mesocycle(id),
+        FOREIGN KEY (exerciseId) REFERENCES Exercise(id)
+      );
       CREATE TABLE IF NOT EXISTS Session (
         date TEXT,
         mesoId INTEGER,
@@ -85,14 +94,14 @@ export async function spinUpDatabase() {
         mesoId INTEGER,
         exerciseId INTEGER,
         notes TEXT,
-        exerciseOrder INTEGER NOT NULL,
+        exerciseOrder INTEGER NOT NULL CHECK(exerciseOrder >= 0),
         FOREIGN KEY (date, mesoId) REFERENCES Session(date, mesoId),
         FOREIGN KEY (exerciseId) REFERENCES Exercise(id)
       );
       CREATE TABLE IF NOT EXISTS ExerciseSet (
         sessionExerciseId INTEGER,
-        setOrder INTEGER NOT NULL,
-        parentSetOrder INTEGER,
+        setOrder INTEGER NOT NULL CHECK(setOrder >= 0),
+        parentSetOrder INTEGER CHECK(parentSetOrder >= 0),
         weight REAL CHECK(weight > 0),
         reps INTEGER CHECK(reps > 0),
         logged INTEGER,
