@@ -24,7 +24,7 @@ export async function getExercises(
       queryParams.push(...params.targetMuscleGroups);
 
     const searchQueryParams = params?.searchQuery
-      ? `%${params.searchQuery}%`
+      ? `%${params.searchQuery.trim()}%`
       : undefined;
     if (searchQueryParams) queryParams.push(searchQueryParams);
 
