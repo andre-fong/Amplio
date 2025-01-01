@@ -52,7 +52,7 @@ export async function spinUpDatabase() {
         type TEXT NOT NULL,
         numMicrocycles INTEGER CHECK(numMicrocycles > 0)
       );
-      CREATE TABLE IF NOT EXISTS MesocycleSchedule (
+      CREATE TABLE IF NOT EXISTS MesocycleDaySchedule (
         mesoId INTEGER,
         day INTEGER CHECK(day > 0),
         exerciseId INTEGER,
@@ -67,6 +67,7 @@ export async function spinUpDatabase() {
         name TEXT,
         notes TEXT,
         deload INTEGER,
+        completed INTEGER NOT NULL,
         PRIMARY KEY (date, mesoId),
         FOREIGN KEY (mesoId) REFERENCES Mesocycle(id)
       );
