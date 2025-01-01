@@ -4,6 +4,7 @@ type Session = {
   name: string;
   notes?: string;
   deload: boolean;
+  completed: boolean;
   microcycleNum: number;
   dayNum: number;
   exercises: PlannedExercise[];

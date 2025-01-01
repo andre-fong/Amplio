@@ -8,7 +8,7 @@ type MesocycleDb = {
   numMicrocycles?: number;
 };
 
-type MesocycleScheduleDb = {
+type MesocycleDayScheduleDb = {
   mesoId: number;
   day: number;
   exerciseId: number;
@@ -21,6 +21,7 @@ type SessionDb = {
   name: string;
   notes?: string;
   deload: boolean;
+  completed: boolean;
 };
 
 type MuscleGroupDb = {

@@ -31,7 +31,7 @@ type MesocycleSchedule = {
   days: {
     day: number;
     exercises: Exercise[];
-  };
+  }[];
 };
 
 type MesocycleCondensed = {
