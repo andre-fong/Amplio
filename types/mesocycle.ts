@@ -1,6 +1,6 @@
 type Mesocycle =
   | {
-      id: string;
+      id: number;
       name: string;
       notes?: string;
       startDate: string;
@@ -14,7 +14,7 @@ type Mesocycle =
       percentFinished: number;
     }
   | {
-      id: string;
+      id: number;
       name: string;
       notes?: string;
       startDate: string;

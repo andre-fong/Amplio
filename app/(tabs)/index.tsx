@@ -31,7 +31,7 @@ import Session from "@/components/session";
 
 // TODO: Replace with real data
 const mockMesoData: Mesocycle = {
-  id: "1",
+  id: 1,
   name: "Chest Emphasis 2024",
   notes: "This is a great mesocycle to focus on chest strength",
   startDate: "2022-08-01T00:00:00.000-05:00",
@@ -54,7 +54,7 @@ const mockSessionsData: Session[] = [
     completed: false,
     exercises: [
       {
-        id: "1",
+        id: 1,
         name: "Bench Press",
         targetMuscle: {
           name: "Chest",
@@ -102,7 +102,7 @@ const mockSessionsData: Session[] = [
         ],
       },
       {
-        id: "2",
+        id: 2,
         name: "Dumbbell Flyes",
         targetMuscle: {
           name: "Chest",
@@ -145,7 +145,7 @@ const mockSessionsData: Session[] = [
         ],
       },
       {
-        id: "3",
+        id: 3,
         name: "Tricep Pushdown (angled bar)",
         targetMuscle: {
           name: "Triceps",
@@ -193,7 +193,7 @@ const mockSessionsData: Session[] = [
     completed: false,
     exercises: [
       {
-        id: "4",
+        id: 4,
         name: "Pull-ups",
         targetMuscle: {
           name: "Back",
@@ -241,7 +241,7 @@ const mockSessionsData: Session[] = [
         ],
       },
       {
-        id: "5",
+        id: 5,
         name: "Barbell Rows",
         targetMuscle: {
           name: "Back",
@@ -288,7 +288,7 @@ const mockSessionsData: Session[] = [
         ],
       },
       {
-        id: "6",
+        id: 6,
         name: "Hammer Curls",
         targetMuscle: {
           name: "Biceps",
@@ -336,7 +336,7 @@ const mockSessionsData: Session[] = [
     completed: false,
     exercises: [
       {
-        id: "7",
+        id: 7,
         name: "Squats",
         targetMuscle: {
           name: "Quads",
@@ -384,7 +384,7 @@ const mockSessionsData: Session[] = [
         ],
       },
       {
-        id: "8",
+        id: 8,
         name: "Leg Press",
         targetMuscle: {
           name: "Quads",
@@ -431,7 +431,7 @@ const mockSessionsData: Session[] = [
         ],
       },
       {
-        id: "9",
+        id: 9,
         name: "Leg Curls",
         targetMuscle: {
           name: "Hamstrings",
@@ -512,7 +512,7 @@ export default function Logs() {
 
   const [mesocycleOptionsOpen, setMesocycleOptionsOpen] = useState(false);
   const [selectedSetOptions, setSelectedSetOptions] = useState<{
-    exerciseId: string;
+    exerciseId: number;
     setOrder: number;
   } | null>(null);
 

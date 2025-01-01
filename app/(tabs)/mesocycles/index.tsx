@@ -17,7 +17,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 // TODO: Use ISO date strings
 const mockMesocycles: Mesocycle[] = [
   {
-    id: "1",
+    id: 1,
     name: "Mesocycle 1",
     notes: "This is a test mesocycle.",
     startDate: "2024-01-02",
@@ -28,14 +28,14 @@ const mockMesocycles: Mesocycle[] = [
     percentFinished: 10,
   },
   {
-    id: "2",
+    id: 2,
     name: "Mesocycle 2",
     startDate: "2021-02-01",
     type: "custom",
     numMicrocycles: 4,
   },
   {
-    id: "3",
+    id: 3,
     name: "Mesocycle 3",
     startDate: "2021-03-01",
     endDate: "2021-03-31",
@@ -45,7 +45,7 @@ const mockMesocycles: Mesocycle[] = [
     percentFinished: 100,
   },
   {
-    id: "4",
+    id: 4,
     name: "Mesocycle 4",
     startDate: "2021-03-01",
     endDate: "2021-03-31",
@@ -121,7 +121,7 @@ function Mesocycles() {
           }
           ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
           data={mockMesocycles}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={({ item: meso }) => (
             <MesocycleCard data={meso} onDelete={setDeleteDialogOpen} />
           )}

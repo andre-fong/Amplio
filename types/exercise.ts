@@ -1,5 +1,5 @@
 type Exercise = {
-  id: string;
+  id: number;
   name: string;
   targetMuscle: MuscleGroup;
   synergistMuscles?: MuscleGroup[];

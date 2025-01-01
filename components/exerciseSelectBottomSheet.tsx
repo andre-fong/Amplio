@@ -208,7 +208,10 @@ export default function ExerciseSelectBottomSheet({
     (item: MuscleGroup) => item.name,
     []
   );
-  const flashListKeyExtractor = useCallback((item: Exercise) => item.id, []);
+  const flashListKeyExtractor = useCallback(
+    (item: Exercise) => item.id.toString(),
+    []
+  );
 
   const muscleListItemSeparatorComponent = useCallback(
     () => <View style={{ marginHorizontal: 8 }} />,

@@ -37,7 +37,7 @@ import { getCalendarDateString } from "react-native-calendars/src/services";
 
 const mockExerciseList: Exercise[] = [
   {
-    id: "1",
+    id: 1,
     name: "Bench Press",
     targetMuscle: {
       name: "Chest",
@@ -46,7 +46,7 @@ const mockExerciseList: Exercise[] = [
     equipment: "Barbell",
   },
   {
-    id: "2",
+    id: 2,
     name: "Squat",
     targetMuscle: {
       name: "Quads",
@@ -55,7 +55,7 @@ const mockExerciseList: Exercise[] = [
     equipment: "Barbell",
   },
   {
-    id: "6",
+    id: 6,
     name: "Tricep Extension",
     targetMuscle: {
       name: "Triceps",
@@ -64,7 +64,7 @@ const mockExerciseList: Exercise[] = [
     equipment: "Dumbbell",
   },
   {
-    id: "11",
+    id: 11,
     name: "Hammer Curl",
     targetMuscle: {
       name: "Biceps",
@@ -73,7 +73,7 @@ const mockExerciseList: Exercise[] = [
     equipment: "Dumbbell",
   },
   {
-    id: "12",
+    id: 12,
     name: "Skullcrusher",
     targetMuscle: {
       name: "Triceps",
@@ -420,7 +420,7 @@ export default function NewPlannedMesocycle() {
                 </View>
 
                 <DragList
-                  keyExtractor={(item) => item.id}
+                  keyExtractor={(item) => item.id.toString()}
                   ItemSeparatorComponent={() => (
                     <View style={{ marginBottom: 10 }} />
                   )}

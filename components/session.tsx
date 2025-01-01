@@ -36,7 +36,7 @@ export default function Session({
 }: {
   data: Session;
   setSelectedSetOptions: (options: {
-    exerciseId: string;
+    exerciseId: number;
     setOrder: number;
   }) => void;
 }) {
@@ -70,7 +70,7 @@ export default function Session({
   const [sessionNotesOpen, setSessionNotesOpen] = useState(false);
   const [sessionOptionsOpen, setSessionOptionsOpen] = useState(false);
   const [selectedExerciseOptions, setSelectedExerciseOptions] = useState<
-    string | null
+    number | null
   >(null);
 
   const sessionNotesRef = useRef<TextInputRN | null>(null);
@@ -321,7 +321,7 @@ export default function Session({
         <FlatList
           scrollEnabled={false}
           data={session.exercises}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={({ item: plannedExercise }) => (
             <View style={styles.exerciseContainer}>
               <Chip
