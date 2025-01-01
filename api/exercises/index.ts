@@ -45,6 +45,7 @@ export async function getExercises(
     WHERE r.relationship = 'target' 
     ${muscleGroupQuery ? `AND (${muscleGroupQuery})` : ""} 
     ${searchQueryParams ? `AND e.name LIKE ?` : ""}
+    ORDER BY e.name ASC
   `,
       queryParams
     );
