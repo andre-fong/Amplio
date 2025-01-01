@@ -139,6 +139,82 @@ export default function NewPlannedMesocycle() {
     [exercises]
   );
 
+  const draglistKeyExtractor = useCallback(
+    (item: Exercise) => item.id.toString(),
+    []
+  );
+  const draglistItemSeparator = useCallback(
+    () => <View style={{ marginBottom: 10 }} />,
+    []
+  );
+  const draglistRenderItem = useCallback(
+    ({
+      item: exercise,
+      onDragStart,
+      onDragEnd,
+      isActive,
+    }: {
+      item: Exercise;
+      onDragStart: () => void;
+      onDragEnd: () => void;
+      isActive: boolean;
+    }) => (
+      <View
+        style={[
+          styles.exerciseContainer,
+          {
+            transform: isActive ? [{ scale: 1.05 }] : [],
+            opacity: isActive ? 0.8 : 1,
+          },
+        ]}
+      >
+        <View style={styles.exerciseTopRow}>
+          <Chip
+            compact
+            style={{
+              // TODO: Set muscle group colors once they're not ugly
+              backgroundColor: "rgba(222, 0, 0, 0.5)",
+              filter: "brightness(1.1)",
+            }}
+            textStyle={{
+              color: "white",
+              opacity: 0.7,
+              fontSize: 12,
+            }}
+          >
+            {exercise.targetMuscle.name.toUpperCase()}
+          </Chip>
+
+          <IconButton
+            icon={() => <Icon source="drag" size={24} />}
+            onLongPress={onDragStart}
+            delayLongPress={250}
+            onPressOut={onDragEnd}
+          />
+        </View>
+
+        <Pressable
+          style={styles.exerciseEditable}
+          onPress={() => {
+            setExercisesListOpen(true);
+          }}
+          disabled={isActive}
+        >
+          <Text
+            variant="titleLarge"
+            style={{ fontSize: 18, fontWeight: "bold" }}
+          >
+            {exercise.name}
+          </Text>
+          <Text variant="bodySmall" style={{ color: "darkgray", marginTop: 2 }}>
+            {exercise.equipment.toUpperCase()}
+          </Text>
+        </Pressable>
+      </View>
+    ),
+    []
+  );
+
   const handleScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       const contentOffsetX = event.nativeEvent.contentOffset.x;
@@ -420,77 +496,14 @@ export default function NewPlannedMesocycle() {
                 </View>
 
                 <DragList
-                  keyExtractor={(item) => item.id.toString()}
-                  ItemSeparatorComponent={() => (
-                    <View style={{ marginBottom: 10 }} />
-                  )}
+                  keyExtractor={draglistKeyExtractor}
+                  ItemSeparatorComponent={draglistItemSeparator}
                   data={exercises}
                   style={styles.exerciseList}
                   onReordered={onReordered}
                   scrollEnabled={false}
                   ref={exerciseDragListRef}
-                  renderItem={({
-                    item: exercise,
-                    onDragStart,
-                    onDragEnd,
-                    isActive,
-                  }) => (
-                    <View
-                      style={[
-                        styles.exerciseContainer,
-                        {
-                          transform: isActive ? [{ scale: 1.05 }] : [],
-                          opacity: isActive ? 0.8 : 1,
-                        },
-                      ]}
-                    >
-                      <View style={styles.exerciseTopRow}>
-                        <Chip
-                          compact
-                          style={{
-                            // TODO: Set muscle group colors once they're not ugly
-                            backgroundColor: "rgba(222, 0, 0, 0.5)",
-                            filter: "brightness(1.1)",
-                          }}
-                          textStyle={{
-                            color: "white",
-                            opacity: 0.7,
-                            fontSize: 12,
-                          }}
-                        >
-                          {exercise.targetMuscle.name.toUpperCase()}
-                        </Chip>
-
-                        <IconButton
-                          icon={() => <Icon source="drag" size={24} />}
-                          onLongPress={onDragStart}
-                          delayLongPress={250}
-                          onPressOut={onDragEnd}
-                        />
-                      </View>
-
-                      <Pressable
-                        style={styles.exerciseEditable}
-                        onPress={() => {
-                          setExercisesListOpen(true);
-                        }}
-                        disabled={isActive}
-                      >
-                        <Text
-                          variant="titleLarge"
-                          style={{ fontSize: 18, fontWeight: "bold" }}
-                        >
-                          {exercise.name}
-                        </Text>
-                        <Text
-                          variant="bodySmall"
-                          style={{ color: "darkgray", marginTop: 2 }}
-                        >
-                          {exercise.equipment.toUpperCase()}
-                        </Text>
-                      </Pressable>
-                    </View>
-                  )}
+                  renderItem={draglistRenderItem}
                 />
 
                 <Button
