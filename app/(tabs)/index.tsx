@@ -11,16 +11,11 @@ import {
 import {
   Appbar,
   Text,
-  Button,
   IconButton,
   Menu,
   Divider,
   Icon,
-  Chip,
   Portal,
-  Modal,
-  TextInput,
-  Checkbox,
   Tooltip,
   TouchableRipple,
 } from "react-native-paper";
@@ -30,10 +25,9 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import Colors from "@/constants/colors";
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
-import { spinUpDatabase, getAllMuscleGroups, clearDatabase } from "@/api";
+import { spinUpDatabase, clearDatabase } from "@/api";
 import { getFullSetType } from "@/utils/set";
 import Session from "@/components/session";
-import { getExercises } from "@/api/exercises";
 
 // TODO: Replace with real data
 const mockMesoData: Mesocycle = {
@@ -57,6 +51,7 @@ const mockSessionsData: Session[] = [
     deload: false,
     microcycleNum: 1,
     dayNum: 3,
+    completed: false,
     exercises: [
       {
         id: "1",
@@ -195,6 +190,7 @@ const mockSessionsData: Session[] = [
     deload: false,
     microcycleNum: 1,
     dayNum: 4,
+    completed: false,
     exercises: [
       {
         id: "4",
@@ -337,6 +333,7 @@ const mockSessionsData: Session[] = [
     deload: false,
     microcycleNum: 1,
     dayNum: 5,
+    completed: false,
     exercises: [
       {
         id: "7",
