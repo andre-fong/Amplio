@@ -71,12 +71,14 @@ export default function ExerciseSelectBottomSheet({
     (exercise: Exercise) => {
       onExerciseSelect(exercise);
       handleClose();
+      setTimeout(() => {
+        Keyboard.dismiss();
+      }, 500);
     },
-    [onExerciseSelect, setOpen]
+    [onExerciseSelect]
   );
 
   const handleClose = useCallback(() => {
-    Keyboard.dismiss();
     setOpen(false);
     bottomSheetRef.current?.close();
     setTimeout(() => {
@@ -84,7 +86,7 @@ export default function ExerciseSelectBottomSheet({
         bottomSheetListRef.current as FlashList<Exercise> | undefined
       )?.scrollToOffset({ offset: 0 });
     }, 300);
-  }, [setOpen]);
+  }, []);
 
   const renderBackdropComponent = useCallback(
     (props: any) => (
