@@ -33,7 +33,6 @@ import ExerciseSelectBottomSheet from "@/components/exerciseSelectBottomSheet";
 import MuscleSelectBottomSheet from "@/components/muscleSelectBottomSheet";
 import DragList from "react-native-draglist";
 import { Calendar, DateData } from "react-native-calendars";
-import { getCalendarDateString } from "react-native-calendars/src/services";
 
 const mockExerciseList: Exercise[] = [
   {
@@ -80,6 +79,21 @@ const mockExerciseList: Exercise[] = [
       color: "pink",
     },
     equipment: "Barbell",
+  },
+];
+
+const mockMesoSchedule: DaySchedule[] = [
+  {
+    day: 1,
+    exercises: mockExerciseList,
+  },
+  {
+    day: 2,
+    exercises: mockExerciseList,
+  },
+  {
+    day: 3,
+    exercises: mockExerciseList,
   },
 ];
 
@@ -435,7 +449,7 @@ export default function NewPlannedMesocycle() {
         </View>
 
         <FlatList
-          data={[1, 2, 3]}
+          data={mockMesoSchedule}
           // keyExtractor={(item) => item.date.toString()}
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -468,7 +482,7 @@ export default function NewPlannedMesocycle() {
               </TouchableRipple>
             </View>
           )}
-          renderItem={() => (
+          renderItem={({ item: daySchedule }) => (
             <View style={{ width, flex: 1, marginBottom: 10 }}>
               <View style={styles.sessionContainer}>
                 <View style={styles.mesoInfoTopRow}>
@@ -476,6 +490,7 @@ export default function NewPlannedMesocycle() {
                     <TextInput
                       style={{ height: 42 }}
                       contentStyle={{ fontSize: 14 }}
+                      defaultValue={"Day " + daySchedule.day}
                       // value={mesocycleTitle}
                       // onChangeText={setMesocycleTitle}
                       // placeholder="Untitled Mesocycle"
@@ -526,19 +541,6 @@ export default function NewPlannedMesocycle() {
             </View>
           )}
         />
-
-        {/* <View style={{ margin: 10, height: 50, marginBottom: 30 }}>
-          <Button
-            style={styles.addSessionButton}
-            contentStyle={{ height: "100%" }}
-            icon={() => <Icon source="plus" size={24} color="darkgray" />}
-            labelStyle={{ color: "darkgray" }}
-            onPress={() => {}}
-            rippleColor="#424242"
-          >
-            ADD SESSION
-          </Button>
-        </View> */}
       </ScrollView>
 
       <Portal>

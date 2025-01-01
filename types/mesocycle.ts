@@ -28,10 +28,12 @@ type Mesocycle =
 
 type MesocycleSchedule = {
   mesocycle: MesocycleCondensed;
-  days: {
-    day: number;
-    exercises: Exercise[];
-  }[];
+  days: DaySchedule[];
+};
+
+type DaySchedule = {
+  day: number;
+  exercises: Exercise[];
 };
 
 type MesocycleCondensed = {
