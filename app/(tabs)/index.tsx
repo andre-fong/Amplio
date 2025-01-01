@@ -666,6 +666,7 @@ export default function Logs() {
             icon="chevron-left"
             size={26}
             onPress={() => changeSessionIndex(-1)}
+            disabled={sessionIndex === 0}
           />
           <View style={styles.sessionDateInfoText}>
             <Text variant="bodyMedium">
@@ -683,6 +684,7 @@ export default function Logs() {
             icon="chevron-right"
             size={26}
             onPress={() => changeSessionIndex(1)}
+            disabled={sessionIndex === mockSessionsData.length - 1}
           />
         </View>
 
