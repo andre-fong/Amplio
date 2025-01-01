@@ -12,7 +12,13 @@ import {
 import { useState } from "react";
 import Colors from "@/constants/colors";
 
-export default function MesocycleCard({ data }: { data: Mesocycle }) {
+export default function MesocycleCard({
+  data,
+  onDelete,
+}: {
+  data: Mesocycle;
+  onDelete: (mesoId: number | null) => void;
+}) {
   ///////////// DATA //////////////
   const showYear =
     new Date(data.startDate).getFullYear() !== new Date().getFullYear();
@@ -117,7 +123,10 @@ export default function MesocycleCard({ data }: { data: Mesocycle }) {
                     size={size}
                   />
                 )}
-                onPress={() => {}}
+                onPress={() => {
+                  onDelete(data.id);
+                  setMesoOptionsOpen(false);
+                }}
                 title="Delete mesocycle"
                 titleStyle={{
                   color: Colors.primary.light,

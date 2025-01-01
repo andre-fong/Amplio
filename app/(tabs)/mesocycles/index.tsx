@@ -1,5 +1,14 @@
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
-import { Appbar, FAB, Portal, Searchbar, Text } from "react-native-paper";
+import {
+  Appbar,
+  Button,
+  Dialog,
+  FAB,
+  Icon,
+  Portal,
+  Searchbar,
+  Text,
+} from "react-native-paper";
 import Colors from "@/constants/colors";
 import { useCallback, useState } from "react";
 import MesocycleCard from "@/components/mesocycleCard";
@@ -48,6 +57,7 @@ const mockMesocycles: Mesocycle[] = [
 function Mesocycles() {
   const [FABOpen, setFABOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState<null | number>(null);
 
   useFocusEffect(
     useCallback(() => {
@@ -112,7 +122,9 @@ function Mesocycles() {
           ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
           data={mockMesocycles}
           keyExtractor={(item) => item.id}
-          renderItem={({ item: meso }) => <MesocycleCard data={meso} />}
+          renderItem={({ item: meso }) => (
+            <MesocycleCard data={meso} onDelete={setDeleteDialogOpen} />
+          )}
         />
       </View>
 
@@ -141,6 +153,58 @@ function Mesocycles() {
           ]}
           onStateChange={({ open }) => setFABOpen(open)}
         />
+
+        <Dialog
+          visible={deleteDialogOpen !== null}
+          onDismiss={() => setDeleteDialogOpen(null)}
+          style={{
+            // backgroundColor: "rgb(65, 65, 65)",
+            backgroundColor: Colors.secondary.dark,
+          }}
+        >
+          <Dialog.Title>Delete Mesocycle</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyMedium">
+              Are you sure you want to delete "
+              <Text style={{ fontWeight: "bold" }}>
+                {mockMesocycles.find((m) => m.id === deleteDialogOpen)?.name}
+              </Text>
+              " and all of its data?
+            </Text>
+            <View
+              style={{
+                marginTop: 18,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                padding: 7,
+                borderRadius: 3,
+                borderWidth: StyleSheet.hairlineWidth,
+                borderColor: "gray",
+              }}
+            >
+              <Icon source="alert-circle" size={20} color="darkgray" />
+              <Text variant="bodySmall" style={{ color: "darkgray" }}>
+                This action cannot be reversed.
+              </Text>
+            </View>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button
+              labelStyle={{ fontSize: 13, color: Colors.primary.light }}
+              onPress={() => setDeleteDialogOpen(null)}
+            >
+              Cancel
+            </Button>
+            <Button
+              labelStyle={{ fontSize: 13, color: Colors.primary.light }}
+              onPress={() => setDeleteDialogOpen(null)}
+            >
+              Delete
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
       </Portal>
     </Portal.Host>
   );
