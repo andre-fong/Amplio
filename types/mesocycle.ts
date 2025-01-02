@@ -33,6 +33,7 @@ type MesocycleSchedule = {
 
 type DaySchedule = {
   day: number;
+  name: string;
   exercises: Exercise[];
 };
 

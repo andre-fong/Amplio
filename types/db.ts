@@ -11,6 +11,7 @@ type MesocycleDb = {
 type MesocycleDayScheduleDb = {
   mesoId: number;
   day: number;
+  name: string;
   exerciseId: number;
   exerciseOrder: number;
 };

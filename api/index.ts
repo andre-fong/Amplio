@@ -55,6 +55,7 @@ export async function spinUpDatabase() {
       CREATE TABLE IF NOT EXISTS MesocycleDaySchedule (
         mesoId INTEGER,
         day INTEGER CHECK(day > 0),
+        name TEXT NOT NULL,
         exerciseId INTEGER,
         exerciseOrder INTEGER NOT NULL CHECK(exerciseOrder >= 0),
         PRIMARY KEY (mesoId, day, exerciseId),
