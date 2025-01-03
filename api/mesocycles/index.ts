@@ -94,3 +94,63 @@ export async function getMesocycleSchedule(mesoId: number) {
     return [];
   }
 }
+
+export async function addPlannedMesocycle(
+  newMeso: Omit<Mesocycle, "id" | "endDate">,
+  newSchedule: (Omit<DaySchedule, "exercises"> & {
+    exercises: ((Exercise | MuscleGroup) & { order: number })[];
+  })[]
+) {
+  if (newMeso.type !== "planned") {
+    throw new Error(
+      "Error adding unplanned mesocycle using addPlannedMesocycle"
+    );
+  }
+
+  try {
+    const db = await SQLite.openDatabaseAsync("amplio.db", {
+      useNewConnection: true,
+    });
+
+    await db.withTransactionAsync(async () => {
+      const mesoId = (
+        await db.runAsync(
+          `
+      INSERT INTO Mesocycle (name, notes, startDate, type, numMicrocycles)
+      VALUES (?, ?, ?, ?, ?)
+    `,
+          [
+            newMeso.name,
+            newMeso.notes || "",
+            newMeso.startDate,
+            newMeso.type,
+            newMeso.numMicrocycles,
+          ]
+        )
+      ).lastInsertRowId;
+
+      await Promise.all(
+        newSchedule.map(async (day) =>
+          day.exercises.map(async (ex) => {
+            const exercise = ex as Exercise & { order: number };
+            return db.runAsync(
+              `
+              INSERT INTO MesocycleDaySchedule (mesoId, day, name, exerciseId, exerciseOrder)
+              VALUES (?, ?, ?, ?, ?)
+               `,
+              [
+                mesoId,
+                day.day,
+                day.name || `Day ${day.day}`,
+                exercise.id,
+                exercise.order,
+              ]
+            );
+          })
+        )
+      );
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}

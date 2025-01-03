@@ -34,6 +34,7 @@ import ExerciseSelectBottomSheet from "@/components/exerciseSelectBottomSheet";
 import MuscleSelectBottomSheet from "@/components/muscleSelectBottomSheet";
 import DragList from "react-native-draglist";
 import { Calendar, DateData } from "react-native-calendars";
+import { addPlannedMesocycle } from "@/api/mesocycles";
 
 export default function NewPlannedMesocycle() {
   const router = useRouter();
@@ -403,6 +404,16 @@ export default function NewPlannedMesocycle() {
     }
 
     setConfirmMesocycleOpen(true);
+  }, [newMeso, daySchedules]);
+
+  const handleSubmitMesocycleToBackend = useCallback(() => {
+    addPlannedMesocycle(newMeso, daySchedules)
+      .then(() => {
+        router.back();
+      })
+      .catch((error) => {
+        setErrorDialogOpen(error);
+      });
   }, [newMeso, daySchedules]);
 
   return (
@@ -808,7 +819,7 @@ export default function NewPlannedMesocycle() {
               }}
               // rippleColor={Colors.accent.dark}
               mode="contained"
-              onPress={() => {}}
+              onPress={handleSubmitMesocycleToBackend}
             >
               Confirm
             </Button>
