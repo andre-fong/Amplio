@@ -26,6 +26,8 @@ export default function MuscleSelectBottomSheet({
   useEffect(() => {
     if (open) {
       bottomSheetRef.current?.expand();
+    } else {
+      bottomSheetRef.current?.close();
     }
   }, [open]);
 
@@ -42,7 +44,6 @@ export default function MuscleSelectBottomSheet({
 
   const handleClose = useCallback(() => {
     setOpen(false);
-    bottomSheetRef.current?.close();
     setTimeout(() => {
       (
         bottomSheetListRef.current as FlashList<Exercise> | undefined

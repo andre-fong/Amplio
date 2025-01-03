@@ -66,6 +66,8 @@ export default function ExerciseSelectBottomSheet({
         setSelectedMuscleGroups({});
       }
       bottomSheetRef.current?.expand();
+    } else {
+      bottomSheetRef.current?.close();
     }
   }, [open, filter, muscleGroups]);
 
@@ -95,7 +97,6 @@ export default function ExerciseSelectBottomSheet({
 
   const handleClose = useCallback(() => {
     setOpen(false);
-    bottomSheetRef.current?.close();
     setTimeout(() => {
       (
         bottomSheetListRef.current as FlashList<Exercise> | undefined
