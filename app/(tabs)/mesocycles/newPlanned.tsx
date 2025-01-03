@@ -231,7 +231,7 @@ export default function NewPlannedMesocycle() {
   const handleSessionDelete = useCallback(
     (index: number) => {
       if (daySchedules.length === 1) {
-        setSnackbarMessage("You must have at least one session.");
+        setSnackbarMessage("You should have at least one session.");
         return;
       }
       setDaySchedules((prev) => {
@@ -357,6 +357,24 @@ export default function NewPlannedMesocycle() {
     if (!newMeso.startDate) {
       setSnackbarMessage("Mesocycle start date required.");
       return;
+    }
+
+    for (let i = 0; i < daySchedules.length; i++) {
+      const dayName = daySchedules[i].name
+        ? `"${daySchedules[i].name}"`
+        : `Day ${i + 1}`;
+
+      if (daySchedules[i].exercises.length === 0) {
+        setSnackbarMessage(`${dayName} should have at least one exercise.`);
+        return;
+      }
+
+      for (let j = 0; j < daySchedules[i].exercises.length; j++) {
+        if (!("id" in daySchedules[i].exercises[j])) {
+          setSnackbarMessage(`${dayName} contains an unselected exercise.`);
+          return;
+        }
+      }
     }
 
     setConfirmMesocycleOpen(true);
@@ -640,7 +658,7 @@ export default function NewPlannedMesocycle() {
         <Snackbar
           visible={!!snackbarMessage}
           onDismiss={dismissSnackbar}
-          duration={2500}
+          duration={3500}
           style={{ backgroundColor: "black" }}
         >
           <Text>{snackbarMessage}</Text>
