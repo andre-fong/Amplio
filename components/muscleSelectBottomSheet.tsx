@@ -13,10 +13,12 @@ export default function MuscleSelectBottomSheet({
   open,
   setOpen,
   onMuscleGroupSelect,
+  data,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
   onMuscleGroupSelect: (muscleGroup: MuscleGroup) => void;
+  data: any;
 }) {
   const { muscleGroups, loading } = useMuscleGroups();
 
@@ -105,6 +107,7 @@ export default function MuscleSelectBottomSheet({
         <BottomSheetFlashList
           contentContainerStyle={styles.sheetContainer}
           data={muscleGroups}
+          extraData={data}
           // TODO: Change estimatedItemSize once restyled
           estimatedItemSize={55}
           ref={bottomSheetListRef}
