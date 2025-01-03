@@ -40,6 +40,7 @@ export default function NewPlannedMesocycle() {
   const { width } = useWindowDimensions();
 
   const [sessionIndex, setSessionIndex] = useState(0);
+  const [exerciseIndex, setExerciseIndex] = useState(0);
   const containerScrollRef = useRef<ScrollView | null>(null);
 
   const [mesocycleNotesTemp, setMesocycleNotesTemp] = useState("");
@@ -210,7 +211,24 @@ export default function NewPlannedMesocycle() {
         return newSchedules;
       });
     },
-    [sessionIndex, daySchedules]
+    [sessionIndex]
+  );
+
+  /**
+   * Handle selecting an exercise from bottom sheet
+   */
+  const handleExerciseSelect = useCallback(
+    (exercise: Exercise) => {
+      setDaySchedules((prev) => {
+        const newSchedules = [...prev];
+        newSchedules[sessionIndex].exercises[exerciseIndex] = {
+          ...exercise,
+          order: exerciseIndex + 1,
+        };
+        return newSchedules;
+      });
+    },
+    [sessionIndex, exerciseIndex]
   );
 
   /**
@@ -253,11 +271,13 @@ export default function NewPlannedMesocycle() {
       onDragStart,
       onDragEnd,
       isActive,
+      index,
     }: {
       item: (Exercise | MuscleGroup) & { order: number };
       onDragStart: () => void;
       onDragEnd: () => void;
       isActive: boolean;
+      index: number;
     }) => (
       <View
         style={[
@@ -315,6 +335,7 @@ export default function NewPlannedMesocycle() {
             setExerciseFilter(
               "id" in exercise ? exercise.targetMuscle.name : exercise.name
             );
+            setExerciseIndex(index);
             setExercisesListOpen(true);
           }}
           disabled={isActive}
@@ -678,7 +699,7 @@ export default function NewPlannedMesocycle() {
         <ExerciseSelectBottomSheet
           open={exercisesListOpen}
           setOpen={setExercisesListOpen}
-          onExerciseSelect={() => {}}
+          onExerciseSelect={handleExerciseSelect}
           filter={exerciseFilter}
           data={sessionIndex}
         />
