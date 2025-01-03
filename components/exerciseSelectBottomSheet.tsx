@@ -60,6 +60,7 @@ export default function ExerciseSelectBottomSheet({
         muscleGroupsListRef.current?.scrollToIndex({
           index: muscleGroups.findIndex((muscle) => muscle.name === filter),
           animated: false,
+          viewOffset: 20,
         });
       } else {
         setSelectedMuscleGroups({});
