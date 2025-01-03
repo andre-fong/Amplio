@@ -21,6 +21,7 @@ import {
   Modal,
   Portal,
   SegmentedButtons,
+  Snackbar,
   Text,
   TextInput,
   Tooltip,
@@ -188,12 +189,13 @@ export default function NewPlannedMesocycle() {
     [sessionIndex, daySchedules]
   );
 
+  const [lastSessionErrorOpen, setLastSessionErrorOpen] = useState(false);
+
   /**
    * Handle selecting a muscle group from bottom sheet
    */
   const handleMuscleGroupSelect = useCallback(
     (muscleGroup: MuscleGroup) => {
-      console.log("Adding muscle to " + sessionIndex);
       setDaySchedules((prev) => {
         const newSchedules = [...prev];
         newSchedules[sessionIndex].exercises.push({
@@ -222,18 +224,23 @@ export default function NewPlannedMesocycle() {
     [sessionIndex]
   );
 
-  const handleSessionDelete = useCallback((index: number) => {
-    console.log("Delete session " + index);
-    setDaySchedules((prev) => {
-      console.log(prev);
-      const newSchedules = [...prev];
-      newSchedules.splice(index, 1);
-      return newSchedules.map((schedule, index) => ({
-        ...schedule,
-        day: index + 1,
-      }));
-    });
-  }, []);
+  const handleSessionDelete = useCallback(
+    (index: number) => {
+      if (daySchedules.length === 1) {
+        setLastSessionErrorOpen(true);
+        return;
+      }
+      setDaySchedules((prev) => {
+        const newSchedules = [...prev];
+        newSchedules.splice(index, 1);
+        return newSchedules.map((schedule, index) => ({
+          ...schedule,
+          day: index + 1,
+        }));
+      });
+    },
+    [daySchedules]
+  );
 
   const draglistRenderItem = useCallback(
     ({
@@ -613,6 +620,15 @@ export default function NewPlannedMesocycle() {
       </ScrollView>
 
       <Portal>
+        <Snackbar
+          visible={lastSessionErrorOpen}
+          onDismiss={() => setLastSessionErrorOpen(false)}
+          duration={2500}
+          style={{ backgroundColor: "black" }}
+        >
+          <Text>You must have at least one session.</Text>
+        </Snackbar>
+
         <MuscleSelectBottomSheet
           open={muscleGroupListOpen}
           setOpen={setMuscleGroupListOpen}
