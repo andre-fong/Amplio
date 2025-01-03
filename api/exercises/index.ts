@@ -50,6 +50,7 @@ export async function getExercises(
       queryParams
     );
 
+    db.closeAsync();
     return exercises.map((exercise) => ({
       ...exercise,
       targetMuscle: JSON.parse(exercise.targetMuscle) as MuscleGroup,

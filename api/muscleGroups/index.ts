@@ -10,6 +10,7 @@ export async function getMuscleGroups(): Promise<MuscleGroup[]> {
       `SELECT name, color FROM MuscleGroup`
     );
 
+    db.closeAsync();
     return muscleGroups;
   } catch (error) {
     console.error(error);

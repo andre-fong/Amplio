@@ -50,6 +50,7 @@ export async function getMesocycles(
       queryParams
     );
 
+    db.closeAsync();
     return mesocycles;
   } catch (error) {
     console.error(error);
@@ -86,6 +87,7 @@ export async function getMesocycleSchedule(mesoId: number) {
       [mesoId]
     );
 
+    db.closeAsync();
     return schedule;
   } catch (error) {
     console.error(error);

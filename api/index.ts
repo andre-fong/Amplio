@@ -142,6 +142,8 @@ export async function spinUpDatabase() {
         )
         .join("\n")}
     `);
+
+    db.closeAsync();
   } catch (e) {
     console.error(e);
   }
@@ -168,4 +170,6 @@ export async function clearDatabase() {
   `);
 
   console.log("Database cleared!");
+
+  db.closeAsync();
 }
