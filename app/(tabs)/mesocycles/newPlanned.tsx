@@ -42,7 +42,6 @@ export default function NewPlannedMesocycle() {
   const [sessionIndex, setSessionIndex] = useState(0);
   const containerScrollRef = useRef<ScrollView | null>(null);
 
-  const [mesocycleTitle, setMesocycleTitle] = useState("");
   const [mesocycleNotesTemp, setMesocycleNotesTemp] = useState("");
   const [mesocycleOptionsOpen, setMesocycleOptionsOpen] = useState(false);
   const [mesocycleNotesOpen, setMesocycleNotesOpen] = useState(false);
@@ -81,41 +80,9 @@ export default function NewPlannedMesocycle() {
     [width]
   );
 
-  const [selectedDate, setSelectedDate] = useState<string | undefined>(
-    undefined
-  );
-  const formattedDate = useMemo(() => {
-    if (!selectedDate)
-      return <Text style={{ color: "lightgray" }}>Select a start date</Text>;
-
-    const userTimezoneOffset = new Date().getTimezoneOffset() * 60000;
-    return new Date(
-      new Date(selectedDate).getTime() + userTimezoneOffset
-    ).toLocaleDateString(undefined, {
-      year: "numeric",
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    });
-  }, [selectedDate]);
-
-  const onDayPress = useCallback(
-    (day: DateData) => {
-      if (day.dateString === selectedDate) setSelectedDate(undefined);
-      else setSelectedDate(day.dateString);
-    },
-    [selectedDate]
-  );
-
-  const marked = useMemo(() => {
-    if (!selectedDate) return {};
-
-    return {
-      [selectedDate]: {
-        selected: true,
-      },
-    };
-  }, [selectedDate]);
+  const setSelectedDate = useCallback((date: string | undefined) => {
+    setNewMeso((prev) => ({ ...prev, startDate: date || "" }));
+  }, []);
 
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
   const [confirmMesocycleOpen, setConfirmMesocycleOpen] = useState(false);
@@ -131,7 +98,7 @@ export default function NewPlannedMesocycle() {
   const [newMeso, setNewMeso] = useState<Omit<Mesocycle, "id" | "endDate">>({
     name: "",
     notes: "",
-    startDate: selectedDate || "",
+    startDate: "",
     type: "planned",
     numMicrocycles: 4,
   });
@@ -146,6 +113,39 @@ export default function NewPlannedMesocycle() {
       exercises: [],
     },
   ]);
+
+  const formattedDate = useMemo(() => {
+    if (!newMeso.startDate)
+      return <Text style={{ color: "lightgray" }}>Select a start date</Text>;
+
+    const userTimezoneOffset = new Date().getTimezoneOffset() * 60000;
+    return new Date(
+      new Date(newMeso.startDate).getTime() + userTimezoneOffset
+    ).toLocaleDateString(undefined, {
+      year: "numeric",
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+    });
+  }, [newMeso.startDate]);
+
+  const onDayPress = useCallback(
+    (day: DateData) => {
+      if (day.dateString === newMeso.startDate) setSelectedDate(undefined);
+      else setSelectedDate(day.dateString);
+    },
+    [newMeso.startDate]
+  );
+
+  const marked = useMemo(() => {
+    if (!newMeso.startDate) return {};
+
+    return {
+      [newMeso.startDate]: {
+        selected: true,
+      },
+    };
+  }, [newMeso.startDate]);
 
   const changeMesoWeeks = useCallback(
     (weeks: string) => {
@@ -189,7 +189,11 @@ export default function NewPlannedMesocycle() {
     [sessionIndex, daySchedules]
   );
 
-  const [lastSessionErrorOpen, setLastSessionErrorOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const dismissSnackbar = useCallback(() => {
+    setSnackbarMessage("");
+  }, []);
 
   /**
    * Handle selecting a muscle group from bottom sheet
@@ -227,7 +231,7 @@ export default function NewPlannedMesocycle() {
   const handleSessionDelete = useCallback(
     (index: number) => {
       if (daySchedules.length === 1) {
-        setLastSessionErrorOpen(true);
+        setSnackbarMessage("You must have at least one session.");
         return;
       }
       setDaySchedules((prev) => {
@@ -345,6 +349,19 @@ export default function NewPlannedMesocycle() {
     [handleExerciseDelete]
   );
 
+  const handleConfirmMesocycle = useCallback(() => {
+    if (!newMeso.name) {
+      setSnackbarMessage("Mesocycle name required.");
+      return;
+    }
+    if (!newMeso.startDate) {
+      setSnackbarMessage("Mesocycle start date required.");
+      return;
+    }
+
+    setConfirmMesocycleOpen(true);
+  }, [newMeso, daySchedules]);
+
   return (
     <Portal.Host>
       <Appbar.Header
@@ -371,9 +388,7 @@ export default function NewPlannedMesocycle() {
             )}
             animated={false}
             size={32}
-            onPress={() => {
-              setConfirmMesocycleOpen(true);
-            }}
+            onPress={handleConfirmMesocycle}
             style={{ marginRight: 10 }}
           />
         </Tooltip>
@@ -389,8 +404,10 @@ export default function NewPlannedMesocycle() {
           <View style={styles.mesoInfoTopRow}>
             <View style={styles.mesoName}>
               <TextInput
-                value={mesocycleTitle}
-                onChangeText={setMesocycleTitle}
+                value={newMeso.name}
+                onChangeText={(text) =>
+                  setNewMeso((prev) => ({ ...prev, name: text }))
+                }
                 placeholder="Untitled Mesocycle"
               />
             </View>
@@ -495,7 +512,7 @@ export default function NewPlannedMesocycle() {
             >
               <Calendar
                 hideExtraDays
-                current={selectedDate}
+                current={!!newMeso.startDate ? newMeso.startDate : undefined}
                 onDayPress={onDayPress}
                 markedDates={marked}
                 theme={{
@@ -621,12 +638,12 @@ export default function NewPlannedMesocycle() {
 
       <Portal>
         <Snackbar
-          visible={lastSessionErrorOpen}
-          onDismiss={() => setLastSessionErrorOpen(false)}
+          visible={!!snackbarMessage}
+          onDismiss={dismissSnackbar}
           duration={2500}
           style={{ backgroundColor: "black" }}
         >
-          <Text>You must have at least one session.</Text>
+          <Text>{snackbarMessage}</Text>
         </Snackbar>
 
         <MuscleSelectBottomSheet
