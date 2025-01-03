@@ -141,7 +141,7 @@ export default function NewPlannedMesocycle() {
   >([
     {
       day: 1,
-      name: "Day 1",
+      name: "",
       exercises: [],
     },
   ]);
@@ -533,7 +533,7 @@ export default function NewPlannedMesocycle() {
                     ...prev,
                     {
                       day: prev.length + 1,
-                      name: `Day ${prev.length + 1}`,
+                      name: "",
                       exercises: [],
                     },
                   ]);
@@ -585,7 +585,6 @@ export default function NewPlannedMesocycle() {
                   keyExtractor={draglistKeyExtractor}
                   ItemSeparatorComponent={draglistItemSeparator}
                   data={daySchedule.exercises}
-                  extraData={sessionIndex}
                   style={styles.exerciseList}
                   onReordered={onReordered}
                   scrollEnabled={false}
