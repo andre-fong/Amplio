@@ -70,108 +70,6 @@ export default function NewPlannedMesocycle() {
     () => <View style={{ marginBottom: 10 }} />,
     []
   );
-  const draglistRenderItem = useCallback(
-    ({
-      item: exercise,
-      onDragStart,
-      onDragEnd,
-      isActive,
-    }: {
-      item: (Exercise | MuscleGroup) & { order: number };
-      onDragStart: () => void;
-      onDragEnd: () => void;
-      isActive: boolean;
-    }) => (
-      <View
-        style={[
-          styles.exerciseContainer,
-          {
-            transform: isActive ? [{ scale: 1.05 }] : [],
-            opacity: isActive ? 0.8 : 1,
-          },
-        ]}
-      >
-        <View style={styles.exerciseTopRow}>
-          <Chip
-            compact
-            style={{
-              // TODO: Set muscle group colors once they're not ugly
-              backgroundColor: "rgba(222, 0, 0, 0.5)",
-              filter: "brightness(1.1)",
-            }}
-            textStyle={{
-              color: "white",
-              opacity: 0.7,
-              fontSize: 12,
-            }}
-          >
-            {"id" in exercise
-              ? exercise.targetMuscle.name.toUpperCase()
-              : exercise.name.toUpperCase()}
-          </Chip>
-
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <IconButton
-              icon={() => (
-                <Icon source="delete" size={20} color={Colors.primary.light} />
-              )}
-              onPress={() => handleExerciseDelete(exercise)}
-            />
-            <IconButton
-              icon={() => <Icon source="drag" size={24} />}
-              onLongPress={onDragStart}
-              delayLongPress={250}
-              onPressOut={onDragEnd}
-            />
-          </View>
-        </View>
-
-        <Pressable
-          style={styles.exerciseEditable}
-          onPress={() => {
-            setExercisesListOpen(true);
-          }}
-          disabled={isActive}
-        >
-          {"id" in exercise ? (
-            <>
-              <Text
-                variant="titleLarge"
-                style={{ fontSize: 18, fontWeight: "bold" }}
-              >
-                {exercise.name}
-              </Text>
-              <Text
-                variant="bodySmall"
-                style={{ color: "darkgray", marginTop: 2 }}
-              >
-                {exercise.equipment.toUpperCase()}
-              </Text>
-            </>
-          ) : (
-            <Text
-              variant="bodySmall"
-              style={{
-                paddingVertical: 10,
-                paddingHorizontal: 5,
-                color: "darkgray",
-                fontStyle: "italic",
-              }}
-            >
-              Select an exercise...
-            </Text>
-          )}
-        </Pressable>
-      </View>
-    ),
-    []
-  );
 
   const handleScroll = useCallback(
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
@@ -295,6 +193,7 @@ export default function NewPlannedMesocycle() {
    */
   const handleMuscleGroupSelect = useCallback(
     (muscleGroup: MuscleGroup) => {
+      console.log("Adding muscle to " + sessionIndex);
       setDaySchedules((prev) => {
         const newSchedules = [...prev];
         newSchedules[sessionIndex].exercises.push({
@@ -323,9 +222,121 @@ export default function NewPlannedMesocycle() {
     [sessionIndex]
   );
 
-  useEffect(() => {
-    console.log(daySchedules[0].exercises);
-  }, [daySchedules]);
+  const handleSessionDelete = useCallback((index: number) => {
+    console.log("Delete session " + index);
+    setDaySchedules((prev) => {
+      console.log(prev);
+      const newSchedules = [...prev];
+      newSchedules.splice(index, 1);
+      return newSchedules.map((schedule, index) => ({
+        ...schedule,
+        day: index + 1,
+      }));
+    });
+  }, []);
+
+  const draglistRenderItem = useCallback(
+    ({
+      item: exercise,
+      onDragStart,
+      onDragEnd,
+      isActive,
+    }: {
+      item: (Exercise | MuscleGroup) & { order: number };
+      onDragStart: () => void;
+      onDragEnd: () => void;
+      isActive: boolean;
+    }) => (
+      <View
+        style={[
+          styles.exerciseContainer,
+          {
+            transform: isActive ? [{ scale: 1.05 }] : [],
+            opacity: isActive ? 0.8 : 1,
+          },
+        ]}
+      >
+        <View style={styles.exerciseTopRow}>
+          <Chip
+            compact
+            style={{
+              // TODO: Set muscle group colors once they're not ugly
+              backgroundColor: "rgba(222, 0, 0, 0.5)",
+              filter: "brightness(1.1)",
+            }}
+            textStyle={{
+              color: "white",
+              opacity: 0.7,
+              fontSize: 12,
+            }}
+          >
+            {"id" in exercise
+              ? exercise.targetMuscle.name.toUpperCase()
+              : exercise.name.toUpperCase()}
+          </Chip>
+
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <IconButton
+              icon={() => (
+                <Icon source="delete" size={20} color={Colors.primary.light} />
+              )}
+              onPress={() => handleExerciseDelete(exercise)}
+            />
+            <IconButton
+              icon={() => <Icon source="drag" size={24} />}
+              onLongPress={onDragStart}
+              delayLongPress={250}
+              onPressOut={onDragEnd}
+            />
+          </View>
+        </View>
+
+        <Pressable
+          style={styles.exerciseEditable}
+          onPress={() => {
+            setExercisesListOpen(true);
+          }}
+          disabled={isActive}
+        >
+          {"id" in exercise ? (
+            <>
+              <Text
+                variant="titleLarge"
+                style={{ fontSize: 18, fontWeight: "bold" }}
+              >
+                {exercise.name}
+              </Text>
+              <Text
+                variant="bodySmall"
+                style={{ color: "darkgray", marginTop: 2 }}
+              >
+                {exercise.equipment.toUpperCase()}
+              </Text>
+            </>
+          ) : (
+            <Text
+              variant="bodySmall"
+              style={{
+                paddingVertical: 10,
+                paddingHorizontal: 5,
+                color: "darkgray",
+                fontStyle: "italic",
+              }}
+            >
+              Select an exercise...
+            </Text>
+          )}
+        </Pressable>
+      </View>
+    ),
+    [handleExerciseDelete]
+  );
 
   return (
     <Portal.Host>
@@ -496,6 +507,7 @@ export default function NewPlannedMesocycle() {
 
         <FlatList
           data={daySchedules}
+          extraData={sessionIndex}
           horizontal
           showsHorizontalScrollIndicator={false}
           pagingEnabled
@@ -516,7 +528,16 @@ export default function NewPlannedMesocycle() {
                     gap: 12,
                   },
                 ]}
-                onPress={() => {}}
+                onPress={() => {
+                  setDaySchedules((prev) => [
+                    ...prev,
+                    {
+                      day: prev.length + 1,
+                      name: `Day ${prev.length + 1}`,
+                      exercises: [],
+                    },
+                  ]);
+                }}
               >
                 <>
                   <Icon source="plus" size={28} color="darkgray" />
@@ -527,15 +548,15 @@ export default function NewPlannedMesocycle() {
               </TouchableRipple>
             </View>
           )}
-          renderItem={({ item: daySchedule }) => (
-            <View style={{ width, flex: 1, marginBottom: 10 }}>
+          renderItem={({ item: daySchedule, index }) => (
+            <View style={{ width, flex: 1, paddingBottom: 100 }}>
               <View style={styles.sessionContainer}>
                 <View style={styles.mesoInfoTopRow}>
                   <View style={styles.sessionName}>
                     <TextInput
                       style={{ height: 42 }}
                       contentStyle={{ fontSize: 14 }}
-                      defaultValue={daySchedule.name}
+                      value={daySchedule.name}
                       onChangeText={(text) =>
                         setDaySchedules((prev) => {
                           const newSchedules = [...prev];
@@ -556,7 +577,7 @@ export default function NewPlannedMesocycle() {
                         size={24}
                       />
                     )}
-                    onPress={() => {}}
+                    onPress={() => handleSessionDelete(index)}
                   />
                 </View>
 
@@ -564,6 +585,7 @@ export default function NewPlannedMesocycle() {
                   keyExtractor={draglistKeyExtractor}
                   ItemSeparatorComponent={draglistItemSeparator}
                   data={daySchedule.exercises}
+                  extraData={sessionIndex}
                   style={styles.exerciseList}
                   onReordered={onReordered}
                   scrollEnabled={false}
@@ -596,6 +618,7 @@ export default function NewPlannedMesocycle() {
           open={muscleGroupListOpen}
           setOpen={setMuscleGroupListOpen}
           onMuscleGroupSelect={handleMuscleGroupSelect}
+          data={sessionIndex}
         />
 
         <ExerciseSelectBottomSheet
