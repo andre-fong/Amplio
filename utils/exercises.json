@@ -501,7 +501,7 @@
     "equipment": "Smith Machine"
   },
   {
-    "name": "Barbell Back Squat",
+    "name": "Back Squat",
     "targetMuscle": "Quads",
     "equipment": "Barbell"
   },
@@ -516,7 +516,7 @@
     "equipment": "Dumbbell"
   },
   {
-    "name": "Barbell Front Squat",
+    "name": "Front Squat",
     "targetMuscle": "Quads",
     "equipment": "Barbell"
   },
@@ -546,7 +546,7 @@
     "equipment": "Machine"
   },
   {
-    "name": "45-degree Leg Press",
+    "name": "Incline Leg Press",
     "targetMuscle": "Quads",
     "equipment": "Machine"
   },
