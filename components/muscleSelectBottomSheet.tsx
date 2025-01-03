@@ -7,6 +7,7 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import Colors from "@/constants/colors";
 import useMuscleGroups from "@/hooks/useMuscleGroups";
+import { FlashList } from "@shopify/flash-list";
 
 export default function MuscleSelectBottomSheet({
   open,
@@ -27,6 +28,7 @@ export default function MuscleSelectBottomSheet({
   }, [open]);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const bottomSheetListRef = useRef<any>(null);
 
   const handleMuscleSelect = useCallback(
     (muscleGroup: MuscleGroup) => {
@@ -39,7 +41,12 @@ export default function MuscleSelectBottomSheet({
   const handleClose = useCallback(() => {
     setOpen(false);
     bottomSheetRef.current?.close();
-  }, [setOpen, bottomSheetRef]);
+    setTimeout(() => {
+      (
+        bottomSheetListRef.current as FlashList<Exercise> | undefined
+      )?.scrollToOffset({ offset: 0 });
+    }, 350);
+  }, []);
 
   const renderBackdropComponent = useCallback(
     (props: any) => (
@@ -100,6 +107,7 @@ export default function MuscleSelectBottomSheet({
           data={muscleGroups}
           // TODO: Change estimatedItemSize once restyled
           estimatedItemSize={55}
+          ref={bottomSheetListRef}
           keyExtractor={(item) => item.name}
           ListHeaderComponent={
             <View
