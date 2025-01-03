@@ -22,20 +22,18 @@ export default function ExerciseSelectBottomSheet({
   open,
   setOpen,
   onExerciseSelect,
+  filter,
+  data,
 }: {
   open: boolean;
   setOpen: (open: boolean) => void;
   onExerciseSelect: (exercise: Exercise) => void;
+  filter?: string;
+  data: any;
 }) {
-  // Open bottom sheet when open is true
-  useEffect(() => {
-    if (open) {
-      bottomSheetRef.current?.expand();
-    }
-  }, [open]);
-
   const bottomSheetRef = useRef<BottomSheet>(null);
   const bottomSheetListRef = useRef<any>(null);
+  const muscleGroupsListRef = useRef<FlatListGH<MuscleGroup>>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   const [selectedMuscleGroups, setSelectedMuscleGroups] = useState<
@@ -52,6 +50,23 @@ export default function ExerciseSelectBottomSheet({
   });
 
   const { muscleGroups, loading: musclesLoading } = useMuscleGroups();
+
+  // Open bottom sheet when open is true, and set filter if provided
+  useEffect(() => {
+    if (open) {
+      if (filter) {
+        setSelectedMuscleGroups({ [filter]: true });
+        // scroll to selected muscle group
+        muscleGroupsListRef.current?.scrollToIndex({
+          index: muscleGroups.findIndex((muscle) => muscle.name === filter),
+          animated: false,
+        });
+      } else {
+        setSelectedMuscleGroups({});
+      }
+      bottomSheetRef.current?.expand();
+    }
+  }, [open, filter, muscleGroups]);
 
   const handleMuscleGroupSelect = useCallback(
     (muscleGroupName: string) => {
@@ -242,6 +257,7 @@ export default function ExerciseSelectBottomSheet({
         <BottomSheetFlashList
           contentContainerStyle={styles.sheetContainer}
           data={exercises}
+          extraData={data}
           ref={bottomSheetListRef}
           estimatedItemSize={80}
           keyExtractor={flashListKeyExtractor}
@@ -273,6 +289,7 @@ export default function ExerciseSelectBottomSheet({
                 data={muscleGroups}
                 renderItem={renderMuscleItem}
                 keyExtractor={muscleListKeyExtractor}
+                ref={muscleGroupsListRef}
               />
             </View>
           }

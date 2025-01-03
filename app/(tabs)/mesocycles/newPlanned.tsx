@@ -58,6 +58,7 @@ export default function NewPlannedMesocycle() {
 
   const [muscleGroupListOpen, setMuscleGroupListOpen] = useState(false);
   const [exercisesListOpen, setExercisesListOpen] = useState(false);
+  const [exerciseFilter, setExerciseFilter] = useState("");
 
   const draglistKeyExtractor = useCallback(
     (item: (Exercise | MuscleGroup) & { order: number }) => {
@@ -311,6 +312,9 @@ export default function NewPlannedMesocycle() {
         <Pressable
           style={styles.exerciseEditable}
           onPress={() => {
+            setExerciseFilter(
+              "id" in exercise ? exercise.targetMuscle.name : exercise.name
+            );
             setExercisesListOpen(true);
           }}
           disabled={isActive}
@@ -675,6 +679,8 @@ export default function NewPlannedMesocycle() {
           open={exercisesListOpen}
           setOpen={setExercisesListOpen}
           onExerciseSelect={() => {}}
+          filter={exerciseFilter}
+          data={sessionIndex}
         />
         <Modal
           visible={mesocycleNotesOpen}
