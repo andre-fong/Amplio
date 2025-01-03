@@ -50,7 +50,6 @@ export default function ExerciseSelectBottomSheet({
     targetMuscleGroups: selectedMuscleGroupNames,
     searchQuery,
   });
-  console.log(exercises.length);
 
   const { muscleGroups, loading: musclesLoading } = useMuscleGroups();
 

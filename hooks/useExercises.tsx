@@ -11,8 +11,6 @@ export default function useExercises({
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
 
-  console.log(targetMuscleGroups, searchQuery);
-
   useEffect(() => {
     async function fetchExercises() {
       try {
