@@ -34,78 +34,15 @@ import MuscleSelectBottomSheet from "@/components/muscleSelectBottomSheet";
 import DragList from "react-native-draglist";
 import { Calendar, DateData } from "react-native-calendars";
 
-const mockExerciseList: Exercise[] = [
-  {
-    id: 1,
-    name: "Bench Press",
-    targetMuscle: {
-      name: "Chest",
-      color: "red",
-    },
-    equipment: "Barbell",
-  },
-  {
-    id: 2,
-    name: "Squat",
-    targetMuscle: {
-      name: "Quads",
-      color: "green",
-    },
-    equipment: "Barbell",
-  },
-  {
-    id: 6,
-    name: "Tricep Extension",
-    targetMuscle: {
-      name: "Triceps",
-      color: "pink",
-    },
-    equipment: "Dumbbell",
-  },
-  {
-    id: 11,
-    name: "Hammer Curl",
-    targetMuscle: {
-      name: "Biceps",
-      color: "purple",
-    },
-    equipment: "Dumbbell",
-  },
-  {
-    id: 12,
-    name: "Skullcrusher",
-    targetMuscle: {
-      name: "Triceps",
-      color: "pink",
-    },
-    equipment: "Barbell",
-  },
-];
-
-const mockMesoSchedule: DaySchedule[] = [
-  {
-    day: 1,
-    exercises: mockExerciseList,
-  },
-  {
-    day: 2,
-    exercises: mockExerciseList,
-  },
-  {
-    day: 3,
-    exercises: mockExerciseList,
-  },
-];
-
 export default function NewPlannedMesocycle() {
   const router = useRouter();
   const { width } = useWindowDimensions();
 
   const [sessionIndex, setSessionIndex] = useState(0);
+  const containerScrollRef = useRef<ScrollView | null>(null);
 
   const [mesocycleTitle, setMesocycleTitle] = useState("");
-  const [mesocycleNotes, setMesocycleNotes] = useState("");
-  const [mesocycleNotesSaved, setMesocycleNotesSaved] = useState("");
+  const [mesocycleNotesTemp, setMesocycleNotesTemp] = useState("");
   const [mesocycleOptionsOpen, setMesocycleOptionsOpen] = useState(false);
   const [mesocycleNotesOpen, setMesocycleNotesOpen] = useState(false);
 
@@ -119,42 +56,14 @@ export default function NewPlannedMesocycle() {
     }, 150);
   }, [mesocycleNotesOpen]);
 
-  const handleMesoNotesCancel = useCallback(() => {
-    setMesocycleNotes(mesocycleNotesSaved);
-    setMesocycleNotesOpen(false);
-  }, [mesocycleNotesSaved]);
-
-  const handleMesoNotesSave = useCallback(() => {
-    setMesocycleNotesSaved(mesocycleNotes);
-    setMesocycleNotesOpen(false);
-  }, [mesocycleNotes]);
-
-  const handleMesoNotesClear = useCallback(() => {
-    setMesocycleNotes("");
-    if (mesoNotesRef.current) {
-      mesoNotesRef.current?.clear();
-    }
-  }, []);
-
   const [muscleGroupListOpen, setMuscleGroupListOpen] = useState(false);
   const [exercisesListOpen, setExercisesListOpen] = useState(false);
 
-  const [exercises, setExercises] = useState<Exercise[]>(mockExerciseList);
-  const exerciseDragListRef = useRef<FlatList<Exercise> | null>(null);
-
-  const onReordered = useCallback(
-    async (fromIndex: number, toIndex: number) => {
-      const copy = [...exercises];
-      const removed = copy.splice(fromIndex, 1);
-
-      copy.splice(toIndex, 0, removed[0]);
-      setExercises(copy);
-    },
-    [exercises]
-  );
-
   const draglistKeyExtractor = useCallback(
-    (item: Exercise) => item.id.toString(),
+    (item: (Exercise | MuscleGroup) & { order: number }) => {
+      if ("id" in item) return item.id.toString() + item.order;
+      return item.name + item.order;
+    },
     []
   );
   const draglistItemSeparator = useCallback(
@@ -168,7 +77,7 @@ export default function NewPlannedMesocycle() {
       onDragEnd,
       isActive,
     }: {
-      item: Exercise;
+      item: (Exercise | MuscleGroup) & { order: number };
       onDragStart: () => void;
       onDragEnd: () => void;
       isActive: boolean;
@@ -196,15 +105,31 @@ export default function NewPlannedMesocycle() {
               fontSize: 12,
             }}
           >
-            {exercise.targetMuscle.name.toUpperCase()}
+            {"id" in exercise
+              ? exercise.targetMuscle.name.toUpperCase()
+              : exercise.name.toUpperCase()}
           </Chip>
 
-          <IconButton
-            icon={() => <Icon source="drag" size={24} />}
-            onLongPress={onDragStart}
-            delayLongPress={250}
-            onPressOut={onDragEnd}
-          />
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <IconButton
+              icon={() => (
+                <Icon source="delete" size={20} color={Colors.primary.light} />
+              )}
+              onPress={() => handleExerciseDelete(exercise)}
+            />
+            <IconButton
+              icon={() => <Icon source="drag" size={24} />}
+              onLongPress={onDragStart}
+              delayLongPress={250}
+              onPressOut={onDragEnd}
+            />
+          </View>
         </View>
 
         <Pressable
@@ -214,15 +139,34 @@ export default function NewPlannedMesocycle() {
           }}
           disabled={isActive}
         >
-          <Text
-            variant="titleLarge"
-            style={{ fontSize: 18, fontWeight: "bold" }}
-          >
-            {exercise.name}
-          </Text>
-          <Text variant="bodySmall" style={{ color: "darkgray", marginTop: 2 }}>
-            {exercise.equipment.toUpperCase()}
-          </Text>
+          {"id" in exercise ? (
+            <>
+              <Text
+                variant="titleLarge"
+                style={{ fontSize: 18, fontWeight: "bold" }}
+              >
+                {exercise.name}
+              </Text>
+              <Text
+                variant="bodySmall"
+                style={{ color: "darkgray", marginTop: 2 }}
+              >
+                {exercise.equipment.toUpperCase()}
+              </Text>
+            </>
+          ) : (
+            <Text
+              variant="bodySmall"
+              style={{
+                paddingVertical: 10,
+                paddingHorizontal: 5,
+                color: "darkgray",
+                fontStyle: "italic",
+              }}
+            >
+              Select an exercise...
+            </Text>
+          )}
         </Pressable>
       </View>
     ),
@@ -276,11 +220,112 @@ export default function NewPlannedMesocycle() {
 
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
   const [confirmMesocycleOpen, setConfirmMesocycleOpen] = useState(false);
-  const [weeksToTrain, setWeeksToTrain] = useState("4");
   const handleConfirmMesocycleCancel = useCallback(() => {
     setConfirmMesocycleOpen(false);
-    setWeeksToTrain("4");
+    setNewMeso((prev) => ({
+      ...prev,
+      numMicrocycles: 4,
+    }));
   }, []);
+
+  //////////// PAGE STATE ////////////
+  const [newMeso, setNewMeso] = useState<Omit<Mesocycle, "id" | "endDate">>({
+    name: "",
+    notes: "",
+    startDate: selectedDate || "",
+    type: "planned",
+    numMicrocycles: 4,
+  });
+  const [daySchedules, setDaySchedules] = useState<
+    (Omit<DaySchedule, "exercises"> & {
+      exercises: ((Exercise | MuscleGroup) & { order: number })[];
+    })[]
+  >([
+    {
+      day: 1,
+      name: "Day 1",
+      exercises: [],
+    },
+  ]);
+
+  const changeMesoWeeks = useCallback(
+    (weeks: string) => {
+      setNewMeso((prev) => ({
+        ...prev,
+        numMicrocycles: parseInt(weeks),
+      }));
+    },
+    [setNewMeso]
+  );
+
+  const handleMesoNotesCancel = useCallback(() => {
+    setMesocycleNotesTemp(newMeso.notes || "");
+    setMesocycleNotesOpen(false);
+  }, [newMeso.notes]);
+
+  const handleMesoNotesSave = useCallback(() => {
+    setNewMeso((prev) => ({ ...prev, notes: mesocycleNotesTemp }));
+    setMesocycleNotesOpen(false);
+  }, [mesocycleNotesTemp]);
+
+  const handleMesoNotesClear = useCallback(() => {
+    setMesocycleNotesTemp("");
+    if (mesoNotesRef.current) {
+      mesoNotesRef.current?.clear();
+    }
+  }, []);
+
+  const onReordered = useCallback(
+    async (fromIndex: number, toIndex: number) => {
+      const copy = [...daySchedules[sessionIndex].exercises];
+      const removed = copy.splice(fromIndex, 1);
+
+      copy.splice(toIndex, 0, removed[0]);
+      setDaySchedules((prev) => {
+        const newSchedules = [...prev];
+        newSchedules[sessionIndex].exercises = copy;
+        return newSchedules;
+      });
+    },
+    [sessionIndex, daySchedules]
+  );
+
+  /**
+   * Handle selecting a muscle group from bottom sheet
+   */
+  const handleMuscleGroupSelect = useCallback(
+    (muscleGroup: MuscleGroup) => {
+      setDaySchedules((prev) => {
+        const newSchedules = [...prev];
+        newSchedules[sessionIndex].exercises.push({
+          ...muscleGroup,
+          order: prev[sessionIndex].exercises.length + 1,
+        });
+        return newSchedules;
+      });
+    },
+    [sessionIndex, daySchedules]
+  );
+
+  /**
+   * Handle deleting an exercise from the draglist
+   */
+  const handleExerciseDelete = useCallback(
+    (exercise: (Exercise | MuscleGroup) & { order: number }) => {
+      setDaySchedules((prev) => {
+        const newSchedules = [...prev];
+        newSchedules[sessionIndex].exercises = newSchedules[
+          sessionIndex
+        ].exercises.filter((ex) => ex.order !== exercise.order);
+        return newSchedules;
+      });
+    },
+    [sessionIndex]
+  );
+
+  useEffect(() => {
+    console.log(daySchedules[0].exercises);
+  }, [daySchedules]);
 
   return (
     <Portal.Host>
@@ -320,6 +365,7 @@ export default function NewPlannedMesocycle() {
         style={styles.container}
         keyboardDismissMode="on-drag"
         nestedScrollEnabled
+        ref={containerScrollRef}
       >
         <View style={styles.mesoMainInfo}>
           <View style={styles.mesoInfoTopRow}>
@@ -395,8 +441,8 @@ export default function NewPlannedMesocycle() {
                 flexWrap: "wrap",
               }}
             >
-              {mesocycleNotesSaved ? (
-                mesocycleNotesSaved
+              {newMeso.notes ? (
+                newMeso.notes
               ) : (
                 <Text
                   variant="bodySmall"
@@ -449,8 +495,7 @@ export default function NewPlannedMesocycle() {
         </View>
 
         <FlatList
-          data={mockMesoSchedule}
-          // keyExtractor={(item) => item.date.toString()}
+          data={daySchedules}
           horizontal
           showsHorizontalScrollIndicator={false}
           pagingEnabled
@@ -490,10 +535,15 @@ export default function NewPlannedMesocycle() {
                     <TextInput
                       style={{ height: 42 }}
                       contentStyle={{ fontSize: 14 }}
-                      defaultValue={"Day " + daySchedule.day}
-                      // value={mesocycleTitle}
-                      // onChangeText={setMesocycleTitle}
-                      // placeholder="Untitled Mesocycle"
+                      defaultValue={daySchedule.name}
+                      onChangeText={(text) =>
+                        setDaySchedules((prev) => {
+                          const newSchedules = [...prev];
+                          newSchedules[sessionIndex].name = text;
+                          return newSchedules;
+                        })
+                      }
+                      placeholder={`Day ${daySchedule.day}`}
                     />
                   </View>
 
@@ -513,16 +563,14 @@ export default function NewPlannedMesocycle() {
                 <DragList
                   keyExtractor={draglistKeyExtractor}
                   ItemSeparatorComponent={draglistItemSeparator}
-                  data={exercises}
+                  data={daySchedule.exercises}
                   style={styles.exerciseList}
                   onReordered={onReordered}
                   scrollEnabled={false}
-                  ref={exerciseDragListRef}
                   renderItem={draglistRenderItem}
                 />
 
                 <Button
-                  style={{ marginTop: 10 }}
                   labelStyle={{ fontSize: 13, color: Colors.primary.light }}
                   onPress={() => {
                     setMuscleGroupListOpen(true);
@@ -547,7 +595,7 @@ export default function NewPlannedMesocycle() {
         <MuscleSelectBottomSheet
           open={muscleGroupListOpen}
           setOpen={setMuscleGroupListOpen}
-          onMuscleGroupSelect={() => {}}
+          onMuscleGroupSelect={handleMuscleGroupSelect}
         />
 
         <ExerciseSelectBottomSheet
@@ -566,14 +614,14 @@ export default function NewPlannedMesocycle() {
           }}
         >
           <Text variant="titleMedium" style={{ marginBottom: 20 }}>
-            {!mesocycleNotesSaved ? "Add session note" : "Edit session note"}
+            {!newMeso.notes ? "Add session note" : "Edit session note"}
           </Text>
 
           <TextInput
             label="Session notes"
-            defaultValue={mesocycleNotes}
+            defaultValue={mesocycleNotesTemp}
             ref={mesoNotesRef}
-            onChangeText={setMesocycleNotes}
+            onChangeText={setMesocycleNotesTemp}
             multiline
             right={
               <TextInput.Icon
@@ -630,8 +678,8 @@ export default function NewPlannedMesocycle() {
                 primary: Colors.primary.light,
               },
             }}
-            value={weeksToTrain}
-            onValueChange={setWeeksToTrain}
+            value={newMeso.numMicrocycles.toString()}
+            onValueChange={changeMesoWeeks}
             buttons={[
               {
                 label: "4",
