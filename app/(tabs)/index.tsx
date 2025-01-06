@@ -28,6 +28,7 @@ import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { spinUpDatabase, clearDatabase } from "@/api";
 import { getFullSetType } from "@/utils/set";
 import Session from "@/components/session";
+import ExerciseSelectBottomSheet from "@/components/exerciseSelectBottomSheet";
 
 // TODO: Replace with real data
 const mockMesoData: Mesocycle = {
@@ -582,6 +583,11 @@ export default function Logs() {
     []
   );
 
+  const [exercisesListOpen, setExercisesListOpen] = useState(false);
+  const [exerciseFilter, setExerciseFilter] = useState("");
+
+  const handleExerciseSelect = useCallback(() => {}, []);
+
   return (
     <Portal.Host>
       <Appbar.Header
@@ -705,12 +711,21 @@ export default function Logs() {
                 setSelectedSetOptions({ exerciseId, setOrder });
                 bottomSheetRef.current?.expand();
               }}
+              setOpen={setExercisesListOpen}
             />
           )}
         />
       </ScrollView>
 
       <Portal>
+        <ExerciseSelectBottomSheet
+          open={exercisesListOpen}
+          setOpen={setExercisesListOpen}
+          onExerciseSelect={handleExerciseSelect}
+          filter={exerciseFilter}
+          data={sessionIndex}
+        />
+
         <BottomSheet
           backgroundStyle={{ backgroundColor: Colors.secondary.main }}
           // snapPoints={["80%"]}
