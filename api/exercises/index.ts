@@ -60,3 +60,35 @@ export async function getExercises(
     return [];
   }
 }
+
+export async function addExercise(
+  newExercise: Exercise
+): Promise<Exercise | null> {
+  try {
+    const db = await SQLite.openDatabaseAsync("amplio.db", {
+      useNewConnection: true,
+    });
+
+    const exerciseId = (
+      await db.runAsync(
+        `
+      INSERT INTO Exercise (name, equipment)
+      `,
+        [newExercise.name, newExercise.equipment]
+      )
+    ).lastInsertRowId;
+
+    await db.runAsync(
+      `
+      INSERT INTO Recruits (exerciseId, muscleGroupName, relationship)
+      `,
+      [exerciseId, newExercise.targetMuscle.name, "target"]
+    );
+
+    db.closeAsync();
+    return newExercise;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
