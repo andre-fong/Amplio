@@ -15,46 +15,6 @@ import MesocycleCard from "@/components/mesocycleCard";
 import { useFocusEffect, useRouter } from "expo-router";
 import useMesocycles from "@/hooks/useMesocycles";
 
-// TODO: Use ISO date strings
-const mockMesocycles: Mesocycle[] = [
-  {
-    id: 1,
-    name: "Mesocycle 1",
-    notes: "This is a test mesocycle.",
-    startDate: "2024-01-02",
-    endDate: "2024-01-31",
-    type: "planned",
-    numMicrocycles: 4,
-    numSessionsPerMicrocycle: 3,
-    percentFinished: 10,
-  },
-  {
-    id: 2,
-    name: "Mesocycle 2",
-    startDate: "2021-02-01",
-    type: "custom",
-    numMicrocycles: 4,
-  },
-  {
-    id: 3,
-    name: "Mesocycle 3",
-    startDate: "2021-03-01",
-    endDate: "2021-03-31",
-    type: "planned",
-    numMicrocycles: 4,
-    numSessionsPerMicrocycle: 3,
-    percentFinished: 100,
-  },
-  {
-    id: 4,
-    name: "Mesocycle 4",
-    startDate: "2021-03-01",
-    endDate: "2021-03-31",
-    type: "custom",
-    numMicrocycles: 4,
-  },
-];
-
 function Mesocycles() {
   const [FABOpen, setFABOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -103,6 +63,7 @@ function Mesocycles() {
             placeholder="Search your mesocycles"
             value={searchQuery}
             onChangeText={setSearchQuery}
+            loading={loading}
           />
         </View>
         <FlatList
@@ -115,7 +76,7 @@ function Mesocycles() {
           keyboardShouldPersistTaps="always"
           refreshControl={
             <RefreshControl
-              refreshing={loading}
+              refreshing={false}
               colors={[Colors.primary.light, Colors.secondary.dark]}
               progressBackgroundColor={Colors.secondary.main}
               onRefresh={refresh}

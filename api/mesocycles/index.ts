@@ -29,6 +29,13 @@ export async function getMesocycles(
       FROM Session s
       WHERE s.completed = 1
       GROUP BY mesoId
+    ),
+    MicrocycleDayCount AS (
+      SELECT
+        mesoId,
+        COUNT(day) AS numSessionsPerMicrocycle
+      FROM MesocycleDaySchedule
+      GROUP BY mesoId, day
     )
     SELECT 
       m.id,
@@ -38,9 +45,10 @@ export async function getMesocycles(
       m.endDate,
       m.type,
       m.numMicrocycles,
-      COUNT(mds.day) AS numSessionsPerMicrocycle,
+      mdc.numSessionsPerMicrocycle,
       IFNULL(csc.numCompletedSessions, 0) / (numMicrocycles * COUNT(mds.day)) * 100 AS percentFinished
     FROM Mesocycle m
+    JOIN MicrocycleDayCount mdc ON m.id = mdc.mesoId
     JOIN MesocycleDaySchedule mds ON m.id = mds.mesoId
     LEFT JOIN CompletedSessionCount csc ON m.id = csc.id
     ${searchQueryParams ? `WHERE m.name LIKE ?` : ""}

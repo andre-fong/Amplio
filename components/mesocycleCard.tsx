@@ -159,7 +159,9 @@ export default function MesocycleCard({
               {[
                 "Planned",
                 `${data.numMicrocycles} microcycles`,
-                `${data.numSessionsPerMicrocycle} days / microcycle`,
+                `${data.numSessionsPerMicrocycle} day${
+                  data.numSessionsPerMicrocycle === 1 ? "" : "s"
+                } / microcycle`,
               ].map((tag) => (
                 <Chip
                   key={tag}
