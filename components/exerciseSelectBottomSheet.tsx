@@ -1,11 +1,22 @@
-import { StyleSheet, View, Keyboard } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Keyboard,
+  TextInput as TextInputRN,
+  ScrollView,
+} from "react-native";
 import { FlatList as FlatListGH } from "react-native-gesture-handler";
 import {
+  Button,
+  Checkbox,
   Chip,
   Divider,
   Icon,
+  List,
+  Modal,
   Searchbar,
   Text,
+  TextInput,
   TouchableRipple,
 } from "react-native-paper";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -17,6 +28,8 @@ import Colors from "@/constants/colors";
 import useExercises from "@/hooks/useExercises";
 import useMuscleGroups from "@/hooks/useMuscleGroups";
 import { FlashList } from "@shopify/flash-list";
+import equipment from "@/constants/equipment";
+import { addExercise } from "@/api/exercises";
 
 export default function ExerciseSelectBottomSheet({
   open,
@@ -121,7 +134,7 @@ export default function ExerciseSelectBottomSheet({
       <>
         <Divider />
         {/* TODO: Add new exercise capabilities */}
-        <TouchableRipple onPress={() => {}}>
+        <TouchableRipple onPress={handleNewExerciseOpen}>
           <View style={styles.exerciseContainer}>
             <Text
               variant="bodySmall"
@@ -141,7 +154,7 @@ export default function ExerciseSelectBottomSheet({
         </TouchableRipple>
       </>
     ),
-    []
+    [searchQuery]
   );
 
   const renderMuscleItem = useCallback(
@@ -236,6 +249,94 @@ export default function ExerciseSelectBottomSheet({
   );
   const flashListItemSeparatorComponent = useCallback(() => <Divider />, []);
 
+  const [newExerciseOpen, setNewExerciseOpen] = useState(false);
+  const [newExerciseName, setNewExerciseName] = useState("");
+  const newExerciseNameRef = useRef<TextInputRN | null>(null);
+
+  const [muscleDropdownOpen, setMuscleDropdownOpen] = useState(false);
+  const [muscleSelected, setMuscleSelected] = useState<string | null>(null);
+  const [equipmentDropdownOpen, setEquipmentDropdownOpen] = useState(false);
+  const [equipmentSelected, setEquipmentSelected] = useState<string | null>(
+    null
+  );
+  const newExerciseSaveDisabled = useMemo(
+    () => newExerciseName.length === 0 || !muscleSelected || !equipmentSelected,
+    [newExerciseName, muscleSelected, equipmentSelected]
+  );
+
+  const [newExerciseSaving, setNewExerciseSaving] = useState(false);
+
+  // Focus on new exercise name input when modal opens
+  useEffect(() => {
+    if (newExerciseOpen) {
+      setTimeout(() => {
+        newExerciseNameRef.current?.focus();
+      }, 150);
+    }
+  }, [newExerciseOpen]);
+
+  const handleNewExerciseOpen = useCallback(() => {
+    setNewExerciseName(searchQuery);
+    setNewExerciseOpen(true);
+  }, [searchQuery]);
+
+  const handleNewExerciseClose = useCallback(() => {
+    setNewExerciseOpen(false);
+    setNewExerciseName(searchQuery);
+  }, [searchQuery]);
+
+  const handleNewExerciseSave = useCallback(async () => {
+    setNewExerciseSaving(true);
+    await addExercise({
+      name: newExerciseName,
+      targetMuscle: {
+        name: muscleSelected || "",
+        color: "",
+      },
+      equipment: equipmentSelected as Equipment,
+    });
+    setNewExerciseOpen(false);
+    setNewExerciseSaving(false);
+  }, [newExerciseName, muscleSelected, equipmentSelected]);
+
+  const handleMuscleSelected = useCallback((muscle: string) => {
+    setMuscleSelected(muscle);
+    setMuscleDropdownOpen(false);
+  }, []);
+
+  const handleEquipmentSelected = useCallback((equip: string) => {
+    setEquipmentSelected(equip);
+    setEquipmentDropdownOpen(false);
+  }, []);
+
+  const handleMuscleDropdownOpen = useCallback(() => {
+    newExerciseNameRef.current?.blur();
+    setMuscleDropdownOpen(true);
+  }, []);
+
+  const handleEquipmentDropdownOpen = useCallback(() => {
+    newExerciseNameRef.current?.blur();
+    setEquipmentDropdownOpen(true);
+  }, []);
+
+  const renderDropdownTitle = useCallback(
+    (title: string) => (
+      <Text variant="bodySmall" style={{ color: "rgb(216, 194, 190)" }}>
+        {title}
+      </Text>
+    ),
+    []
+  );
+
+  const renderDropdownDescription = useCallback(
+    (description: string) => (
+      <Text variant="bodyLarge" style={{ color: "white" }}>
+        {description}
+      </Text>
+    ),
+    []
+  );
+
   return (
     <>
       <BottomSheet
@@ -299,6 +400,144 @@ export default function ExerciseSelectBottomSheet({
           ListFooterComponent={renderFooter}
         />
       </BottomSheet>
+
+      <Modal
+        visible={newExerciseOpen}
+        onDismiss={handleNewExerciseClose}
+        contentContainerStyle={{
+          backgroundColor: "rgb(65, 65, 65)",
+          padding: 20,
+          margin: 20,
+          borderRadius: 3,
+        }}
+      >
+        <ScrollView>
+          <Text variant="titleMedium" style={{ marginBottom: 20 }}>
+            New Exercise
+          </Text>
+
+          <TextInput
+            label="Name"
+            defaultValue={searchQuery}
+            ref={newExerciseNameRef}
+            onChangeText={setNewExerciseName}
+            theme={{ colors: { surfaceVariant: Colors.secondary.light } }}
+          />
+
+          <View style={{ marginVertical: 10 }}>
+            <List.Accordion
+              title={renderDropdownTitle("Muscle Group")}
+              description={renderDropdownDescription(
+                muscleSelected || "Select a muscle group"
+              )}
+              theme={{
+                colors: {
+                  background: Colors.secondary.light,
+                  onSurface: "white",
+                },
+              }}
+              expanded={muscleDropdownOpen}
+              onPress={handleMuscleDropdownOpen}
+            >
+              <View />
+            </List.Accordion>
+          </View>
+
+          <List.Accordion
+            title={renderDropdownTitle("Equipment")}
+            description={renderDropdownDescription(
+              equipmentSelected || "Select an equipment type"
+            )}
+            theme={{
+              colors: {
+                background: Colors.secondary.light,
+                onSurface: "white",
+              },
+            }}
+            expanded={equipmentDropdownOpen}
+            onPress={handleEquipmentDropdownOpen}
+          >
+            <View />
+          </List.Accordion>
+
+          <View style={styles.newExerciseButtons}>
+            <Button
+              theme={{
+                colors: { primary: Colors.primary.light },
+              }}
+              onPress={handleNewExerciseClose}
+            >
+              Cancel
+            </Button>
+            <Button
+              theme={{
+                colors: {
+                  primary: Colors.primary.dark,
+                  onPrimary: "white",
+                },
+              }}
+              mode="contained"
+              onPress={handleNewExerciseSave}
+              disabled={newExerciseSaveDisabled || newExerciseSaving}
+              loading={newExerciseSaving}
+            >
+              Save
+            </Button>
+          </View>
+        </ScrollView>
+      </Modal>
+
+      <Modal
+        visible={muscleDropdownOpen && newExerciseOpen}
+        onDismiss={() => setMuscleDropdownOpen(false)}
+        contentContainerStyle={{
+          backgroundColor: "rgb(40, 40, 40)",
+          padding: 20,
+          margin: 20,
+          borderRadius: 3,
+          flex: 0.7,
+        }}
+      >
+        <ScrollView persistentScrollbar>
+          <Text style={{ marginBottom: 10, color: "darkgray" }}>
+            Muscle Groups
+          </Text>
+          {muscleGroups.map((muscle) => (
+            <Checkbox.Item
+              key={muscle.name}
+              label={muscle.name}
+              status={muscleSelected === muscle.name ? "checked" : "unchecked"}
+              onPress={() => handleMuscleSelected(muscle.name)}
+            />
+          ))}
+        </ScrollView>
+      </Modal>
+
+      <Modal
+        visible={equipmentDropdownOpen && newExerciseOpen}
+        onDismiss={() => setEquipmentDropdownOpen(false)}
+        contentContainerStyle={{
+          backgroundColor: "rgb(40, 40, 40)",
+          padding: 20,
+          margin: 20,
+          borderRadius: 3,
+          flex: 0.7,
+        }}
+      >
+        <ScrollView persistentScrollbar>
+          <Text style={{ marginBottom: 10, color: "darkgray" }}>
+            Equipment Types
+          </Text>
+          {equipment.map((item) => (
+            <Checkbox.Item
+              key={item}
+              label={item}
+              status={equipmentSelected === item ? "checked" : "unchecked"}
+              onPress={() => handleEquipmentSelected(item)}
+            />
+          ))}
+        </ScrollView>
+      </Modal>
     </>
   );
 }
@@ -319,5 +558,13 @@ const styles = StyleSheet.create({
     marginTop: 15,
     paddingTop: 5,
     paddingBottom: 15,
+  },
+
+  newExerciseButtons: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginTop: 15,
+    gap: 15,
   },
 });

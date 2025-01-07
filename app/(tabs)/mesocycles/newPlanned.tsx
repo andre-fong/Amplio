@@ -776,7 +776,7 @@ export default function NewPlannedMesocycle() {
             borderRadius: 3,
           }}
         >
-          <Text variant="titleMedium">Confirm new mesocycle</Text>
+          <Text variant="titleMedium">Confirm New Mesocycle</Text>
           <Text variant="bodyMedium" style={{ marginTop: 20 }}>
             How many weeks will you train?
           </Text>

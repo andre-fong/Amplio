@@ -33,12 +33,14 @@ import { getCalendarDateString } from "react-native-calendars/src/services";
 export default function Session({
   data: session,
   setSelectedSetOptions,
+  setOpen,
 }: {
   data: Session;
   setSelectedSetOptions: (options: {
     exerciseId: number;
     setOrder: number;
   }) => void;
+  setOpen: (open: boolean) => void;
 }) {
   ///////////// DATA //////////////
   const { width } = useWindowDimensions();
@@ -567,7 +569,7 @@ export default function Session({
             contentStyle={{ height: "100%" }}
             icon={() => <Icon source="plus" size={24} color="gray" />}
             labelStyle={{ color: "gray" }}
-            onPress={() => {}}
+            onPress={() => setOpen(true)}
             rippleColor="#424242"
           >
             ADD EXERCISE

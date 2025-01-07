@@ -60,3 +60,49 @@ export async function getExercises(
     return [];
   }
 }
+
+export async function addExercise(
+  newExercise: Omit<Exercise, "id">
+): Promise<Exercise | null> {
+  try {
+    const db = await SQLite.openDatabaseAsync("amplio.db", {
+      useNewConnection: true,
+    });
+
+    // Check muscle group exists
+    const muscleCheck = await db.getFirstAsync(
+      `
+      SELECT * FROM MuscleGroup WHERE name = ?
+    `,
+      [newExercise.targetMuscle.name]
+    );
+    if (!muscleCheck)
+      throw new Error(
+        `Muscle group "${newExercise.targetMuscle.name}" does not exist`
+      );
+
+    const exerciseId = (
+      await db.runAsync(
+        `
+      INSERT INTO Exercise (name, equipment)
+      VALUES (?, ?)
+      `,
+        [newExercise.name, newExercise.equipment]
+      )
+    ).lastInsertRowId;
+
+    await db.runAsync(
+      `
+      INSERT INTO Recruits (exerciseId, muscleGroupName, relationship)
+      VALUES (?, ?, ?)
+      `,
+      [exerciseId, newExercise.targetMuscle.name, "target"]
+    );
+
+    db.closeAsync();
+    return { ...newExercise, id: exerciseId };
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
