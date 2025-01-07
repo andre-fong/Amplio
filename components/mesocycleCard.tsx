@@ -19,20 +19,20 @@ export default function MesocycleCard({
   data: Mesocycle;
   onDelete: (mesoId: number | null) => void;
 }) {
-  ///////////// DATA //////////////
-  const showYear =
-    new Date(data.startDate).getFullYear() !== new Date().getFullYear();
-  const startDate = new Date(data.startDate).toLocaleDateString(undefined, {
+  ///////////// DATE FORMATTING /////////////
+  const dateFormatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: "UTC",
     weekday: "short",
     month: "short",
     day: "numeric",
   });
+
+  ///////////// DATA //////////////
+  const showYear =
+    new Date(data.startDate).getUTCFullYear() !== new Date().getUTCFullYear();
+  const startDate = dateFormatter.format(new Date(data.startDate));
   const endDate = data.endDate ? (
-    new Date(data.endDate).toLocaleDateString(undefined, {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    })
+    dateFormatter.format(new Date(data.endDate))
   ) : (
     <Text variant="bodyMedium" style={{ fontWeight: "bold" }}>
       Ongoing
