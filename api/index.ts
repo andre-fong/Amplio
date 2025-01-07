@@ -58,7 +58,7 @@ export async function spinUpDatabase() {
         name TEXT NOT NULL,
         exerciseId INTEGER,
         exerciseOrder INTEGER NOT NULL CHECK(exerciseOrder >= 0),
-        PRIMARY KEY (mesoId, day, exerciseId),
+        PRIMARY KEY (mesoId, day, exerciseOrder),
         FOREIGN KEY (mesoId) REFERENCES Mesocycle(id),
         FOREIGN KEY (exerciseId) REFERENCES Exercise(id)
       );
