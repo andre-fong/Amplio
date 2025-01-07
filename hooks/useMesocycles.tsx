@@ -15,6 +15,7 @@ export default function useMesocycles({
 
   const fetchMesocycles = useCallback(async () => {
     try {
+      // await logMesocycleScheduleTable();
       const data = await getMesocycles({ searchQuery });
       setMesocycles(data);
       setLoading(false);

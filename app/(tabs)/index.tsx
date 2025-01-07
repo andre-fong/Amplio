@@ -478,6 +478,7 @@ export default function Logs() {
   useEffect(() => {
     async function prepare() {
       try {
+        // await clearDatabase();
         await spinUpDatabase();
       } catch (error) {
         console.error(error);

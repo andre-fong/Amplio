@@ -33,9 +33,9 @@ export async function getMesocycles(
     MicrocycleDayCount AS (
       SELECT
         mesoId,
-        COUNT(day) AS numSessionsPerMicrocycle
+        COUNT(DISTINCT day) AS numSessionsPerMicrocycle
       FROM MesocycleDaySchedule
-      GROUP BY mesoId, day
+      GROUP BY mesoId
     )
     SELECT 
       m.id,
