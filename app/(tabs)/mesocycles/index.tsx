@@ -14,11 +14,21 @@ import { useCallback, useState } from "react";
 import MesocycleCard from "@/components/mesocycleCard";
 import { useFocusEffect, useRouter } from "expo-router";
 import useMesocycles from "@/hooks/useMesocycles";
+import { deleteMesocycle } from "@/api/mesocycles";
 
 function Mesocycles() {
   const [FABOpen, setFABOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<null | number>(null);
+
+  const handleMesocycleDelete = useCallback(async () => {
+    if (deleteDialogOpen) {
+      console.log("Deleting mesocycle", deleteDialogOpen);
+      await deleteMesocycle(deleteDialogOpen);
+      setDeleteDialogOpen(null);
+      refresh();
+    }
+  }, [deleteDialogOpen]);
 
   const { mesocycles, loading, refresh } = useMesocycles({ searchQuery });
 
@@ -162,7 +172,7 @@ function Mesocycles() {
             </Button>
             <Button
               labelStyle={{ fontSize: 13, color: Colors.primary.light }}
-              onPress={() => setDeleteDialogOpen(null)}
+              onPress={handleMesocycleDelete}
             >
               Delete
             </Button>

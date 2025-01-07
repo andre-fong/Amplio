@@ -207,3 +207,45 @@ export async function addPlannedMesocycle(
     console.error(error);
   }
 }
+
+export async function deleteMesocycle(mesoId: number) {
+  try {
+    const db = await SQLite.openDatabaseAsync("amplio.db", {
+      useNewConnection: true,
+    });
+
+    await db.withTransactionAsync(async () => {
+      await Promise.all(
+        [
+          `DELETE FROM Mesocycle WHERE id = ?`,
+          `DELETE FROM MesocycleDaySchedule WHERE mesoId = ?`,
+          `DELETE FROM Session WHERE mesoId = ?`,
+        ].map((query) => db.runAsync(query, [mesoId]))
+      );
+
+      await db.runAsync(
+        `
+      DELETE FROM ExerciseSet
+      WHERE sessionExerciseId IN (
+        SELECT id
+        FROM SessionExercise
+        WHERE mesoId = ?
+      )
+    `,
+        [mesoId]
+      );
+
+      await db.runAsync(
+        `
+      DELETE FROM SessionExercise
+      WHERE mesoId = ?
+    `,
+        [mesoId]
+      );
+    });
+
+    db.closeAsync();
+  } catch (error) {
+    console.error(error);
+  }
+}
