@@ -43,7 +43,7 @@ export async function getMesocycles(
     FROM Mesocycle m
     JOIN MesocycleDaySchedule mds ON m.id = mds.mesoId
     LEFT JOIN CompletedSessionCount csc ON m.id = csc.id
-    ${searchQueryParams ? `WHERE name LIKE ?` : ""}
+    ${searchQueryParams ? `WHERE m.name LIKE ?` : ""}
     GROUP BY m.id, m.name, m.notes, m.startDate, m.endDate, m.type, m.numMicrocycles
     ORDER BY m.startDate DESC
   `,
@@ -55,6 +55,25 @@ export async function getMesocycles(
   } catch (error) {
     console.error(error);
     return [];
+  }
+}
+
+export async function logMesocycleTable() {
+  try {
+    const db = await SQLite.openDatabaseAsync("amplio.db", {
+      useNewConnection: true,
+    });
+
+    const table = await db.getAllAsync<Mesocycle>(
+      `
+    SELECT * FROM Mesocycle
+  `
+    );
+
+    console.log(table);
+    db.closeAsync();
+  } catch (error) {
+    console.error(error);
   }
 }
 
@@ -95,6 +114,25 @@ export async function getMesocycleSchedule(mesoId: number) {
   }
 }
 
+export async function logMesocycleScheduleTable() {
+  try {
+    const db = await SQLite.openDatabaseAsync("amplio.db", {
+      useNewConnection: true,
+    });
+
+    const table = await db.getAllAsync<MesocycleSchedule>(
+      `
+    SELECT * FROM MesocycleDaySchedule
+  `
+    );
+
+    console.log(table);
+    db.closeAsync();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export async function addPlannedMesocycle(
   newMeso: Omit<Mesocycle, "id" | "endDate">,
   newSchedule: (Omit<DaySchedule, "exercises"> & {
@@ -129,25 +167,32 @@ export async function addPlannedMesocycle(
         )
       ).lastInsertRowId;
 
+      console.log(mesoId);
+      console.log(newSchedule[0].exercises);
+
       await Promise.all(
-        newSchedule.map(async (day) =>
-          day.exercises.map(async (ex) => {
-            const exercise = ex as Exercise & { order: number };
-            return db.runAsync(
-              `
-              INSERT INTO MesocycleDaySchedule (mesoId, day, name, exerciseId, exerciseOrder)
-              VALUES (?, ?, ?, ?, ?)
-               `,
-              [
-                mesoId,
-                day.day,
-                day.name || `Day ${day.day}`,
-                exercise.id,
-                exercise.order,
-              ]
-            );
-          })
-        )
+        newSchedule
+          .map((day) =>
+            day.exercises.map(async (exercise) => {
+              if (!("id" in exercise))
+                throw new Error("Unselected exercise in schedule found");
+
+              await db.runAsync(
+                `
+          INSERT INTO MesocycleDaySchedule (mesoId, day, name, exerciseId, exerciseOrder)
+          VALUES (?, ?, ?, ?, ?)
+        `,
+                [
+                  mesoId,
+                  day.day,
+                  day.name || `Day ${day.day}`,
+                  exercise.id,
+                  exercise.order,
+                ]
+              );
+            })
+          )
+          .flat()
       );
     });
   } catch (error) {

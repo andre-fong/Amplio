@@ -162,10 +162,12 @@ export async function clearDatabase() {
   // Drop all tables
   await db.execAsync(`
     DROP TABLE IF EXISTS Mesocycle;
+    DROP TABLE IF EXISTS MesocycleDaySchedule;
     DROP TABLE IF EXISTS Session;
     DROP TABLE IF EXISTS MuscleGroup;
     DROP TABLE IF EXISTS Exercise;
     DROP TABLE IF EXISTS Recruits;
+    DROP TABLE IF EXISTS SessionExercise;
     DROP TABLE IF EXISTS ExerciseSet;
   `);
 

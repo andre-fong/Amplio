@@ -13,6 +13,7 @@ import Colors from "@/constants/colors";
 import { useCallback, useState } from "react";
 import MesocycleCard from "@/components/mesocycleCard";
 import { useFocusEffect, useRouter } from "expo-router";
+import useMesocycles from "@/hooks/useMesocycles";
 
 // TODO: Use ISO date strings
 const mockMesocycles: Mesocycle[] = [
@@ -59,10 +60,13 @@ function Mesocycles() {
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<null | number>(null);
 
+  const { mesocycles, loading, refresh } = useMesocycles({ searchQuery });
+
   useFocusEffect(
     useCallback(() => {
-      // TODO: Fetch mesocycles
-    }, [])
+      console.log("refreshing");
+      refresh();
+    }, [refresh])
   );
   const router = useRouter();
 
@@ -111,16 +115,14 @@ function Mesocycles() {
           keyboardShouldPersistTaps="always"
           refreshControl={
             <RefreshControl
-              refreshing={false}
+              refreshing={loading}
               colors={[Colors.primary.light, Colors.secondary.dark]}
               progressBackgroundColor={Colors.secondary.main}
-              onRefresh={() => {
-                console.log("refreshing");
-              }}
+              onRefresh={refresh}
             />
           }
           ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
-          data={mockMesocycles}
+          data={mesocycles}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item: meso }) => (
             <MesocycleCard data={meso} onDelete={setDeleteDialogOpen} />
@@ -167,7 +169,7 @@ function Mesocycles() {
             <Text variant="bodyMedium">
               Are you sure you want to delete "
               <Text style={{ fontWeight: "bold" }}>
-                {mockMesocycles.find((m) => m.id === deleteDialogOpen)?.name}
+                {mesocycles.find((m) => m.id === deleteDialogOpen)?.name}
               </Text>
               " and all of its data?
             </Text>
