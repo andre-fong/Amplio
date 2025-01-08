@@ -25,6 +25,7 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import Colors from "@/constants/colors";
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
+import { useLocalSearchParams } from "expo-router";
 import { spinUpDatabase, clearDatabase } from "@/api";
 import { getFullSetType } from "@/utils/set";
 import Session from "@/components/session";
@@ -495,6 +496,7 @@ export default function Logs() {
 
   ///////////// DATA //////////////
   const { width } = useWindowDimensions();
+  const { mesoId } = useLocalSearchParams();
 
   ///////////// FORM STATE //////////////
   const [sessionIndex, setSessionIndex] = useState(0);

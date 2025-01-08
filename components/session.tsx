@@ -130,6 +130,247 @@ export default function Session({
     };
   }, [selectedDate]);
 
+  const exerciseItemKeyExtractor = useCallback(
+    (item: PlannedExercise) => item.id.toString(),
+    []
+  );
+
+  const renderExerciseItem = useCallback(
+    ({ item: plannedExercise }: { item: PlannedExercise }) => (
+      <View style={styles.exerciseContainer}>
+        <Chip
+          compact
+          style={{
+            backgroundColor: "rgba(222, 0, 0, 0.5)",
+            // backgroundColor: Colors.primary.dark,
+            filter: "brightness(1.1)",
+            position: "absolute",
+            left: 10,
+            top: -15,
+          }}
+          textStyle={{
+            color: "white",
+            opacity: 0.7,
+            fontSize: 13,
+          }}
+        >
+          {plannedExercise.targetMuscle.name.toUpperCase()}
+        </Chip>
+        <View style={styles.exerciseHeader}>
+          {/* TODO: Link to exercise history */}
+          <Pressable style={{ marginTop: 12, flex: 1 }}>
+            <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
+              {plannedExercise.name}
+            </Text>
+            <Text
+              variant="bodySmall"
+              style={{ color: "darkgray", marginTop: 5 }}
+            >
+              {plannedExercise.equipment.toUpperCase()}
+            </Text>
+          </Pressable>
+          <View style={styles.exerciseActions}>
+            <IconButton
+              icon="comment-processing"
+              size={24}
+              theme={{ colors: { primary: Colors.accent.light } }}
+              onPress={() => {}}
+            />
+
+            <Menu
+              visible={selectedExerciseOptions === plannedExercise.id}
+              onDismiss={() => setSelectedExerciseOptions(null)}
+              anchor={
+                <IconButton
+                  icon="dots-vertical"
+                  size={24}
+                  onPress={() => {
+                    setSelectedExerciseOptions(plannedExercise.id);
+                  }}
+                />
+              }
+              anchorPosition="bottom"
+              mode="elevated"
+              elevation={5}
+            >
+              <Menu.Item
+                leadingIcon="file-search"
+                onPress={() => {}}
+                title="Replace exercise"
+              />
+              {plannedExercise.exerciseOrder > 1 && (
+                <Menu.Item
+                  leadingIcon="arrow-up"
+                  onPress={() => {}}
+                  title="Move exercise up"
+                />
+              )}
+
+              {plannedExercise.exerciseOrder < session.exercises.length && (
+                <Menu.Item
+                  leadingIcon="arrow-down"
+                  onPress={() => {}}
+                  title="Move exercise down"
+                />
+              )}
+              <Divider
+                style={{
+                  marginTop: 10,
+                  marginBottom: 10,
+                }}
+                bold
+              />
+              <Menu.Item
+                leadingIcon={({ size }) => (
+                  <Icon
+                    source="delete"
+                    color={Colors.primary.light}
+                    size={size}
+                  />
+                )}
+                onPress={() => {}}
+                title="Delete exercise"
+                titleStyle={{
+                  color: Colors.primary.light,
+                  filter: "brightness(2)",
+                }}
+              />
+            </Menu>
+          </View>
+        </View>
+
+        {plannedExercise.notes && (
+          <Pressable style={styles.exerciseNotes} onPress={() => {}}>
+            <Icon source="pencil" size={24} color={Colors.accent.main} />
+            <Text
+              variant="bodySmall"
+              style={{
+                color: Colors.accent.light,
+                flex: 1,
+                flexWrap: "wrap",
+              }}
+            >
+              {plannedExercise.notes}
+            </Text>
+          </Pressable>
+        )}
+
+        <View style={styles.setsContainer}>
+          <View style={styles.setsLabelRow}>
+            <View style={{ flex: 0.5 }} />
+            <Text style={{ flex: 3, textAlign: "center" }} variant="bodyMedium">
+              WEIGHT
+            </Text>
+            <Text style={{ flex: 3, textAlign: "center" }} variant="bodyMedium">
+              REPS
+            </Text>
+            <Text
+              style={{ flex: 1.5, textAlign: "center" }}
+              variant="bodyMedium"
+            >
+              LOG
+            </Text>
+            <View style={{ flex: 1 }} />
+          </View>
+
+          {plannedExercise.plannedSets.map((plannedSet) => (
+            <View style={styles.setsRow} key={plannedSet.setOrder}>
+              <View style={{ flex: 0.5 }}>
+                {!!plannedSet.type && (
+                  <Tooltip
+                    title={getFullSetType(plannedSet.type)}
+                    theme={{
+                      colors: {
+                        surface: "white",
+                        onSurface: Colors.secondary.dark,
+                      },
+                    }}
+                  >
+                    <Text variant="bodySmall" style={styles.setType}>
+                      {plannedSet.type}
+                    </Text>
+                  </Tooltip>
+                )}
+              </View>
+              {/* TODO: Maybe change font family */}
+              <View style={{ flex: 3 }}>
+                <TextInput
+                  multiline
+                  maxLength={4}
+                  defaultValue={plannedSet.weight?.toString()}
+                  placeholder={plannedSet.prevWeight?.toString()}
+                  keyboardType="numeric"
+                  placeholderTextColor="gray"
+                  dense
+                  style={styles.setsInput}
+                  underlineColor="transparent"
+                  theme={{
+                    colors: {
+                      surfaceVariant: Colors.secondary.main,
+                    },
+                  }}
+                />
+              </View>
+
+              <View style={{ flex: 3 }}>
+                <TextInput
+                  multiline
+                  maxLength={4}
+                  defaultValue={plannedSet.reps?.toString()}
+                  placeholder={plannedSet.prevReps?.toString()}
+                  keyboardType="numeric"
+                  placeholderTextColor="gray"
+                  dense
+                  style={styles.setsInput}
+                  underlineColor="transparent"
+                  theme={{
+                    colors: {
+                      surfaceVariant: Colors.secondary.main,
+                    },
+                  }}
+                />
+              </View>
+              <View style={{ flex: 1.5 }}>
+                <View style={{ alignItems: "center" }}>
+                  <Checkbox
+                    status={plannedSet.logged ? "checked" : "unchecked"}
+                    color={Colors.primary.light}
+                    onPress={() => {}}
+                  />
+                </View>
+              </View>
+              <View style={{ flex: 1 }}>
+                <IconButton
+                  icon="dots-vertical"
+                  size={24}
+                  onPress={() => {
+                    setSelectedSetOptions({
+                      exerciseId: plannedExercise.id,
+                      setOrder: plannedSet.setOrder,
+                    });
+                  }}
+                />
+              </View>
+            </View>
+          ))}
+
+          <Button
+            icon={() => (
+              <Icon source="plus" size={24} color={Colors.primary.main} />
+            )}
+            compact
+            style={{ width: "100%", margin: "auto" }}
+            labelStyle={{ fontSize: 13, filter: "brightness(1.1)" }}
+            onPress={() => {}}
+          >
+            ADD SET
+          </Button>
+        </View>
+      </View>
+    ),
+    [session.exercises, setSelectedSetOptions]
+  );
+
   return (
     <>
       <ScrollView style={{ width, flex: 1, paddingBottom: 30 }}>
@@ -323,244 +564,8 @@ export default function Session({
         <FlatList
           scrollEnabled={false}
           data={session.exercises}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item: plannedExercise }) => (
-            <View style={styles.exerciseContainer}>
-              <Chip
-                compact
-                style={{
-                  backgroundColor: "rgba(222, 0, 0, 0.5)",
-                  // backgroundColor: Colors.primary.dark,
-                  filter: "brightness(1.1)",
-                  position: "absolute",
-                  left: 10,
-                  top: -15,
-                }}
-                textStyle={{
-                  color: "white",
-                  opacity: 0.7,
-                  fontSize: 13,
-                }}
-              >
-                {plannedExercise.targetMuscle.name.toUpperCase()}
-              </Chip>
-              <View style={styles.exerciseHeader}>
-                {/* TODO: Link to exercise history */}
-                <Pressable style={{ marginTop: 12, flex: 1 }}>
-                  <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
-                    {plannedExercise.name}
-                  </Text>
-                  <Text
-                    variant="bodySmall"
-                    style={{ color: "darkgray", marginTop: 5 }}
-                  >
-                    {plannedExercise.equipment.toUpperCase()}
-                  </Text>
-                </Pressable>
-                <View style={styles.exerciseActions}>
-                  <IconButton
-                    icon="comment-processing"
-                    size={24}
-                    theme={{ colors: { primary: Colors.accent.light } }}
-                    onPress={() => {}}
-                  />
-
-                  <Menu
-                    visible={selectedExerciseOptions === plannedExercise.id}
-                    onDismiss={() => setSelectedExerciseOptions(null)}
-                    anchor={
-                      <IconButton
-                        icon="dots-vertical"
-                        size={24}
-                        onPress={() => {
-                          setSelectedExerciseOptions(plannedExercise.id);
-                        }}
-                      />
-                    }
-                    anchorPosition="bottom"
-                    mode="elevated"
-                    elevation={5}
-                  >
-                    <Menu.Item
-                      leadingIcon="file-search"
-                      onPress={() => {}}
-                      title="Replace exercise"
-                    />
-                    {plannedExercise.exerciseOrder > 1 && (
-                      <Menu.Item
-                        leadingIcon="arrow-up"
-                        onPress={() => {}}
-                        title="Move exercise up"
-                      />
-                    )}
-
-                    {plannedExercise.exerciseOrder <
-                      session.exercises.length && (
-                      <Menu.Item
-                        leadingIcon="arrow-down"
-                        onPress={() => {}}
-                        title="Move exercise down"
-                      />
-                    )}
-                    <Divider
-                      style={{
-                        marginTop: 10,
-                        marginBottom: 10,
-                      }}
-                      bold
-                    />
-                    <Menu.Item
-                      leadingIcon={({ size }) => (
-                        <Icon
-                          source="delete"
-                          color={Colors.primary.light}
-                          size={size}
-                        />
-                      )}
-                      onPress={() => {}}
-                      title="Delete exercise"
-                      titleStyle={{
-                        color: Colors.primary.light,
-                        filter: "brightness(2)",
-                      }}
-                    />
-                  </Menu>
-                </View>
-              </View>
-
-              {plannedExercise.notes && (
-                <Pressable style={styles.exerciseNotes} onPress={() => {}}>
-                  <Icon source="pencil" size={24} color={Colors.accent.main} />
-                  <Text
-                    variant="bodySmall"
-                    style={{
-                      color: Colors.accent.light,
-                      flex: 1,
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    {plannedExercise.notes}
-                  </Text>
-                </Pressable>
-              )}
-
-              <View style={styles.setsContainer}>
-                <View style={styles.setsLabelRow}>
-                  <View style={{ flex: 0.5 }} />
-                  <Text
-                    style={{ flex: 3, textAlign: "center" }}
-                    variant="bodyMedium"
-                  >
-                    WEIGHT
-                  </Text>
-                  <Text
-                    style={{ flex: 3, textAlign: "center" }}
-                    variant="bodyMedium"
-                  >
-                    REPS
-                  </Text>
-                  <Text
-                    style={{ flex: 1.5, textAlign: "center" }}
-                    variant="bodyMedium"
-                  >
-                    LOG
-                  </Text>
-                  <View style={{ flex: 1 }} />
-                </View>
-
-                {plannedExercise.plannedSets.map((plannedSet) => (
-                  <View style={styles.setsRow} key={plannedSet.setOrder}>
-                    <View style={{ flex: 0.5 }}>
-                      {!!plannedSet.type && (
-                        <Tooltip
-                          title={getFullSetType(plannedSet.type)}
-                          theme={{
-                            colors: {
-                              surface: "white",
-                              onSurface: Colors.secondary.dark,
-                            },
-                          }}
-                        >
-                          <Text variant="bodySmall" style={styles.setType}>
-                            {plannedSet.type}
-                          </Text>
-                        </Tooltip>
-                      )}
-                    </View>
-                    {/* TODO: Maybe change font family */}
-                    <View style={{ flex: 3 }}>
-                      <TextInput
-                        multiline
-                        maxLength={4}
-                        defaultValue={plannedSet.weight?.toString()}
-                        keyboardType="numeric"
-                        placeholder="lbs"
-                        placeholderTextColor="gray"
-                        dense
-                        style={styles.setsInput}
-                        underlineColor="transparent"
-                        theme={{
-                          colors: {
-                            surfaceVariant: Colors.secondary.main,
-                          },
-                        }}
-                      />
-                    </View>
-
-                    <View style={{ flex: 3 }}>
-                      <TextInput
-                        multiline
-                        maxLength={4}
-                        defaultValue={plannedSet.reps?.toString()}
-                        keyboardType="numeric"
-                        dense
-                        style={styles.setsInput}
-                        underlineColor="transparent"
-                        theme={{
-                          colors: {
-                            surfaceVariant: Colors.secondary.main,
-                          },
-                        }}
-                      />
-                    </View>
-                    <View style={{ flex: 1.5 }}>
-                      <View style={{ alignItems: "center" }}>
-                        <Checkbox
-                          status={plannedSet.logged ? "checked" : "unchecked"}
-                          color={Colors.primary.light}
-                          onPress={() => {}}
-                        />
-                      </View>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <IconButton
-                        icon="dots-vertical"
-                        size={24}
-                        onPress={() => {
-                          setSelectedSetOptions({
-                            exerciseId: plannedExercise.id,
-                            setOrder: plannedSet.setOrder,
-                          });
-                        }}
-                      />
-                    </View>
-                  </View>
-                ))}
-
-                <Button
-                  icon={() => (
-                    <Icon source="plus" size={24} color={Colors.primary.main} />
-                  )}
-                  compact
-                  style={{ width: "100%", margin: "auto" }}
-                  labelStyle={{ fontSize: 13, filter: "brightness(1.1)" }}
-                  onPress={() => {}}
-                >
-                  ADD SET
-                </Button>
-              </View>
-            </View>
-          )}
+          keyExtractor={exerciseItemKeyExtractor}
+          renderItem={renderExerciseItem}
         />
 
         <View style={{ margin: 10, height: 50, marginBottom: 30 }}>
