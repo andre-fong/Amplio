@@ -15,6 +15,7 @@ import MesocycleCard from "@/components/mesocycleCard";
 import { useFocusEffect, useRouter } from "expo-router";
 import useMesocycles from "@/hooks/useMesocycles";
 import { deleteMesocycle } from "@/api/mesocycles";
+import MesocycleListEmpty from "@/components/mesoListEmpty";
 
 function Mesocycles() {
   const [FABOpen, setFABOpen] = useState(false);
@@ -23,7 +24,6 @@ function Mesocycles() {
 
   const handleMesocycleDelete = useCallback(async () => {
     if (deleteDialogOpen) {
-      console.log("Deleting mesocycle", deleteDialogOpen);
       await deleteMesocycle(deleteDialogOpen);
       setDeleteDialogOpen(null);
       refresh();
@@ -34,7 +34,6 @@ function Mesocycles() {
 
   useFocusEffect(
     useCallback(() => {
-      console.log("refreshing");
       refresh();
     }, [refresh])
   );
@@ -93,6 +92,7 @@ function Mesocycles() {
             />
           }
           ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
+          ListEmptyComponent={<MesocycleListEmpty />}
           data={mesocycles}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item: meso }) => (
