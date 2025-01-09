@@ -288,15 +288,6 @@ export default function ExerciseSelectBottomSheet({
 
   const [newExerciseSaving, setNewExerciseSaving] = useState(false);
 
-  // Focus on new exercise name input when modal opens
-  useEffect(() => {
-    if (newExerciseOpen) {
-      setTimeout(() => {
-        newExerciseNameRef.current?.focus();
-      }, 150);
-    }
-  }, [newExerciseOpen]);
-
   const handleNewExerciseOpen = useCallback(() => {
     setNewExerciseName(searchQuery);
     setNewExerciseOpen(true);
@@ -435,7 +426,10 @@ export default function ExerciseSelectBottomSheet({
           borderRadius: 3,
         }}
       >
-        <ScrollView>
+        <ScrollView
+          keyboardDismissMode="none"
+          keyboardShouldPersistTaps="always"
+        >
           <Text variant="titleMedium" style={{ marginBottom: 20 }}>
             New Exercise
           </Text>
@@ -443,6 +437,7 @@ export default function ExerciseSelectBottomSheet({
           <TextInput
             label="Name"
             defaultValue={searchQuery}
+            autoFocus
             ref={newExerciseNameRef}
             onChangeText={setNewExerciseName}
             theme={{ colors: { surfaceVariant: Colors.secondary.light } }}
