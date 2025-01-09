@@ -605,19 +605,25 @@ export default function Session({
             }
             numberOfLines={4}
             contentStyle={{ marginVertical: 5 }}
-            theme={{ colors: { surfaceVariant: Colors.secondary.light } }}
+            theme={{
+              colors: {
+                surfaceVariant: Colors.secondary.light,
+                primary: Colors.accent.main,
+              },
+            }}
           />
 
           <View style={styles.sessionNotesButtons}>
             <Button
-              labelStyle={{ color: Colors.accent.main }}
+              theme={{ colors: { primary: Colors.accent.light } }}
               onPress={handleSessionNotesCancel}
             >
               Cancel
             </Button>
             <Button
-              labelStyle={{ color: "black" }}
-              contentStyle={{ backgroundColor: Colors.accent.dark }}
+              theme={{
+                colors: { primary: Colors.accent.light, onPrimary: "black" },
+              }}
               mode="contained"
               onPress={handleSessionNotesSave}
             >

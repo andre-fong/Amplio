@@ -736,7 +736,12 @@ export default function NewPlannedMesocycle() {
             }
             numberOfLines={4}
             contentStyle={{ marginVertical: 5 }}
-            theme={{ colors: { surfaceVariant: Colors.secondary.light } }}
+            theme={{
+              colors: {
+                surfaceVariant: Colors.secondary.light,
+                primary: Colors.accent.main,
+              },
+            }}
           />
 
           <View style={styles.mesoModalButtons}>
