@@ -57,7 +57,11 @@ export default function ExerciseSelectBottomSheet({
     [selectedMuscleGroups]
   );
 
-  const { exercises, loading } = useExercises({
+  const {
+    exercises,
+    loading,
+    refresh: refreshExercises,
+  } = useExercises({
     targetMuscleGroups: selectedMuscleGroupNames,
     searchQuery,
   });
@@ -315,6 +319,7 @@ export default function ExerciseSelectBottomSheet({
     });
     setNewExerciseOpen(false);
     setNewExerciseSaving(false);
+    refreshExercises();
   }, [newExerciseName, muscleSelected, equipmentSelected]);
 
   const handleMuscleSelected = useCallback((muscle: string) => {
