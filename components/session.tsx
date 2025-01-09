@@ -77,14 +77,6 @@ export default function Session({
 
   const sessionNotesRef = useRef<TextInputRN | null>(null);
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (sessionNotesOpen && sessionNotesRef.current) {
-        sessionNotesRef.current?.focus();
-      }
-    }, 150);
-  }, [sessionNotesOpen]);
-
   function handleSessionNotesCancel() {
     setSessionNotesEditValue(sessionNotes);
     setSessionNotesOpen(false);
@@ -600,6 +592,7 @@ export default function Session({
           <TextInput
             label="Session notes"
             defaultValue={sessionNotes}
+            autoFocus
             ref={sessionNotesRef}
             onChangeText={(text) => setSessionNotesEditValue(text)}
             multiline

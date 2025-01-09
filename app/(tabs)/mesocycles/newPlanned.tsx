@@ -50,14 +50,6 @@ export default function NewPlannedMesocycle() {
 
   const mesoNotesRef = useRef<TextInputRN | null>(null);
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (mesocycleNotesOpen && mesoNotesRef.current) {
-        mesoNotesRef.current?.focus();
-      }
-    }, 150);
-  }, [mesocycleNotesOpen]);
-
   const [muscleGroupListOpen, setMuscleGroupListOpen] = useState(false);
   const [exercisesListOpen, setExercisesListOpen] = useState(false);
   const [exerciseFilter, setExerciseFilter] = useState("");
@@ -731,6 +723,7 @@ export default function NewPlannedMesocycle() {
           <TextInput
             label="Session notes"
             defaultValue={mesocycleNotesTemp}
+            autoFocus
             ref={mesoNotesRef}
             onChangeText={setMesocycleNotesTemp}
             multiline
