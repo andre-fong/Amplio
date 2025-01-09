@@ -62,7 +62,11 @@ export default function ExerciseSelectBottomSheet({
     searchQuery,
   });
 
-  const { muscleGroups, loading: musclesLoading } = useMuscleGroups();
+  const {
+    muscleGroups,
+    loading: musclesLoading,
+    refresh: refreshMuscleGroups,
+  } = useMuscleGroups();
 
   // Open bottom sheet when open is true, and set filter if provided
   useEffect(() => {
@@ -70,17 +74,31 @@ export default function ExerciseSelectBottomSheet({
       if (filter) {
         setSelectedMuscleGroups({ [filter]: true });
         // scroll to selected muscle group
-        muscleGroupsListRef.current?.scrollToIndex({
-          index: muscleGroups.findIndex((muscle) => muscle.name === filter),
-          animated: false,
-          viewOffset: 20,
-        });
+        const muscleInd = muscleGroups.findIndex(
+          (muscle) => muscle.name === filter
+        );
+        if (muscleInd !== -1) {
+          muscleGroupsListRef.current?.scrollToIndex({
+            index: muscleInd,
+            animated: false,
+            viewOffset: 20,
+          });
+        }
       } else {
         setSelectedMuscleGroups({});
       }
       bottomSheetRef.current?.expand();
     }
   }, [open, filter, muscleGroups]);
+
+  // Refresh muscle groups when open is true
+  useEffect(() => {
+    if (open) {
+      refreshMuscleGroups();
+    }
+  }, [open]);
+
+  const doNothing = useCallback(() => {}, []);
 
   const handleMuscleGroupSelect = useCallback(
     (muscleGroupName: string) => {
@@ -392,6 +410,7 @@ export default function ExerciseSelectBottomSheet({
                 renderItem={renderMuscleItem}
                 keyExtractor={muscleListKeyExtractor}
                 ref={muscleGroupsListRef}
+                onScrollToIndexFailed={doNothing}
               />
             </View>
           }
