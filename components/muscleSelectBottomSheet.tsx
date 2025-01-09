@@ -1,6 +1,20 @@
-import { StyleSheet, View } from "react-native";
-import { Divider, Icon, Text, TouchableRipple } from "react-native-paper";
-import { useCallback, useEffect, useRef } from "react";
+import {
+  StyleSheet,
+  View,
+  TextInput as TextInputRN,
+  ScrollView,
+} from "react-native";
+import {
+  Button,
+  Divider,
+  Icon,
+  Modal,
+  Snackbar,
+  Text,
+  TextInput,
+  TouchableRipple,
+} from "react-native-paper";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetFlashList,
@@ -8,6 +22,7 @@ import BottomSheet, {
 import Colors from "@/constants/colors";
 import useMuscleGroups from "@/hooks/useMuscleGroups";
 import { FlashList } from "@shopify/flash-list";
+import { addMuscleGroup } from "@/api/muscleGroups";
 
 export default function MuscleSelectBottomSheet({
   open,
@@ -20,7 +35,7 @@ export default function MuscleSelectBottomSheet({
   onMuscleGroupSelect: (muscleGroup: MuscleGroup) => void;
   data: any;
 }) {
-  const { muscleGroups, loading } = useMuscleGroups();
+  const { muscleGroups, loading, refresh } = useMuscleGroups();
 
   // Open bottom sheet when open is true
   useEffect(() => {
@@ -85,6 +100,79 @@ export default function MuscleSelectBottomSheet({
     [handleMuscleSelect]
   );
 
+  const renderFooter = useCallback(
+    () => (
+      <>
+        <Divider />
+        {/* TODO: Add new muscle group capabilities */}
+        <TouchableRipple onPress={handleNewMuscleOpen}>
+          <View style={styles.muscleGroupContainer}>
+            <Text
+              variant="bodySmall"
+              style={{ paddingVertical: 7, color: "darkgray" }}
+            >
+              Muscle group not listed?{" "}
+              <Text
+                style={{
+                  fontWeight: "bold",
+                  color: "lightgray",
+                }}
+              >
+                Create a custom one.
+              </Text>
+            </Text>
+          </View>
+        </TouchableRipple>
+      </>
+    ),
+    []
+  );
+
+  const [newMuscleOpen, setNewMuscleOpen] = useState(false);
+  const [newMuscleName, setNewMuscleName] = useState("");
+  const newMuscleNameRef = useRef<TextInputRN | null>(null);
+
+  const newMuscleSaveDisabled = useMemo(
+    () => newMuscleName.length === 0,
+    [newMuscleName]
+  );
+
+  const [newMuscleSaving, setNewMuscleSaving] = useState(false);
+
+  const handleNewMuscleOpen = useCallback(() => {
+    setNewMuscleName("");
+    setNewMuscleOpen(true);
+  }, []);
+
+  const handleNewMuscleClose = useCallback(() => {
+    setNewMuscleOpen(false);
+    setNewMuscleName("");
+  }, []);
+
+  const handleNewMuscleSave = useCallback(async () => {
+    setNewMuscleSaving(true);
+    const newMuscleGroup = await addMuscleGroup({
+      name: newMuscleName.trim(),
+      color: "",
+    });
+    if (!newMuscleGroup) {
+      setSnackbarMessage(
+        `Muscle group "${newMuscleName.trim()}" already exists.`
+      );
+      setNewMuscleSaving(false);
+      return;
+    }
+    setNewMuscleOpen(false);
+    setNewMuscleSaving(false);
+    refresh();
+  }, [newMuscleName]);
+
+  const [snackbarMessage, setSnackbarMessage] = useState<string | null>(null);
+
+  const dismissSnackbar = useCallback(() => {
+    setSnackbarMessage(null);
+  }, []);
+
   return (
     <>
       <BottomSheet
@@ -108,7 +196,6 @@ export default function MuscleSelectBottomSheet({
           contentContainerStyle={styles.sheetContainer}
           data={muscleGroups}
           extraData={data}
-          // TODO: Change estimatedItemSize once restyled
           estimatedItemSize={55}
           ref={bottomSheetListRef}
           keyExtractor={(item) => item.name}
@@ -128,32 +215,71 @@ export default function MuscleSelectBottomSheet({
           }
           renderItem={renderItem}
           ItemSeparatorComponent={() => <Divider />}
-          ListFooterComponent={
-            <>
-              <Divider />
-              {/* TODO: Add new muscle group capabilities */}
-              <TouchableRipple onPress={() => {}}>
-                <View style={styles.muscleGroupContainer}>
-                  <Text
-                    variant="bodySmall"
-                    style={{ paddingVertical: 7, color: "darkgray" }}
-                  >
-                    Muscle group not listed?{" "}
-                    <Text
-                      style={{
-                        fontWeight: "bold",
-                        color: "lightgray",
-                      }}
-                    >
-                      Create a custom one.
-                    </Text>
-                  </Text>
-                </View>
-              </TouchableRipple>
-            </>
-          }
+          ListFooterComponent={renderFooter}
         />
       </BottomSheet>
+
+      <Modal
+        visible={newMuscleOpen}
+        onDismiss={handleNewMuscleClose}
+        contentContainerStyle={{
+          backgroundColor: "rgb(65, 65, 65)",
+          padding: 20,
+          margin: 20,
+          borderRadius: 3,
+        }}
+      >
+        <ScrollView
+          keyboardDismissMode="none"
+          keyboardShouldPersistTaps="always"
+        >
+          <Text variant="titleMedium" style={{ marginBottom: 20 }}>
+            New Muscle Group
+          </Text>
+
+          <TextInput
+            label="Name"
+            autoFocus
+            ref={newMuscleNameRef}
+            onChangeText={setNewMuscleName}
+            theme={{ colors: { surfaceVariant: Colors.secondary.light } }}
+          />
+
+          <View style={styles.newMuscleButtons}>
+            <Button
+              theme={{
+                colors: { primary: Colors.primary.light },
+              }}
+              onPress={handleNewMuscleClose}
+            >
+              Cancel
+            </Button>
+            <Button
+              theme={{
+                colors: {
+                  primary: Colors.primary.dark,
+                  onPrimary: "white",
+                },
+              }}
+              mode="contained"
+              onPress={handleNewMuscleSave}
+              disabled={newMuscleSaveDisabled || newMuscleSaving}
+              loading={newMuscleSaving}
+            >
+              Save
+            </Button>
+          </View>
+        </ScrollView>
+      </Modal>
+
+      <Snackbar
+        visible={!!snackbarMessage}
+        onDismiss={dismissSnackbar}
+        duration={3500}
+        style={{ backgroundColor: "black" }}
+      >
+        <Text>{snackbarMessage}</Text>
+      </Snackbar>
     </>
   );
 }
@@ -174,5 +300,13 @@ const styles = StyleSheet.create({
     marginTop: 15,
     paddingTop: 5,
     paddingBottom: 15,
+  },
+
+  newMuscleButtons: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginTop: 15,
+    gap: 15,
   },
 });

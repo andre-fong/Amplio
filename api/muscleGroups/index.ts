@@ -17,3 +17,33 @@ export async function getMuscleGroups(): Promise<MuscleGroup[]> {
     return [];
   }
 }
+
+export async function addMuscleGroup(
+  newMuscleGroup: MuscleGroup
+): Promise<MuscleGroup | null> {
+  try {
+    const db = await SQLite.openDatabaseAsync("amplio.db", {
+      useNewConnection: true,
+    });
+
+    // Verify name is unique
+    const existingMuscleGroup = await db.getFirstAsync(
+      `SELECT * FROM MuscleGroup WHERE name = ?`,
+      [newMuscleGroup.name]
+    );
+    if (existingMuscleGroup) {
+      throw new Error(`Muscle group "${newMuscleGroup.name}" already exists`);
+    }
+
+    await db.runAsync(`INSERT INTO MuscleGroup (name, color) VALUES (?, ?)`, [
+      newMuscleGroup.name,
+      newMuscleGroup.color || "#a30000",
+    ]);
+
+    db.closeAsync();
+    return newMuscleGroup;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
