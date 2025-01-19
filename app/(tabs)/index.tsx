@@ -532,7 +532,6 @@ export default function Logs() {
     (event: NativeSyntheticEvent<NativeScrollEvent>) => {
       const contentOffsetX = event.nativeEvent.contentOffset.x;
       const index = Math.round(contentOffsetX / width);
-      console.log(index);
       setSessionIndex(index);
     },
     [width]
