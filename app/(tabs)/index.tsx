@@ -25,7 +25,7 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import Colors from "@/constants/colors";
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { spinUpDatabase, clearDatabase } from "@/api";
 import { getFullSetType } from "@/utils/set";
 import Session from "@/components/session";
@@ -497,6 +497,7 @@ export default function Logs() {
   ///////////// DATA //////////////
   const { width } = useWindowDimensions();
   const { mesoId } = useLocalSearchParams();
+  const router = useRouter();
 
   ///////////// FORM STATE //////////////
   const [sessionIndex, setSessionIndex] = useState(0);
@@ -602,7 +603,11 @@ export default function Logs() {
       <Appbar.Header
         style={{ height: 80, backgroundColor: Colors.secondary.dark }}
       >
-        {/* <Appbar.BackAction onPress={() => {}} /> */}
+        <Appbar.BackAction
+          onPress={() => {
+            router.navigate("/(tabs)/mesocycles");
+          }}
+        />
         <Appbar.Content title="Logs" style={{ display: "none" }} />
         <View style={styles.headerTitleSubtitle}>
           <Text
@@ -910,7 +915,7 @@ export default function Logs() {
 const styles = StyleSheet.create({
   headerTitleSubtitle: {
     flex: 1,
-    paddingLeft: 20,
+    paddingLeft: 10,
   },
   headerTitle: {
     marginBottom: 3,
