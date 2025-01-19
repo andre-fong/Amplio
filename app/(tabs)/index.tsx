@@ -21,7 +21,7 @@ import {
 } from "react-native-paper";
 import BottomSheet, {
   BottomSheetBackdrop,
-  BottomSheetScrollView,
+  BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import Colors from "@/constants/colors";
 import { useEffect, useState, useMemo, useRef, useCallback } from "react";
@@ -755,9 +755,7 @@ export default function Logs() {
           onClose={handleSetOptionsClose}
           index={-1}
         >
-          <BottomSheetScrollView
-            contentContainerStyle={styles.setOptionsContainer}
-          >
+          <BottomSheetView style={styles.setOptionsContainer}>
             <View style={{ paddingHorizontal: 25, marginBottom: 25 }}>
               <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
                 {setOptionsData?.exercise.name}
@@ -914,7 +912,7 @@ export default function Logs() {
                 </Text>
               </View>
             </TouchableRipple>
-          </BottomSheetScrollView>
+          </BottomSheetView>
         </BottomSheet>
       </Portal>
     </Portal.Host>
@@ -984,7 +982,6 @@ const styles = StyleSheet.create({
     color: "darkgray",
   },
   setOptionsContainer: {
-    flex: 1,
     paddingTop: 15,
     paddingBottom: 10,
     backgroundColor: Colors.secondary.main,
@@ -994,7 +991,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 30,
-    paddingVertical: 20,
+    paddingVertical: 15,
     gap: 25,
   },
   dateRow: {
