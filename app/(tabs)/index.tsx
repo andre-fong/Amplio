@@ -540,11 +540,15 @@ export default function Logs() {
 
   const bottomSheetRef = useRef<BottomSheet>(null);
 
-  function handleScroll(event: NativeSyntheticEvent<NativeScrollEvent>) {
-    const contentOffsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(contentOffsetX / width);
-    setSessionIndex(index);
-  }
+  const handleScroll = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const contentOffsetX = event.nativeEvent.contentOffset.x;
+      const index = Math.round(contentOffsetX / width);
+      console.log(index);
+      setSessionIndex(index);
+    },
+    [width]
+  );
 
   const handleSetOptionsClose = useCallback(() => {
     setSelectedSetOptions(null);
