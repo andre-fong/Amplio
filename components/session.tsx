@@ -292,6 +292,8 @@ export default function Session({
                   defaultValue={plannedSet.weight?.toString()}
                   placeholder={plannedSet.prevWeight?.toString()}
                   keyboardType="numeric"
+                  inputMode="numeric"
+                  textContentType="none"
                   placeholderTextColor="gray"
                   dense
                   style={styles.setsInput}
@@ -311,6 +313,8 @@ export default function Session({
                   defaultValue={plannedSet.reps?.toString()}
                   placeholder={plannedSet.prevReps?.toString()}
                   keyboardType="numeric"
+                  inputMode="numeric"
+                  textContentType="none"
                   placeholderTextColor="gray"
                   dense
                   style={styles.setsInput}
