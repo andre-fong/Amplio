@@ -8,7 +8,6 @@ import {
   TextInput as TextInputRN,
 } from "react-native";
 import {
-  Appbar,
   Text,
   Button,
   IconButton,
@@ -21,11 +20,10 @@ import {
   TextInput,
   Checkbox,
   Tooltip,
-  TouchableRipple,
   List,
 } from "react-native-paper";
 import Colors from "@/constants/colors";
-import { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import { getFullSetType } from "@/utils/set";
 import { Calendar, DateData } from "react-native-calendars";
 import { getCalendarDateString } from "react-native-calendars/src/services";
@@ -37,7 +35,7 @@ export default function Session({
 }: {
   data: Session;
   setSelectedSetOptions: (options: {
-    exerciseId: number;
+    exercise: PlannedExercise;
     setOrder: number;
   }) => void;
   setOpen: (open: boolean) => void;
@@ -341,7 +339,7 @@ export default function Session({
                   size={24}
                   onPress={() => {
                     setSelectedSetOptions({
-                      exerciseId: plannedExercise.id,
+                      exercise: plannedExercise,
                       setOrder: plannedSet.setOrder,
                     });
                   }}

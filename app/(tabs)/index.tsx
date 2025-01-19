@@ -516,26 +516,14 @@ export default function Logs() {
 
   const [mesocycleOptionsOpen, setMesocycleOptionsOpen] = useState(false);
   const [selectedSetOptions, setSelectedSetOptions] = useState<{
-    exerciseId: number;
+    exercise: PlannedExercise;
     setOrder: number;
   } | null>(null);
 
-  const setOptionsData = useMemo(() => {
-    if (!selectedSetOptions) return null;
-    const selectedExercise = mockSessionsData[sessionIndex].exercises.find(
-      (exercise) => exercise.id === selectedSetOptions.exerciseId
-    );
-    if (!selectedExercise) return null;
-
-    const selectedSet = selectedExercise.plannedSets.find(
-      (set) => set.setOrder === selectedSetOptions.setOrder
-    );
-    if (!selectedSet) return null;
-
-    return {
-      exercise: selectedExercise,
-      set: selectedSet,
-    };
+  const selectedSetDetails = useMemo(() => {
+    return selectedSetOptions?.exercise.plannedSets[
+      selectedSetOptions?.setOrder - 1
+    ];
   }, [selectedSetOptions]);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -552,6 +540,7 @@ export default function Logs() {
 
   const handleSetOptionsClose = useCallback(() => {
     setSelectedSetOptions(null);
+    bottomSheetRef.current?.close();
   }, []);
 
   const handleMoveSetUp = useCallback(() => {
@@ -572,9 +561,9 @@ export default function Logs() {
     return (
       selectedSetOptions &&
       selectedSetOptions.setOrder <
-        (setOptionsData?.exercise.plannedSets.length || 0)
+        selectedSetOptions.exercise.plannedSets.length
     );
-  }, [selectedSetOptions, setOptionsData]);
+  }, [selectedSetOptions]);
 
   ///////////// RENDER //////////////
   const renderBackdropComponent = useCallback(
@@ -594,8 +583,8 @@ export default function Logs() {
     ({ item: session }: { item: Session }) => (
       <Session
         data={session}
-        setSelectedSetOptions={({ exerciseId, setOrder }) => {
-          setSelectedSetOptions({ exerciseId, setOrder });
+        setSelectedSetOptions={({ exercise, setOrder }) => {
+          setSelectedSetOptions({ exercise, setOrder });
           bottomSheetRef.current?.expand();
         }}
         setOpen={setExercisesListOpen}
@@ -758,15 +747,15 @@ export default function Logs() {
           <BottomSheetView style={styles.setOptionsContainer}>
             <View style={{ paddingHorizontal: 25, marginBottom: 25 }}>
               <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
-                {setOptionsData?.exercise.name}
+                {selectedSetOptions?.exercise.name}
               </Text>
               <Text
                 variant="bodySmall"
                 style={{ color: "darkgray", marginTop: 5 }}
               >
-                {setOptionsData?.exercise.equipment.toUpperCase()}
+                {selectedSetOptions?.exercise.equipment.toUpperCase()}
                 {"  "}&middot;
-                {`  SET ${setOptionsData?.set.setOrder} OF ${setOptionsData?.exercise.plannedSets.length}`}
+                {`  SET ${selectedSetOptions?.setOrder} OF ${selectedSetOptions?.exercise.plannedSets.length}`}
               </Text>
             </View>
 
@@ -796,9 +785,9 @@ export default function Logs() {
               style={[styles.setsRow, { marginVertical: 0, marginBottom: 10 }]}
             >
               <View style={{ flex: 0.5 }}>
-                {!!setOptionsData?.set.type && (
+                {!!selectedSetDetails?.type && (
                   <Tooltip
-                    title={getFullSetType(setOptionsData?.set.type)}
+                    title={getFullSetType(selectedSetDetails?.type)}
                     theme={{
                       colors: {
                         surface: "white",
@@ -807,7 +796,7 @@ export default function Logs() {
                     }}
                   >
                     <Text variant="bodySmall" style={styles.setType}>
-                      {setOptionsData?.set.type}
+                      {selectedSetDetails?.type}
                     </Text>
                   </Tooltip>
                 )}
@@ -816,24 +805,24 @@ export default function Logs() {
                 style={{ flex: 1, textAlign: "center", fontWeight: "bold" }}
                 variant="titleLarge"
               >
-                {setOptionsData?.set.weight}
+                {selectedSetDetails?.weight}
               </Text>
               <Text
                 style={{ flex: 1, textAlign: "center", fontWeight: "bold" }}
                 variant="titleLarge"
               >
-                {setOptionsData?.set.reps}
+                {selectedSetDetails?.reps}
               </Text>
               <Text
                 style={{
                   flex: 1,
                   textAlign: "center",
                   fontWeight: "bold",
-                  color: setOptionsData?.set.logged ? "white" : "darkgray",
+                  color: selectedSetDetails?.logged ? "white" : "darkgray",
                 }}
                 variant="titleLarge"
               >
-                {setOptionsData?.set.logged ? "Y" : "N"}
+                {selectedSetDetails?.logged ? "Y" : "N"}
               </Text>
               <View style={{ flex: 0.5 }} />
             </View>
