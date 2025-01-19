@@ -1,8 +1,8 @@
 import { Image, StyleSheet, View } from "react-native";
 import { Text } from "react-native-paper";
 
-export default function MesocycleListEmpty() {
-  return (
+export default function MesocycleListEmpty({ loading }: { loading: boolean }) {
+  return loading ? null : (
     <View style={styles.container}>
       <Image
         source={require("@/assets/images/adaptive-icon.png")}

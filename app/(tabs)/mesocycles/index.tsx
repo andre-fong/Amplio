@@ -92,7 +92,7 @@ function Mesocycles() {
             />
           }
           ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
-          ListEmptyComponent={<MesocycleListEmpty />}
+          ListEmptyComponent={<MesocycleListEmpty loading={loading} />}
           data={mesocycles}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item: meso }) => (
