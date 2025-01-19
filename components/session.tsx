@@ -360,7 +360,7 @@ export default function Session({
         </View>
       </View>
     ),
-    [session.exercises, setSelectedSetOptions]
+    [session.exercises, setSelectedSetOptions, selectedExerciseOptions]
   );
 
   return (

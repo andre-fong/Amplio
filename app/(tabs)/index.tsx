@@ -586,6 +586,20 @@ export default function Logs() {
     []
   );
 
+  const renderSessionComponent = useCallback(
+    ({ item: session }: { item: Session }) => (
+      <Session
+        data={session}
+        setSelectedSetOptions={({ exerciseId, setOrder }) => {
+          setSelectedSetOptions({ exerciseId, setOrder });
+          bottomSheetRef.current?.expand();
+        }}
+        setOpen={setExercisesListOpen}
+      />
+    ),
+    []
+  );
+
   const [exercisesListOpen, setExercisesListOpen] = useState(false);
   const [exerciseFilter, setExerciseFilter] = useState("");
 
@@ -707,16 +721,7 @@ export default function Logs() {
           bounces={false}
           bouncesZoom={false}
           onScroll={handleScroll}
-          renderItem={({ item: session }) => (
-            <Session
-              data={session}
-              setSelectedSetOptions={({ exerciseId, setOrder }) => {
-                setSelectedSetOptions({ exerciseId, setOrder });
-                bottomSheetRef.current?.expand();
-              }}
-              setOpen={setExercisesListOpen}
-            />
-          )}
+          renderItem={renderSessionComponent}
         />
       </ScrollView>
 
