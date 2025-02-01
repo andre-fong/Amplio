@@ -4,7 +4,7 @@ type GetMesocyclesParams = {
   searchQuery?: string;
 };
 
-// TODO: NEED TO TEST THESE!
+// TODO: NEED TO TEST GETMESOCYCLESCHEDULE!
 
 export async function getMesocycles(
   params?: GetMesocyclesParams

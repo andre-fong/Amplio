@@ -4,6 +4,7 @@ import {
   logMesocycleScheduleTable,
   logMesocycleTable,
 } from "@/api/mesocycles";
+import { getMesocycleSessions } from "@/api/mesocycles/logs";
 
 export default function useMesocycles({
   searchQuery,
@@ -15,7 +16,9 @@ export default function useMesocycles({
 
   const fetchMesocycles = useCallback(async () => {
     try {
-      // await logMesocycleScheduleTable();
+      await logMesocycleTable();
+      const sessions = await getMesocycleSessions({ mesoId: 1 });
+      console.log(sessions);
       const data = await getMesocycles({ searchQuery });
       setMesocycles(data);
       setLoading(false);
