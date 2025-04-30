@@ -5,6 +5,12 @@ import Colors from "@/constants/colors";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useEffect } from "react";
 import { LocaleConfig } from "react-native-calendars";
+import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
+import * as SQLite from "expo-sqlite";
+
+const db = SQLite.openDatabaseSync("amplio.db", {
+  useNewConnection: true,
+});
 
 const theme: MD3Theme = {
   ...MD3DarkTheme,
@@ -101,6 +107,9 @@ export default function RootLayout() {
     };
     LocaleConfig.defaultLocale = "en";
   }, []);
+
+  ///////////// DRIZZLE STUDIO //////////////
+  const drizzleStudio = useDrizzleStudio(db);
 
   return (
     <>
