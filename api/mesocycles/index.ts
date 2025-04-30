@@ -91,7 +91,22 @@ export async function getMesocycleSchedule(mesoId: number) {
       useNewConnection: true,
     });
 
-    const schedule = await db.getAllAsync<MesocycleSchedule>(
+    const schedule = await db.getAllAsync<{
+      mesocycleId: number;
+      mesocycleName: string;
+      mesocycleStartDate: string;
+      mesocycleEndDate: string | null;
+      mesocycleType: "planned" | "custom";
+      day: number;
+      dayName: string;
+      exerciseId: number;
+      exerciseName: string;
+      exerciseEquipment: string;
+      targetMuscle: {
+        name: string;
+        color: string;
+      };
+    }>(
       `
     SELECT 
       m.id AS mesocycleId,
@@ -100,10 +115,11 @@ export async function getMesocycleSchedule(mesoId: number) {
       m.endDate AS mesocycleEndDate,
       m.type AS mesocycleType,
       mds.day,
+      mds.name AS dayName,
       e.id AS exerciseId,
       e.name AS exerciseName,
       e.equipment AS exerciseEquipment,
-      json_object('name', m.name, 'color', m.color) AS targetMuscle
+      json_object('name', mg.name, 'color', mg.color) AS targetMuscle
     FROM Mesocycle m
     JOIN MesocycleDaySchedule mds ON m.id = mds.mesoId
     JOIN Exercise e ON mds.exerciseId = e.id
@@ -114,8 +130,45 @@ export async function getMesocycleSchedule(mesoId: number) {
       [mesoId]
     );
 
+    // Aggregate day schedule entries into a single object per day
+    // and convert to MesocycleSchedule format
+    let days: { [key: number]: DaySchedule } = {};
+    schedule.forEach((entry) => {
+      const {
+        day,
+        dayName,
+        exerciseId,
+        exerciseName,
+        exerciseEquipment,
+        targetMuscle,
+      } = entry;
+      if (!days[day]) {
+        days[day] = {
+          day,
+          name: dayName,
+          exercises: [],
+        };
+      }
+      days[day].exercises.push({
+        id: exerciseId,
+        name: exerciseName,
+        equipment: exerciseEquipment as Equipment,
+        targetMuscle,
+      });
+    });
+
+    const mesoSchedule: MesocycleSchedule = {
+      mesocycle: {
+        name: schedule[0].mesocycleName,
+        startDate: schedule[0].mesocycleStartDate,
+        endDate: schedule[0].mesocycleEndDate || undefined,
+        type: schedule[0].mesocycleType,
+      },
+      days: Object.values(days),
+    };
+
     db.closeAsync();
-    return schedule;
+    return mesoSchedule;
   } catch (error) {
     console.error(error);
     return [];
